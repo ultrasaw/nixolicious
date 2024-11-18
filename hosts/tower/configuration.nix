@@ -1,8 +1,9 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
   imports = [
     ./hardware-configuration.nix
+    inputs.home-manager.nixosModules.default
   ];
 
   # Bootloader.
@@ -30,30 +31,6 @@
     LC_TIME = "de_AT.UTF-8";
   };
 
-  # X11, NVIDIA, and GNOME configuration
-  services.xserver = {
-    enable = true;
-    layout = "us";
-    videoDrivers = [ "nvidia" ];
-    displayManager.gdm.enable = true;
-    desktopManager.gnome.enable = true;
-    xkb = { layout = "us"; variant = ""; };
-  };
-
-  # NVIDIA-specific configuration
-  hardware.nvidia = {
-    modesetting.enable = true;
-    powerManagement.enable = false;
-    powerManagement.finegrained = false;
-    open = false;
-    nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
-    prime = { 
-      intelBusId = "PCI:00:02.0";
-      nvidiaBusId = "PCI:01:00.0";
-    };
-  };
-
   # Printing
   services.printing.enable = true;
 
@@ -74,20 +51,27 @@
     extraGroups = [ "networkmanager" "wheel" ];
   };
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  home-manager = {
+    extraSpecialArgs = { inherit inputs; };
+    users = {
+      "gio" = {
+        imports = [ ./home.nix ];
+        home.stateVersion = "24.11";
+      };
+    };
+  };
 
-  # Firefox and unfree packages
-  programs.firefox.enable = true;
+  # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
- 
+  home-manager.useGlobalPkgs = true;
+  home-manager.useUserPackages = true;
+
   # Add Git, etc. to system packages
   environment.systemPackages = with pkgs; [
     git
     vim
-    vscode
   ];
 
   # System version
   system.stateVersion = "24.05";
 }
-
