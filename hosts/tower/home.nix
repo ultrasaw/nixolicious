@@ -1,6 +1,13 @@
-{ config, pkgs, ... }:
+{ config, pkgs, user, ... }:
 
 {
+  home.username = "gio";
+  home.homeDirectory = "/home/gio";
+
+  home.stateVersion = "24.11";
+
+  programs.home-manager.enable = true;
+
   # Enable Visual Studio Code with extensions
   programs.vscode = {
     enable = true;
@@ -14,12 +21,49 @@
     ];
   };
 
-  # Other Home Manager settings
-  programs.zsh.enable = true;
+  programs.zsh = {
+    enable = true;
+    enableCompletion = true;
+    autosuggestion.enable = true;
+    syntaxHighlighting.enable = true;
+
+    shellAliases = {
+    
+      ll = "ls -l";
+      vim = "nvim";
+      update = "sudo nixos-rebuild switch";
+    };
+    history = {
+      size = 10000;
+      path = "${config.xdg.dataHome}/zsh/zsh_history";
+    };
+    oh-my-zsh = {
+      enable = true;
+      plugins = [ ];
+      theme = "agnoster";
+    };
+  };
+
+  programs.git = {
+    enable = true;
+    aliases = {
+      pu = "push";
+      co = "checkout";
+      cm = "commit";
+    };
+  };
 
   # Define user environment packages
   home.packages = with pkgs; [
     htop
-    neofetch
+    alacritty
+    neovim
+    google-chrome
   ];
+
+  home.sessionVariables = {
+    EDITOR = "nvim";
+    BROWSER = "google-chrome";
+    TERMINAL = "alacritty";
+  };
 }

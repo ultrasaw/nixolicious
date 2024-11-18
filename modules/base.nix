@@ -1,9 +1,11 @@
 { config, pkgs, ... }:
 
 {
-  # Unfree packages & Firefox
+  # Unfree packages & chrome
   nixpkgs.config.allowUnfree = true;
-  programs.firefox.enable = true;
+  programs.zsh.enable = true;
+  
+  users.defaultUserShell=pkgs.zsh;
 
   # GnuPG
   services.pcscd.enable = true;

@@ -47,17 +47,16 @@
   # User account
   users.users.gio = {
     isNormalUser = true;
-    description = "gio";
-    extraGroups = [ "networkmanager" "wheel" ];
+    shell = pkgs.zsh;
+    extraGroups = [ "networkmanager" "wheel" "docker" "kvm" ];
   };
+
+  security.sudo.wheelNeedsPassword = false;
 
   home-manager = {
     extraSpecialArgs = { inherit inputs; };
     users = {
-      "gio" = {
-        imports = [ ./home.nix ];
-        home.stateVersion = "24.11";
-      };
+      "gio" = import ./home.nix;
     };
   };
 
@@ -65,12 +64,6 @@
   nixpkgs.config.allowUnfree = true;
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
-
-  # Add Git, etc. to system packages
-  environment.systemPackages = with pkgs; [
-    git
-    vim
-  ];
 
   # System version
   system.stateVersion = "24.05";

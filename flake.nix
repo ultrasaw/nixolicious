@@ -27,7 +27,7 @@
           ./hosts/tower/configuration.nix
           ./modules/base.nix
           ./modules/vscode.nix
-          ./modules/gnome.nix
+          ./modules/hyprlnd.nix
           ./modules/nvidia.nix
           inputs.home-manager.nixosModules.default
         ];
