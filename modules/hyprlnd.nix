@@ -13,7 +13,6 @@
 
   environment.systemPackages = [
 
-    pkgs.kitty
     pkgs.alacritty
 
     pkgs.dunst

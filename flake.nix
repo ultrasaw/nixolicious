@@ -14,6 +14,7 @@
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
+      lib = nixpkgs.lib;
     in {
       nixConfig = {
         nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -27,7 +28,7 @@
           ./hosts/tower/configuration.nix
           ./modules/base.nix
           ./modules/vscode.nix
-          ./modules/hyprlnd.nix
+          ./modules/gnome.nix
           ./modules/nvidia.nix
           inputs.home-manager.nixosModules.default
         ];
