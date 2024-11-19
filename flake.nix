@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
+    hyprland.url = "github:hyprwm/Hyprland";
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -29,7 +30,7 @@
           ./modules/base.nix
           ./modules/vscode.nix
           ./modules/gnome.nix
-          ./modules/nvidia.nix
+          # ./modules/nvidia.nix
           inputs.home-manager.nixosModules.default
         ];
       };

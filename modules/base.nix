@@ -1,8 +1,9 @@
 { config, pkgs, ... }:
 
 {
-  # Unfree packages & chrome
+  # Unfree packages
   nixpkgs.config.allowUnfree = true;
+  
   programs.zsh.enable = true;
   
   users.defaultUserShell=pkgs.zsh;

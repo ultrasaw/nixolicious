@@ -1,9 +1,18 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
   programs.hyprland = {
     enable = true;
+    package = inputs.hyprland.packages."${pkgs.system}".hyprland;
     xwayland.enable = true;
+  };
+
+  services.xserver = {
+    enable = true;
+    layout = "us";
+    displayManager.gdm.enable = true;
+    displayManager.defaultSession = "hyprland";
+    xkb = { layout = "us"; variant = ""; };
   };
 
   environment.sessionVariables = {
@@ -13,7 +22,7 @@
 
   environment.systemPackages = [
 
-    pkgs.alacritty
+    pkgs.kitty
 
     pkgs.dunst
     pkgs.libnotify
@@ -32,5 +41,9 @@
 
   xdg.portal.enable = true;
   xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+
+  # hardware = {
+  #   opengl.enable = true;
+  # };
 
 }

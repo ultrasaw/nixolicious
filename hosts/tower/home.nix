@@ -1,4 +1,4 @@
-{ config, pkgs, user, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   home.username = "gio";
@@ -59,11 +59,41 @@
     alacritty
     neovim
     google-chrome
+    firefox
   ];
 
-  home.sessionVariables = {
-    EDITOR = "nvim";
-    BROWSER = "google-chrome";
-    TERMINAL = "alacritty";
-  };
+  # wayland.windowManager.hyprland = {
+  #   enable = true;
+
+  #   settings = {
+
+  #     "$mod" = "SUPER";
+
+  #     bind = [
+  #       "$mod, S, exec, rofi -show drun -show-icon"
+  #     ];
+  #   };
+  # };
+
 }
+
+# let
+#   startupScript = ''
+#     ${pkgs.waybar}/bin/waybar &
+#     ${pkgs.swww}/bin/swww init &
+
+#     sleep 1
+
+#     ${pkgs.swww}/bin/swww img ${./wallpaper.png} &
+#   '';
+# in {
+#   wayland.windowManager.hyprland = {
+#     settings = {
+#       exec-once = startupScript;
+#       "$mod" = "SUPER";
+#       bind = [
+#         "$mod, S, exec, rofi -show drun -show-icon"
+#       ];
+#     };
+#   };
+# }
