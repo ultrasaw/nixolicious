@@ -29,7 +29,9 @@
           ./hosts/tower/configuration.nix
           ./modules/base.nix
           ./modules/vscode.nix
-          ./modules/gnome.nix
+          ./modules/greetd.nix
+          ./modules/hyprland.nix
+          # ./modules/gnome.nix
           # ./modules/nvidia.nix
           inputs.home-manager.nixosModules.default
         ];

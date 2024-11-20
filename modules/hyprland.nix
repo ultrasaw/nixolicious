@@ -7,35 +7,76 @@
     xwayland.enable = true;
   };
 
-  services.xserver = {
-    enable = true;
-    layout = "us";
-    displayManager.gdm.enable = true;
-    displayManager.defaultSession = "hyprland";
-    xkb = { layout = "us"; variant = ""; };
+  security = {
+    # Gnome keyring
+    polkit.enable = true;
+    # swaylock
+    # https://discourse.nixos.org/t/swaylock-wont-unlock/27275
+    pam.services.swaylock.fprintAuth = false;
   };
+
+  services = {
+    gnome.gnome-keyring.enable = true;
+
+    flatpak.enable = true;
+
+    # Bluetooth
+    blueman.enable = true;
+  };
+
+  # programs.sway = {
+  #   enable = true;
+  #   extraPackages = with pkgs; [swaylock-effects];
+  # };
+
+  # services.xserver = {
+  #   enable = true;
+  #   layout = "us";
+  #   displayManager.gdm.enable = true;
+  #   displayManager.defaultSession = "hyprland";
+  #   xkb = { layout = "us"; variant = ""; };
+  # };
+
+  # services.greetd = {
+  #   enable = true;
+  #   settings = rec {
+  #     initial_session = {
+  #       command = "${pkgs.hyprland}/bin/Hyprland";
+  #       user = "gio";
+  #     };
+  #     default_session = initial_session;
+  #   };
+  # };
 
   environment.sessionVariables = {
     WLR_NO_HARDWARE_CURSORS = "1";
     NIXOS_OZONE_WL = "1";
   };
 
-  environment.systemPackages = [
+  environment.systemPackages = with pkgs; [
 
-    pkgs.kitty
+    kitty
 
-    pkgs.dunst
-    pkgs.libnotify
+    grim
+    slurp
+    wl-clipboard
 
-    pkgs.rofi-wayland
+    dunst
+    libnotify
 
-    pkgs.swww
+    rofi-wayland
 
-    pkgs.waybar
-    (pkgs.waybar.overrideAttrs (oldAttrs: {
+    swww
+
+    waybar
+    (waybar.overrideAttrs (oldAttrs: {
         mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
       })
     )
+
+    swaylock # screen locker
+    gnome.nautilus # file manager
+    xdg-utils # allow xdg-open to work
 
   ];
 
