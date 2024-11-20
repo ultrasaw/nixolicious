@@ -16,7 +16,8 @@
         "$mod, S, exec, rofi -show drun -show-icon"
       ];
 
-      exec-once = "${pkgs.swaylock}/bin/swaylock";
+      exec-once = "${pkgs.swaylock}/bin/swaylock --image ~Documents/Pictures/bin.jpg --indicator-idle-visible";
+      # exec-once = "${pkgs.swaylock}/bin/swaylock";
 
     };
   };

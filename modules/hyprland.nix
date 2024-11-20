@@ -24,30 +24,6 @@
     blueman.enable = true;
   };
 
-  # programs.sway = {
-  #   enable = true;
-  #   extraPackages = with pkgs; [swaylock-effects];
-  # };
-
-  # services.xserver = {
-  #   enable = true;
-  #   layout = "us";
-  #   displayManager.gdm.enable = true;
-  #   displayManager.defaultSession = "hyprland";
-  #   xkb = { layout = "us"; variant = ""; };
-  # };
-
-  # services.greetd = {
-  #   enable = true;
-  #   settings = rec {
-  #     initial_session = {
-  #       command = "${pkgs.hyprland}/bin/Hyprland";
-  #       user = "gio";
-  #     };
-  #     default_session = initial_session;
-  #   };
-  # };
-
   environment.sessionVariables = {
     WLR_NO_HARDWARE_CURSORS = "1";
     NIXOS_OZONE_WL = "1";
@@ -66,8 +42,6 @@
 
     rofi-wayland
 
-    swww
-
     waybar
     (waybar.overrideAttrs (oldAttrs: {
         mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
@@ -75,8 +49,35 @@
     )
 
     swaylock # screen locker
-    gnome.nautilus # file manager
     xdg-utils # allow xdg-open to work
+
+    hyprpaper # wallpaper utility
+    hyprpicker # color pickere
+
+    # waybar applets
+    networkmanagerapplet # nm-applet --indicator &
+    blueman # blueman-applet
+    udiskie # removable media/disk mounting
+
+    polkit_gnome # polkit agent for GNOME
+    gnome.seahorse # keyring manager GUI
+    gnome.nautilus # file manager
+
+    playerctl # media player control
+    brightnessctl # brightness control
+    pwvucontrol # sound control
+
+    blueberry # bluetooth manager GUI
+    networkmanager # network manager, including nmtui, a network manager TUI
+
+    inter # font
+    bibata-cursors # Material Based Cursor Theme
+
+    spotify
+    linssid
+    angryipscanner
+
+    inputs.hyprland-contrib.packages.${pkgs.system}.grimblast
 
   ];
 
