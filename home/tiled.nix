@@ -15,9 +15,16 @@
         "$mod, S, exec, rofi -show drun -show-icon"
       ];
 
-      exec-once = "${pkgs.swaylock}/bin/swaylock --image ${config.home.homeDirectory}/Pictures/bin.jpg --indicator-idle-visible";
-      # exec-once = "${pkgs.swaylock}/bin/swaylock";
+      exec-once = [
+        "${pkgs.swaylock}/bin/swaylock --image ${config.home.homeDirectory}/Pictures/bin.jpg --indicator-idle-visible"
+        # "${pkgs.waybar}/bin/waybar"
+        "hyprctl setcursor Future-Cyan-Hyprcursor_Theme 40"
+        ];
 
+      # https://gitlab.com/Pummelfisch/future-cyan-hyprcursor
+      env = [
+        "HYPRCURSOR_THEME,Future-Cyan-Hyprcursor_Theme"
+      ];
     };
   };
 
