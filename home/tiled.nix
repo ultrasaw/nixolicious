@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 
 {
-  programs.waybar.enable = true;
+  # programs.waybar.enable = true;
   services.dunst.enable = true;
 
   wayland.windowManager.hyprland = {
@@ -17,7 +17,6 @@
 
       exec-once = [
         "${pkgs.swaylock}/bin/swaylock --image ${config.home.homeDirectory}/Pictures/bin.jpg --indicator-idle-visible"
-        # "${pkgs.waybar}/bin/waybar"
         "hyprctl setcursor Future-Cyan-Hyprcursor_Theme 40"
         ];
 
