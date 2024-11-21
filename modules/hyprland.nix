@@ -42,16 +42,9 @@
 
     rofi-wayland
 
-    waybar
-    (waybar.overrideAttrs (oldAttrs: {
-        mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
-      })
-    )
-
     swaylock # screen locker
     xdg-utils # allow xdg-open to work
 
-    hyprpaper # wallpaper utility
     hyprpicker # color pickere
 
     # waybar applets

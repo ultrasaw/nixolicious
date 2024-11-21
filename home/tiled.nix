@@ -2,7 +2,6 @@
 
 {
   programs.waybar.enable = true;
-  # programs.swaylock.enable = true;
   services.dunst.enable = true;
 
   wayland.windowManager.hyprland = {
@@ -16,27 +15,27 @@
         "$mod, S, exec, rofi -show drun -show-icon"
       ];
 
-      exec-once = "${pkgs.swaylock}/bin/swaylock --image ~Documents/Pictures/bin.jpg --indicator-idle-visible";
+      exec-once = "${pkgs.swaylock}/bin/swaylock --image ${config.home.homeDirectory}/Pictures/bin.jpg --indicator-idle-visible";
       # exec-once = "${pkgs.swaylock}/bin/swaylock";
 
     };
   };
 
-  # services.hyprpaper = {
-  #   enable = true;
-  #   settings = {
-  #     ipc = "on";
-  #     splash = false;
-  #     splash_offset = 2.0;
+  services.hyprpaper = {
+    enable = true;
+    settings = {
+      ipc = "on";
+      splash = false;
+      splash_offset = 2.0;
 
-  #     preload =
-  #       [ "~Documents/Pictures/bin.jpg" ];
+      preload =
+        [ "~/Pictures/bin.jpg" ];
 
-  #     wallpaper = [
-  #       "DP-1,~Documents/Pictures/bin.jpg}"
-  #     ];
-  #   }
-  # };
+      wallpaper = [
+        "HDMI-A-2,~/Pictures/bin.jpg"
+      ];
+    };
+  };
 
 }
 
