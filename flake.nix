@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
     hyprland.url = "github:hyprwm/Hyprland";
+    nix-colors.url = "github:misterio77/nix-colors";
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -21,6 +22,7 @@
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
       lib = nixpkgs.lib;
+      theme = "sakura";
     in {
       nixConfig = {
         nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -28,7 +30,7 @@
 
       nixosConfigurations.tower = nixpkgs.lib.nixosSystem {
         specialArgs = {
-          inherit inputs;
+          inherit inputs theme;
         };
         modules = [
           ./hosts/tower/configuration.nix

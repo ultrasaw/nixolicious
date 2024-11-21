@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, ... }:
+{ config, pkgs, inputs, theme, ... }:
 
 {
   imports = [
@@ -54,7 +54,10 @@
   security.sudo.wheelNeedsPassword = false;
 
   home-manager = {
-    extraSpecialArgs = { inherit inputs; };
+    extraSpecialArgs = {
+      inherit inputs;
+      inherit theme;
+    };
     users = {
       "gio" = import ./home.nix;
     };
