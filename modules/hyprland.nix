@@ -30,17 +30,12 @@
   };
 
   environment.systemPackages = with pkgs; [
-
-    kitty
-
     grim
     slurp
     wl-clipboard
 
     dunst
     libnotify
-
-    rofi-wayland
 
     swaylock # screen locker
     xdg-utils # allow xdg-open to work

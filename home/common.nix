@@ -6,19 +6,22 @@
 
   home.stateVersion = "24.11";
 
-  programs.home-manager.enable = true;
+  programs = {
+    home-manager.enable = true;
+    yazi.enable = true; # terminal file manager
+  };
 
   # Enable Visual Studio Code with extensions
   programs.vscode = {
     enable = true;
-    extensions = with pkgs.vscode-extensions; [
-      bbenoist.nix
-      golang.go
-      ms-python.python
-      github.github-vscode-theme
-      vscodevim.vim
-      yzhang.markdown-all-in-one
-    ];
+    # extensions = with pkgs.vscode-extensions; [
+    #   bbenoist.nix
+    #   golang.go
+    #   ms-python.python
+    #   github.github-vscode-theme
+    #   vscodevim.vim
+    #   yzhang.markdown-all-in-one
+    # ];
   };
 
   programs.zsh = {
@@ -61,6 +64,10 @@
     google-chrome
     firefox
   ];
+
+  services = {
+    flameshot.enable = true;
+  };
 
 }
 # }

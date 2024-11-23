@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, theme, ... }:
+{ config, pkgs, inputs, theme, system, ... }:
 
 {
   colorScheme = inputs.nix-colors.colorSchemes."${theme}";
@@ -8,6 +8,18 @@
     ../../home/tiled.nix
     ../../home/looks.nix
     ../../home/waybar.nix
+    ../../home/rofi.nix
     inputs.nix-colors.homeManagerModules.default
   ];
+
+  # packages = [
+  #   (import ../../scripts/rofi-launcher.nix { inherit pkgs; })
+  # ];
+
+  # stylix = {
+  #   enable = true;
+  #   image = "${config.home.homeDirectory}/Pictures/bin.jpg";
+  #   targets.waybar.enable = false;
+  # };
+
 }

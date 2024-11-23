@@ -1,8 +1,9 @@
-{ config, pkgs, inputs, theme, ... }:
+{ config, pkgs, inputs, theme, system, ... }:
 
 {
   imports = [
     ./hardware-configuration.nix
+    ./vars.nix
     inputs.home-manager.nixosModules.default
   ];
 
@@ -57,6 +58,7 @@
     extraSpecialArgs = {
       inherit inputs;
       inherit theme;
+      inherit system;
     };
     users = {
       "gio" = import ./home.nix;
@@ -69,5 +71,5 @@
   home-manager.useUserPackages = true;
 
   # System version
-  system.stateVersion = "25.05";
+  system.stateVersion = "24.11";
 }

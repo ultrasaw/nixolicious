@@ -5,6 +5,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
     hyprland.url = "github:hyprwm/Hyprland";
     nix-colors.url = "github:misterio77/nix-colors";
+    stylix.url = "github:danth/stylix";
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -14,6 +15,11 @@
     hyprland-contrib = {
       url = "github:hyprwm/contrib";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    hyprland-plugins = {
+      url = "github:hyprwm/hyprland-plugins";
+      inputs.hyprland.follows = "hyprland";
     };
   };
 
@@ -30,17 +36,18 @@
 
       nixosConfigurations.tower = nixpkgs.lib.nixosSystem {
         specialArgs = {
-          inherit inputs theme;
+          inherit inputs theme system;
         };
         modules = [
           ./hosts/tower/configuration.nix
           ./modules/base.nix
-          ./modules/vscode.nix
           ./modules/greetd.nix
           ./modules/hyprland.nix
+          ./modules/stylix.nix
           # ./modules/gnome.nix
           # ./modules/nvidia.nix
           inputs.home-manager.nixosModules.default
+          inputs.stylix.nixosModules.stylix
         ];
       };
     };
