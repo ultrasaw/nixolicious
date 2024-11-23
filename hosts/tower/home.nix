@@ -16,10 +16,4 @@
   #   (import ../../scripts/rofi-launcher.nix { inherit pkgs; })
   # ];
 
-  # stylix = {
-  #   enable = true;
-  #   image = "${config.home.homeDirectory}/Pictures/bin.jpg";
-  #   targets.waybar.enable = false;
-  # };
-
 }

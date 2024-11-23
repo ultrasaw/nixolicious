@@ -3,7 +3,6 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ./vars.nix
     inputs.home-manager.nixosModules.default
   ];
 
@@ -63,6 +62,9 @@
     users = {
       "gio" = import ./home.nix;
     };
+    sharedModules = [
+      ./vars.nix
+    ];
   };
 
   # Allow unfree packages

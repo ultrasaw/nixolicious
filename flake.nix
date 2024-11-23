@@ -43,7 +43,7 @@
           ./modules/base.nix
           ./modules/greetd.nix
           ./modules/hyprland.nix
-          ./modules/stylix.nix
+          # ./modules/stylix.nix
           # ./modules/gnome.nix
           # ./modules/nvidia.nix
           inputs.home-manager.nixosModules.default

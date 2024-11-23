@@ -14,14 +14,15 @@
   # Enable Visual Studio Code with extensions
   programs.vscode = {
     enable = true;
-    # extensions = with pkgs.vscode-extensions; [
-    #   bbenoist.nix
-    #   golang.go
-    #   ms-python.python
-    #   github.github-vscode-theme
-    #   vscodevim.vim
-    #   yzhang.markdown-all-in-one
-    # ];
+     extensions = with pkgs.vscode-extensions; [
+       bbenoist.nix
+       golang.go
+       ms-python.python
+       github.github-vscode-theme
+       # vscodevim.vim
+       yzhang.markdown-all-in-one
+       tal7aouy.icons
+     ];
   };
 
   programs.zsh = {
