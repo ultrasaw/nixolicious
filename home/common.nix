@@ -64,7 +64,11 @@
     neovim
     google-chrome
     firefox
+
+    (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
   ];
+
+  fonts.fontconfig.enable = true;
 
   services = {
     flameshot.enable = true;
