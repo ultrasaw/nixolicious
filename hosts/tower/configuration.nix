@@ -34,6 +34,9 @@
   # Printing
   services.printing.enable = true;
 
+  # QMK
+  hardware.keyboard.qmk.enable = true;
+
   # Pipewire for audio
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;

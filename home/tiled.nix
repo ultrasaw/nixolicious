@@ -69,6 +69,10 @@
         # Scroll through existing workspaces with mainMod + scroll
         "$mod, mouse_down, workspace, e+1"
         "$mod, mouse_up, workspace, e-1"
+
+        # Screenshots
+        ", Print, exec, grim -g \"$(slurp)\" - | wl-copy && wl-paste > ~/Pictures/Screenshots/Screenshot-$(date +%F_%T).png | dunstify 'Screenshot of the region taken' -t 1000" # screenshot of a region 
+        "SHIFT, Print, exec, grim - | wl-copy && wl-paste > ~/Pictures/Screenshots/Screenshot-$(date +%F_%T).png | dunstify 'Screenshot of whole screen taken' -t 1000" # screenshot of the whole screen
       ];
 
       bindm = [
@@ -79,6 +83,7 @@
       exec-once = [
         "${pkgs.swaylock}/bin/swaylock --image ${config.home.homeDirectory}/Pictures/bin.jpg --indicator-idle-visible"
         "hyprctl setcursor Bibata-Modern-Classic 24"
+        "hyprctl keyword animations:enabled 0" # disable window animations
         ];
 
       # https://gitlab.com/Pummelfisch/future-cyan-hyprcursor

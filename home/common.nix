@@ -70,8 +70,4 @@
 
   fonts.fontconfig.enable = true;
 
-  services = {
-    flameshot.enable = true;
-  };
-
 }

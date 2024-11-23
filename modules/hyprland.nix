@@ -16,6 +16,8 @@
   };
 
   services = {
+    udev.packages = [ pkgs.via ]; # for qmk
+
     gnome.gnome-keyring.enable = true;
 
     flatpak.enable = true;
@@ -30,6 +32,8 @@
   };
 
   environment.systemPackages = with pkgs; [
+    via # for qmk
+
     grim
     slurp
     wl-clipboard
