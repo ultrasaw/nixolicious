@@ -65,6 +65,11 @@
     google-chrome
     firefox
 
+    grim
+    slurp
+    swappy
+    wl-clipboard
+
     (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
   ];
 

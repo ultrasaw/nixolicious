@@ -1,6 +1,22 @@
 { pkgs, ... }:
 
 {
+
+  home = {
+    file = {
+      # # Top Level Files symlinks
+      # ".zshrc".source = ../../dotfiles/.zshrc;
+      # ".zshenv".source = ../../dotfiles/.zshenv;
+      
+      # # Config directories
+      # ".config/alacritty".source = ../../dotfiles/.config/alacritty;
+      # ".config/dunst".source = ../../dotfiles/.config/dunst;
+      # ".config/tmux/tmux.conf".source = ../../dotfiles/.config/tmux/tmux.conf;
+      ".config/swappy".source = ../dotfiles/.config/swappy;
+      ".config/waybar".source = ../dotfiles/.config/waybar;
+    };
+  };
+
   # home.pointerCursor = {
   #   package = pkgs.catppuccin-cursors.mochaLavender;
   #   name = "Catppuccin-Mocha-Lavender-Cursors";

@@ -73,8 +73,8 @@
         "$mod, mouse_up, workspace, e-1"
 
         # Screenshots
-        ", Print, exec, grim -g \"$(slurp)\" - | wl-copy && wl-paste > ~/Pictures/Screenshots/Screenshot-$(date +%F_%T).png | dunstify 'Screenshot of the region taken' -t 1000" # TODO swappy region
-        "SHIFT, Print, exec, grim - | wl-copy && wl-paste > ~/Pictures/Screenshots/Screenshot-$(date +%F_%T).png | dunstify 'Screenshot of whole screen taken' -t 1000" # whole screen
+        ", Print, exec, grim -g \"$(slurp)\" - | swappy -f - -o -" # save region
+        "SHIFT, Print, exec, grim - | wl-copy && wl-paste > ~/Pictures/Screenshots/scrn-whole-$(date +%F_%T).png | dunstify 'Screenshot of whole screen taken' -t 1000" # save screen
       ];
 
       bindm = [

@@ -34,10 +34,6 @@
   environment.systemPackages = with pkgs; [
     via # for qmk
 
-    grim
-    slurp
-    wl-clipboard
-
     dunst
     libnotify
 
