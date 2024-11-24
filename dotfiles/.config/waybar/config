@@ -3,14 +3,14 @@
     "position": "bottom",
     "height": 35,
     "spacing": 4,
-    "margin-top": 10,
+    "margin-top": 1,
     "margin-bottom":5,
 
     // Choose the order of the modules
 
-    "modules-left":["idle_inhibitor", "pulseaudio", "cpu", "memory", "temperature"],
-    "modules-center": ["custom/browse",  "custom/os_button", "custom/media","wlr/taskbar", "custom/power"],
-    "modules-right":["custom/updater", "custom/snip", "backlight", "keyboard-state",  "battery", "battery#bat2", "network", "tray",  "clock"],
+    "modules-left":["idle_inhibitor", "pulseaudio", "cpu", "memory", "disk", "temperature"],
+    "modules-center": ["custom/browse",  "custom/search", "custom/media","wlr/taskbar", "custom/power"],
+    "modules-right":["backlight", "keyboard-state", "battery", "network", "tray", "hyprland/language", "clock"],
     // Modules configuration
 
     "keyboard-state": {
@@ -24,14 +24,17 @@
     },
      "wlr/taskbar": {
         "format": "{icon}",
-        "icon-size": 20,
+        "icon-size": 30,
         "icon-theme": "Star",
         "tooltip-format": "{title}",
         "on-click": "activate",
         "on-click-right": "close"
     },
-   "sway/language": {
-    "format": " {}",
+    "hyprland/language": {
+        "format": "{}",
+        "format-en": "ENG",
+        "format-de": "GER",
+        "format-ru": "РУС"
     },
     "idle_inhibitor": {
         "format": "{icon}",
@@ -50,11 +53,24 @@
         "format-alt": "{:%Y-%m-%d}"
     },
     "cpu": {
-        "format": "{usage}% ",
-        "tooltip": false
+        "interval": 5,
+        "format": "  {usage}%",
+        "max-length": 10
     },
     "memory": {
-        "format": "{}% "
+        "interval": 10,
+        "format": "  {percentage}%",
+        "max-length": 10,
+        "tooltip": true,
+        "tooltip-format": "RAM - {used:0.1f}GiB used"
+    },
+    "disk": {
+        "interval": 30,
+        "format": "󰋊 {percentage_used}%",
+        "path": "/",
+        "tooltip": true,
+        "unit": "GB",
+        "tooltip-format":  "Available {free} of {total}"
     },
     "temperature": {
         // "thermal-zone": 2,
@@ -70,9 +86,9 @@
     },
     "battery": {
         "states": {
-            // "good": 95,
+            "good": 95,
             "warning": 30,
-            "critical": 15
+            "critical": 20
         },
         "format": "{capacity}% {icon}",
         "format-charging": "{capacity}% ",
@@ -84,31 +100,32 @@
         "bat": "BAT2"
     },
     "network": {
-        // "interface": "wlp2*", // (Optional) To force the use of this interface
-        "format-wifi": "{essid} ({signalStrength}%) ",
-        "format-ethernet": "Connected  ",
+        "format-wifi": " {icon}",
+        "format-ethernet": "  ",
+        "format-disconnected": " 󰌙 ",
         "tooltip-format": "{ifname} via {gwaddr} ",
         "format-linked": "{ifname} (No IP) ",
-        "format-disconnected": "Disconnected ⚠",
         "format-alt": "{ifname}: {ipaddr}/{cidr}",
-        "on-click-right": "bash ~/.config/rofi/wifi_menu/rofi_wifi_menu"
-
+        "format-icons": [
+            "󰤯 ",
+            "󰤟 ",
+            "󰤢 ",
+            "󰤢 ",
+            "󰤨 "
+        ]
     },
     "pulseaudio": {
-        "format": "{volume}% {icon}",
-        "format-bluetooth": "{volume}% {icon}",
-        "format-bluetooth-muted": "{icon} {format_source}",
-        "format-muted": "{format_source}",
-        "format-source": "",
-        "format-source-muted": "",
+        "max-volume": 150,
+        "scroll-step": 10,
+        "format": "{icon}",
+        "tooltip-format": "{volume}%",
+        "format-muted": " ",
         "format-icons": {
-            "headphone": "",
-            "hands-free": "",
-            "headset": "",
-            "phone": "",
-            "portable": "",
-            "car": "",
-            "default": ["", "", ""]
+            "default": [
+                " ",
+                " ",
+                " "
+            ]
         },
         "on-click": "pwvucontrol"
     },
@@ -124,7 +141,7 @@
         "exec": "$HOME/.config/system_scripts/mediaplayer.py 2> /dev/null",
         "on-click": "playerctl play-pause"
     },
-    "custom/os_button":{
+    "custom/search":{
         "format": "🔍",
         "on-click": "rofi -show drun -show-icon",
         "on-click-right": "killall rofi"

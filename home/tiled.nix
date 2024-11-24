@@ -19,6 +19,10 @@
 
       "$mod" = "SUPER";
 
+      # smaller gaps between windows and bg wallpaper
+      "general:gaps_in" = "7";
+      "general:gaps_out" = "7";
+
       bind = [
         "$mod, S, exec, rofi -show drun -show-icon"
         "ALT,Tab, cyclenext"
@@ -71,6 +75,8 @@
         # Scroll through existing workspaces with mainMod + scroll
         "$mod, mouse_down, workspace, e+1"
         "$mod, mouse_up, workspace, e-1"
+
+        # TODO systemctl reboot --boot-loader-entry=auto-windows
 
         # Screenshots
         ", Print, exec, grim -g \"$(slurp)\" - | swappy -f - -o -" # save region

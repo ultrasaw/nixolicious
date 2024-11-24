@@ -9,7 +9,7 @@
       # ".zshenv".source = ../../dotfiles/.zshenv;
       
       # # Config directories
-      # ".config/alacritty".source = ../../dotfiles/.config/alacritty;
+      ".config/alacritty".source = ../dotfiles/.config/alacritty;
       # ".config/dunst".source = ../../dotfiles/.config/dunst;
       # ".config/tmux/tmux.conf".source = ../../dotfiles/.config/tmux/tmux.conf;
       ".config/swappy".source = ../dotfiles/.config/swappy;

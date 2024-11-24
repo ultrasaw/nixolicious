@@ -1,12 +1,12 @@
 /*base background color*/
 @define-color bg_main rgba(25, 25, 25, 0.65);
 @define-color bg_main_tooltip rgba(0, 0, 0, 0.7);
-
+@define-color bg_image rgba(172, 197, 252, 0.5);
 
 /*base background color of selections */
 @define-color bg_hover rgba(200, 200, 200, 0.3);
 /*base background color of active elements */
-@define-color bg_active rgba(100, 100, 100, 0.5);
+@define-color bg_active rgba(212, 157, 182, 0.75);
 
 /*base border color*/
 @define-color border_main rgba(255, 255, 255, 0.2);
@@ -21,7 +21,7 @@
     border-radius: 0px;
     /* `otf-font-awesome` is required to be installed for icons */
     font-family: Roboto, Helvetica, Arial, sans-serif;
-    font-size: 15px;
+    font-size: 17px;
     min-height: 0;
     opacity: 1;
 }
@@ -68,7 +68,7 @@ window#waybar.hidden {
 
 #mode {
     background-color: #64727D;
-    border-bottom: 3px solid black;
+    border-bottom: 3px solid white;
 }
 
 #clock,
@@ -81,7 +81,7 @@ window#waybar.hidden {
 #network,
 #pulseaudio,
 #custom-media,
-#custom-os_button,
+#custom-search,
 #custom-power,
 #custom-browse,
 #custom-updater,
@@ -111,8 +111,7 @@ window#waybar.hidden {
 }
 
 #clock {
-    background-color: #8EC5FC;
-    background-image: linear-gradient(-45deg, #eca2f0 0%, #7acde3 52%, #7acde3 90%);
+    background-color: @bg_image;
     color: black;
     border-radius: 0px 20px 20px 0px;
     margin-right: 4px;
@@ -120,19 +119,19 @@ window#waybar.hidden {
 }
 
 #battery {
-    background-color: black;
-    color: #000000;
+    background-color: @bg_image;
+    color: black;
 }
 
 #battery.charging, #battery.plugged {
-    color: black;
     background-color: #26A65B;
+    color: black;
 }
 
 @keyframes blink {
     to {
         background-color: black;
-        color: #000000;
+        color: black;
     }
 }
 
@@ -151,20 +150,17 @@ label:focus {
 }
 
 #cpu {
-    background-color: #8EC5FC;
-    background-image: linear-gradient(45deg, #7acde3 0%, #7acde3 52%, #7acde3 90%);
+    background-color: @bg_image;
     color: black;
 }
 
 #memory {
-    background-color: #8EC5FC;
-    background-image: linear-gradient(45deg, #7acde3 0%, #7acde3 52%, #7acde3 90%);
+    background-color: @bg_image;
     color: black;
 }
 
 #disk {
-    background-color: #8EC5FC;
-    background-image: linear-gradient(45deg, #7acde3 0%, #7acde3 52%, #7acde3 90%);
+    background-color: @bg_image;
     color: black;
 }
 
@@ -173,33 +169,36 @@ label:focus {
 }
 
 #network {
-    background-color: #8EC5FC;
-    background-image: linear-gradient(45deg, #7acde3 0%, #7acde3 52%, #7acde3 90%);
+    background-color: @bg_image;
     color: black;
     border-radius: 20px 0px 0px 20px;
 }
 
 #network.disconnected {
-    background-color: #8EC5FC;
-    background-image: linear-gradient(45deg, #7acde3 0%, #7acde3 52%, #7acde3 90%);
+    background-color: @bg_image;
     color: red;
 }
 
 #pulseaudio {
-    background-color: #8EC5FC;
-    background-image: linear-gradient(45deg, #7acde3 0%, #7acde3 52%, #7acde3 90%);
-    color: black;
+	font-family: "JetBrainsMono Nerd Font";
+    background-color: @bg_image;
+	padding-left: 3px;
+    padding-right: 3px;
+	transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+#pulseaudio:hover {
+ 	background: @bg_hover;
 }
 
 #pulseaudio.muted {
-    background-color: #8EC5FC;
-    background-image: linear-gradient(45deg, #7acde3 0%, #7acde3 52%, #7acde3 90%);
+    background-color: @bg_image;
+    background-image: linear-gradient(62deg, rgba(142, 197, 252, 0.5) 0%, rgba(224, 195, 252, 0.5) 100%);
     color: red;
 }
 
 #custom-media {
-    background-color: #8EC5FC;
-    background-image: linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%);
+    background-color: @bg_image;
     color: black;
     border-radius: 20px;
     margin-right: 5px;
@@ -207,8 +206,7 @@ label:focus {
 }
 
 #custom-media.custom-spotify {
-    background-color: #8EC5FC;
-    background-image: linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%);
+    background-color: @bg_image;
     color: black;
     border-radius: 20px;
     margin-right: 5px;
@@ -216,88 +214,82 @@ label:focus {
 }
 
 #custom-media.custom-vlc {
-    background-color: #8EC5FC;
-    background-image: linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%);
+    background-color: @bg_image;
     color: black;
     border-radius: 20px;
     margin-right: 5px;
 }
 
 #custom-power{
-    background-color: #8EC5FC;
-    background-image: linear-gradient(45deg, #eca2f0 0%, #7acde3 52%, #7acde3 90%);
-    font-size: 18px;
+    background-color: @bg_main;
+    background-image: linear-gradient(62deg, rgba(142, 197, 252, 0.5) 0%, rgba(224, 195, 252, 0.5) 100%);
+    font-size: 25px;
     border-radius: 20px;
     margin-left: 2px;
 }
 
 #custom-power:hover {
+    border-bottom: 3px solid white;
     background:  @bg_hover;
     color: @content_main;
 }
 
-#custom-os_button{
-    background-color: #8EC5FC;
-    background-image: linear-gradient(-45deg, #eca2f0 0%, #7acde3 52%, #7acde3 90%);
+#custom-search{
+    background-color: @bg_main;
+    background-image: linear-gradient(62deg, rgba(142, 197, 252, 0.5) 0%, rgba(224, 195, 252, 0.5) 100%);
     font-size: 25px;
     border-radius: 20px;
     margin-right: 2px;
 }
 
-#custom-os_button button:hover {
+#custom-search:hover {
+    border-bottom: 3px solid white;
     background:  @bg_hover;
     color: @content_main;
-}
-
-#custom-browse button:hover {
-	border-bottom: 3px solid white;
-    background: @bg_hover;
-	color: @content_main;
-}
-
-#custom-updater {
-    background-color: #8EC5FC;
-    background-image: linear-gradient(45deg, #7acde3 0%, #7acde3 52%, #7acde3 90%);
-    color: black;
-}
-
-#custom-snip {
-    background-color: #8EC5FC;
-    background-image: linear-gradient(45deg, #7acde3 0%, #7acde3 52%, #7acde3 90%);
-    color: black;
-    font-size: 20px;
 }
 
 #custom-browse{
-    background-color: #8EC5FC;
-    background-image: linear-gradient(45deg, #eca2f0 0%, #7acde3 52%, #7acde3 90%);
+    background-color: @bg_main;
+    background-image: linear-gradient(62deg, rgba(142, 197, 252, 0.5) 0%, rgba(224, 195, 252, 0.5) 100%);
     font-size: 25px;
     border-radius: 20px;
     margin-right: 2px;
 }
 
-#custom-browse button:hover {
+#custom-browse:hover {
 	border-bottom: 3px solid white;
     background: @bg_hover;
 	color: @content_main;
 }
 
-#taskbar {
-    background-color: #7acde3;
-    background-image: linear-gradient(45deg, #eca2f0 0%, #7acde3 52%, #eca2f0 90%);
+#taskbar button {
+    background-color: @bg_main;
+    background-image: linear-gradient(62deg, rgba(92, 197, 252, 0.5) 0%, rgba(224, 115, 252, 0.5) 100%);
+    /* min-width: 30px; */
     border-radius: 20px;
+    border-bottom: 3px solid rgba(148, 215, 234, 0.3);
+	margin-left: 2px;
+	margin-right: 2px;
+    padding-left: 8px;
+    padding-right: 8px;
+	transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
 
+#taskbar button.active {
+	border-bottom: 3px solid white;
+    background: @bg_active;
+    border-radius: 10px;
 }
 
 #taskbar button:hover {
 	border-bottom: 3px solid white;
     background: @bg_hover;
+    border-radius: 10px;
 	color: @content_main;
 }
 
 #temperature {
-    background-color: #8EC5FC;
-    background-image: linear-gradient(-45deg, #eca2f0 0%, #7acde3 52%, #7acde3 90%);
+    background-color: @bg_image;
     color: black;
     border-radius: 0px 20px 20px 0px;
 }
@@ -307,47 +299,39 @@ label:focus {
 }
 
 #tray {
-    background-color: #8EC5FC;
-    background-image: linear-gradient(-45deg, #7acde3 0%, #7acde3 52%, #7acde3 90%);
+    background-color: @bg_image;
     color: black;
 }
 
 #tray > .passive {
     -gtk-icon-effect: dim;
-    background-color: #8EC5FC;
-    background-image: linear-gradient(-45deg, #eca2f0 0%, #7acde3 52%, #7acde3 90%);
+    background-color: @bg_image;
     color: black;
 }
 
 #tray > .needs-attention {
     -gtk-icon-effect: highlight;
-    background-color: #8EC5FC;
-    background-image: linear-gradient(-45deg, #eca2f0 0%, #7acde3 52%, #7acde3 90%);
+    background-color: @bg_image;
     color: black;
 }
 
 #idle_inhibitor {
-    background-color: #8EC5FC;
-    background-image: linear-gradient(45deg, #eca2f0 0%, #7acde3 52%, #7acde3 90%);
+    background-color: @bg_image;
     border-radius: 20px 0px 0px 20px;
 
 }
 
 #idle_inhibitor.activated {
-    background-color: #8EC5FC;
-    background-image: linear-gradient(45deg, #eca2f0 0%, #7acde3 52%, #7acde3 90%);
+    background-color: @bg_image;
     color: black;
     border-radius: 20px 0px 0px 20px;
 
 }
 
 #language {
-    background-color: #8EC5FC;
-    background-image: linear-gradient(45deg, #eca2f0 0%, #7acde3 52%, #7acde3 90%);
+    background-color: @bg_image;
     color: black;
-    min-width: 16px;
-    padding-left : 8px;
-    border-radius: 20px 0px 0px 20px;
+    min-width: 40px;
 }
 
 #keyboard-state {
