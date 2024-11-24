@@ -1,183 +1,322 @@
-
-/*base background color*/
-@define-color bg_main rgba(25, 25, 25, 0.65);
-@define-color bg_main_tooltip rgba(0, 0, 0, 0.7);
-
-
-/*base background color of selections */
-@define-color bg_hover rgba(200, 200, 200, 0.3);
-/*base background color of active elements */
-@define-color bg_active rgba(100, 100, 100, 0.5);
-
-/*base border color*/
-@define-color border_main rgba(255, 255, 255, 0.2);
-
-/*text color for entries, views and content in general */
-@define-color content_main white;
-/*text color for entries that are unselected */
-@define-color content_inactive rgba(255, 255, 255, 0.25);
-
 * {
-	text-shadow: none;
-	box-shadow: none;
-  border: none;
-  border-radius: 0;
-	font-family: "Segoe UI", "Ubuntu";
-  font-weight: 600;
-  font-size: 12.7px;
-	
-	
+    border: none;
+    border-radius: 0px;
+    /* `otf-font-awesome` is required to be installed for icons */
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    min-height: 0;
+    opacity: 1;
 }
 
 window#waybar {
-  background:  @bg_main;
-  border-top: 1px solid @border_main;
-  color: @content_main;
+    background-color: transparent;
+    color: black;
+    transition-property: background-color;
+    transition-duration: .5s;
 }
 
-tooltip {
-  background: @bg_main_tooltip;
-  border-radius: 5px;
-  border-width: 1px;
-  border-style: solid;
-  border-color: @border_main;
-}
-tooltip label{
-  color: @content_main;
+window#waybar.hidden {
+    opacity: 0.2;
 }
 
-#custom-os_button {
-	font-family: "JetBrainsMono Nerd Font";
-  font-size: 24px;
-	padding-left: 12px;
-	padding-right: 20px;
-	transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
-}
-#custom-os_button:hover {
-  background:  @bg_hover;
-	color: @content_main;
-}
 
-#workspaces {
-  color: transparent;
-	margin-right: 1.5px;
-	margin-left: 1.5px;
-}
 #workspaces button {
-  padding: 3px;
-  color: @content_inactive;
-	transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+    background: #1f1f1f;
+    color: black;
+    border-radius: 20px;
+
 }
-#workspaces button.active {
-	color: @content_main;
-	border-bottom: 3px solid white;
-}
-#workspaces button.focused {
-  color: @bg_active;
-}
-#workspaces button.urgent {
-	background:  rgba(255, 200, 0, 0.35);
-	border-bottom: 3px dashed @warning_color;
-	color: @warning_color;
-}
+
+/* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
 #workspaces button:hover {
-  background: @bg_hover;
-	color: @content_main;
+    background: lightblue;
+    color: black;
+    border-bottom: 3px solid black;
+
 }
 
-#taskbar {
+#workspaces button.focused {
+    background: #1f1f1f;
 }
 
-#taskbar button {
-	min-width: 130px;
-	border-bottom: 3px solid rgba(255, 255, 255, 0.3);
-	margin-left: 2px;
-	margin-right: 2px;
-  padding-left: 8px;
-  padding-right: 8px;
-  color: white;
-	transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+#workspaces button.focused:hover {
+    background: lightblue;
+    color: black;
+    border-bottom: 3px solid black;
+
 }
 
-#taskbar button.active {
-	border-bottom: 3px solid white;
-  background: @bg_active;
+#workspaces button.urgent {
+    background-color: #eb4d4b;
 }
 
-#taskbar button:hover {
-	border-bottom: 3px solid white;
-  background: @bg_hover;
-	color: @content_main;
+#mode {
+    background-color: #64727D;
+    border-bottom: 3px solid black;
 }
 
-#cpu, #disk, #memory {
-	padding:3px;
+#clock,
+#battery,
+#cpu,
+#memory,
+#disk,
+#temperature,
+#backlight,
+#network,
+#pulseaudio,
+#custom-media,
+#custom-os_button,
+#custom-power,
+#custom-browse,
+#custom-updater,
+#custom-snip,
+#taskbar,
+#tray,
+#mode,
+#idle_inhibitor,
+#mpd {
+    padding: 0 10px;
+    color: black;
 }
 
-#temperature {
-	color: transparent;
-	font-size: 0px;
-	transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
-}
-#temperature.critical {
-	padding-right: 3px;
-	color: @warning_color;
-	font-size: initial;
-	border-bottom: 3px dashed @warning_color;
-	transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+#window,
+#workspaces {
+    margin: 0px 4px;
 }
 
-#window {
-  border-radius: 10px;
-  margin-left: 20px;
-  margin-right: 20px;
+/* If workspaces is the leftmost module, omit left margin */
+.modules-left > widget:first-child > #workspaces {
+    margin-left: 0px;
 }
 
-#tray{
-  margin-left: 5px;
-  margin-right: 5px;
-}
-#tray > .passive {
-	border-bottom: none;
-}
-#tray > .active {
-	border-bottom: 3px solid white;
-}
-#tray > .needs-attention {
-	border-bottom: 3px solid @warning_color;
-}
-#tray > widget {
-	transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
-}
-#tray > widget:hover {
-	background: @bg_hover;
-}
-
-#pulseaudio {
-	font-family: "JetBrainsMono Nerd Font";
-	padding-left: 3px;
-  padding-right: 3px;
-	transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
-}
-#pulseaudio:hover {
- 	background: @bg_hover;
-}
-
-#network {
-	padding-left: 3px;
-  padding-right: 3px;
-}
-
-#language {
-  padding-left: 5px;
-  padding-right: 5px;
+/* If workspaces is the rightmost module, omit right margin */
+.modules-right > widget:last-child > #workspaces {
+    margin-right: 0px;
 }
 
 #clock {
-  padding-right: 5px;
-  padding-left: 5px;
-	transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+    background-color: #eca2f0;
+    background-image: linear-gradient(-45deg, #eca2f0 0%, #7acde3 52%, #7acde3 90%);
+    color: black;
+    border-radius: 0px 20px 20px 0px;
+    margin-right: 4px;
+
 }
-#clock:hover {
-	background: @bg_hover;
+
+#battery {
+    background-color: black;
+    color: #000000;
+}
+
+#battery.charging, #battery.plugged {
+    color: black;
+    background-color: #26A65B;
+}
+
+@keyframes blink {
+    to {
+        background-color: black;
+        color: #000000;
+    }
+}
+
+#battery.critical:not(.charging) {
+    background-color: #f53c3c;
+    color: black;
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+label:focus {
+    background-color: #000000;
+}
+
+#cpu {
+    background-color: #eca2f0;
+    background-image: linear-gradient(45deg, #7acde3 0%, #7acde3 52%, #7acde3 90%);
+    color: black;
+}
+
+#memory {
+    background-color: #eca2f0;
+    background-image: linear-gradient(45deg, #7acde3 0%, #7acde3 52%, #7acde3 90%);
+    color: black;
+}
+
+#disk {
+    background-color: #eca2f0;
+    background-image: linear-gradient(45deg, #7acde3 0%, #7acde3 52%, #7acde3 90%);
+    color: black;
+}
+
+#backlight {
+    background-color: #90b1b1;
+}
+
+#network {
+    background-color: #eca2f0;
+    background-image: linear-gradient(45deg, #7acde3 0%, #7acde3 52%, #7acde3 90%);
+    color: black;
+    border-radius: 20px 0px 0px 20px;
+}
+
+#network.disconnected {
+    background-color: #eca2f0;
+    background-image: linear-gradient(45deg, #7acde3 0%, #7acde3 52%, #7acde3 90%);
+    color: red;
+}
+
+#pulseaudio {
+    background-color: #eca2f0;
+    background-image: linear-gradient(45deg, #7acde3 0%, #7acde3 52%, #7acde3 90%);
+    color: black;
+}
+
+#pulseaudio.muted {
+    background-color: #eca2f0;
+    background-image: linear-gradient(45deg, #7acde3 0%, #7acde3 52%, #7acde3 90%);
+    color: red;
+}
+
+#custom-media {
+    background-color: #8EC5FC;
+    background-image: linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%);
+    color: black;
+    border-radius: 20px;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+#custom-media.custom-spotify {
+    background-color: #8EC5FC;
+    background-image: linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%);
+    color: black;
+    border-radius: 20px;
+    margin-right: 5px;
+
+}
+
+#custom-media.custom-vlc {
+    background-color: #8EC5FC;
+    background-image: linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%);
+    color: black;
+    border-radius: 20px;
+    margin-right: 5px;
+}
+
+#custom-power{
+    background-color: #eca2f0;
+    background-image: linear-gradient(45deg, #eca2f0 0%, #7acde3 52%, #7acde3 90%);
+    font-size: 18px;
+    border-radius: 20px;
+    margin-left: 2px;
+}
+
+#custom-os_button{
+    background-color: #eca2f0;
+    background-image: linear-gradient(-185deg, #eca2f0 0%, #7acde3 52%, #7acde3 90%);
+    font-size: 25px;
+    border-radius: 20px;
+    margin-right: 2px;
+}
+
+#custom-updater {
+    background-color: #eca2f0;
+    background-image: linear-gradient(45deg, #7acde3 0%, #7acde3 52%, #7acde3 90%);
+    color: black;
+}
+
+#custom-snip {
+    background-color: #eca2f0;
+    background-image: linear-gradient(45deg, #7acde3 0%, #7acde3 52%, #7acde3 90%);
+    color: black;
+    font-size: 20px;
+}
+
+#custom-browse{
+    background-color: #eca2f0;
+    background-image: linear-gradient(45deg, #eca2f0 0%, #7acde3 52%, #7acde3 90%);
+    font-size: 25px;
+    border-radius: 20px;
+    margin-right: 2px;
+}
+
+#taskbar {
+    background-color: #7acde3;
+    background-image: linear-gradient(45deg, #eca2f0 0%, #7acde3 52%, #eca2f0 90%);
+    border-radius: 20px;
+
+}
+
+
+#temperature {
+    background-color: #eca2f0;
+    background-image: linear-gradient(-45deg, #eca2f0 0%, #7acde3 52%, #7acde3 90%);
+    color: black;
+    border-radius: 0px 20px 20px 0px;
+}
+
+#temperature.critical {
+    background-color: #eb4d4b;
+}
+
+#tray {
+    background-color: #eca2f0;
+    background-image: linear-gradient(-45deg, #7acde3 0%, #7acde3 52%, #7acde3 90%);
+    color: black;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+    background-color: #eca2f0;
+    background-image: linear-gradient(-45deg, #eca2f0 0%, #7acde3 52%, #7acde3 90%);
+    color: black;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+    background-color: #eca2f0;
+    background-image: linear-gradient(-45deg, #eca2f0 0%, #7acde3 52%, #7acde3 90%);
+    color: black;
+}
+
+#idle_inhibitor {
+    background-color: #eca2f0;
+    background-image: linear-gradient(45deg, #eca2f0 0%, #7acde3 52%, #7acde3 90%);
+    border-radius: 20px 0px 0px 20px;
+
+}
+
+#idle_inhibitor.activated {
+    background-color: #eca2f0;
+    background-image: linear-gradient(45deg, #eca2f0 0%, #7acde3 52%, #7acde3 90%);
+    color: black;
+    border-radius: 20px 0px 0px 20px;
+
+}
+
+#language {
+    background-color: #eca2f0;
+    background-image: linear-gradient(45deg, #eca2f0 0%, #7acde3 52%, #7acde3 90%);
+    color: black;
+    min-width: 16px;
+    padding-left : 8px;
+    border-radius: 20px 0px 0px 20px;
+}
+
+#keyboard-state {
+    background: #97e1ad;
+    color: #000000;
+    min-width: 16px;
+}
+
+#keyboard-state > label {
+    padding: 0px 5px;
+}
+
+#keyboard-state > label.locked {
+    background: rgba(0, 0, 0, 0.2);
 }

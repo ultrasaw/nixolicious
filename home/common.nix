@@ -70,6 +70,8 @@
     swappy
     wl-clipboard
 
+    nwg-bar
+
     (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
   ];
 
