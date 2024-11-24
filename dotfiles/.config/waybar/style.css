@@ -331,7 +331,7 @@ label:focus {
 #language {
     background-color: @bg_image;
     color: black;
-    min-width: 40px;
+    min-width: 45px;
 }
 
 #keyboard-state {
