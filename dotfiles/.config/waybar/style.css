@@ -1,3 +1,21 @@
+/*base background color*/
+@define-color bg_main rgba(25, 25, 25, 0.65);
+@define-color bg_main_tooltip rgba(0, 0, 0, 0.7);
+
+
+/*base background color of selections */
+@define-color bg_hover rgba(200, 200, 200, 0.3);
+/*base background color of active elements */
+@define-color bg_active rgba(100, 100, 100, 0.5);
+
+/*base border color*/
+@define-color border_main rgba(255, 255, 255, 0.2);
+
+/*text color for entries, views and content in general */
+@define-color content_main white;
+/*text color for entries that are unselected */
+@define-color content_inactive rgba(255, 255, 255, 0.25);
+
 * {
     border: none;
     border-radius: 0px;
@@ -32,7 +50,6 @@ window#waybar.hidden {
     background: lightblue;
     color: black;
     border-bottom: 3px solid black;
-
 }
 
 #workspaces button.focused {
@@ -43,7 +60,6 @@ window#waybar.hidden {
     background: lightblue;
     color: black;
     border-bottom: 3px solid black;
-
 }
 
 #workspaces button.urgent {
@@ -95,7 +111,7 @@ window#waybar.hidden {
 }
 
 #clock {
-    background-color: #eca2f0;
+    background-color: #8EC5FC;
     background-image: linear-gradient(-45deg, #eca2f0 0%, #7acde3 52%, #7acde3 90%);
     color: black;
     border-radius: 0px 20px 20px 0px;
@@ -135,19 +151,19 @@ label:focus {
 }
 
 #cpu {
-    background-color: #eca2f0;
+    background-color: #8EC5FC;
     background-image: linear-gradient(45deg, #7acde3 0%, #7acde3 52%, #7acde3 90%);
     color: black;
 }
 
 #memory {
-    background-color: #eca2f0;
+    background-color: #8EC5FC;
     background-image: linear-gradient(45deg, #7acde3 0%, #7acde3 52%, #7acde3 90%);
     color: black;
 }
 
 #disk {
-    background-color: #eca2f0;
+    background-color: #8EC5FC;
     background-image: linear-gradient(45deg, #7acde3 0%, #7acde3 52%, #7acde3 90%);
     color: black;
 }
@@ -157,26 +173,26 @@ label:focus {
 }
 
 #network {
-    background-color: #eca2f0;
+    background-color: #8EC5FC;
     background-image: linear-gradient(45deg, #7acde3 0%, #7acde3 52%, #7acde3 90%);
     color: black;
     border-radius: 20px 0px 0px 20px;
 }
 
 #network.disconnected {
-    background-color: #eca2f0;
+    background-color: #8EC5FC;
     background-image: linear-gradient(45deg, #7acde3 0%, #7acde3 52%, #7acde3 90%);
     color: red;
 }
 
 #pulseaudio {
-    background-color: #eca2f0;
+    background-color: #8EC5FC;
     background-image: linear-gradient(45deg, #7acde3 0%, #7acde3 52%, #7acde3 90%);
     color: black;
 }
 
 #pulseaudio.muted {
-    background-color: #eca2f0;
+    background-color: #8EC5FC;
     background-image: linear-gradient(45deg, #7acde3 0%, #7acde3 52%, #7acde3 90%);
     color: red;
 }
@@ -208,40 +224,62 @@ label:focus {
 }
 
 #custom-power{
-    background-color: #eca2f0;
+    background-color: #8EC5FC;
     background-image: linear-gradient(45deg, #eca2f0 0%, #7acde3 52%, #7acde3 90%);
     font-size: 18px;
     border-radius: 20px;
     margin-left: 2px;
 }
 
+#custom-power:hover {
+    background:  @bg_hover;
+    color: @content_main;
+}
+
 #custom-os_button{
-    background-color: #eca2f0;
-    background-image: linear-gradient(-185deg, #eca2f0 0%, #7acde3 52%, #7acde3 90%);
+    background-color: #8EC5FC;
+    background-image: linear-gradient(-45deg, #eca2f0 0%, #7acde3 52%, #7acde3 90%);
     font-size: 25px;
     border-radius: 20px;
     margin-right: 2px;
 }
 
+#custom-os_button button:hover {
+    background:  @bg_hover;
+    color: @content_main;
+}
+
+#custom-browse button:hover {
+	border-bottom: 3px solid white;
+    background: @bg_hover;
+	color: @content_main;
+}
+
 #custom-updater {
-    background-color: #eca2f0;
+    background-color: #8EC5FC;
     background-image: linear-gradient(45deg, #7acde3 0%, #7acde3 52%, #7acde3 90%);
     color: black;
 }
 
 #custom-snip {
-    background-color: #eca2f0;
+    background-color: #8EC5FC;
     background-image: linear-gradient(45deg, #7acde3 0%, #7acde3 52%, #7acde3 90%);
     color: black;
     font-size: 20px;
 }
 
 #custom-browse{
-    background-color: #eca2f0;
+    background-color: #8EC5FC;
     background-image: linear-gradient(45deg, #eca2f0 0%, #7acde3 52%, #7acde3 90%);
     font-size: 25px;
     border-radius: 20px;
     margin-right: 2px;
+}
+
+#custom-browse button:hover {
+	border-bottom: 3px solid white;
+    background: @bg_hover;
+	color: @content_main;
 }
 
 #taskbar {
@@ -251,9 +289,14 @@ label:focus {
 
 }
 
+#taskbar button:hover {
+	border-bottom: 3px solid white;
+    background: @bg_hover;
+	color: @content_main;
+}
 
 #temperature {
-    background-color: #eca2f0;
+    background-color: #8EC5FC;
     background-image: linear-gradient(-45deg, #eca2f0 0%, #7acde3 52%, #7acde3 90%);
     color: black;
     border-radius: 0px 20px 20px 0px;
@@ -264,34 +307,34 @@ label:focus {
 }
 
 #tray {
-    background-color: #eca2f0;
+    background-color: #8EC5FC;
     background-image: linear-gradient(-45deg, #7acde3 0%, #7acde3 52%, #7acde3 90%);
     color: black;
 }
 
 #tray > .passive {
     -gtk-icon-effect: dim;
-    background-color: #eca2f0;
+    background-color: #8EC5FC;
     background-image: linear-gradient(-45deg, #eca2f0 0%, #7acde3 52%, #7acde3 90%);
     color: black;
 }
 
 #tray > .needs-attention {
     -gtk-icon-effect: highlight;
-    background-color: #eca2f0;
+    background-color: #8EC5FC;
     background-image: linear-gradient(-45deg, #eca2f0 0%, #7acde3 52%, #7acde3 90%);
     color: black;
 }
 
 #idle_inhibitor {
-    background-color: #eca2f0;
+    background-color: #8EC5FC;
     background-image: linear-gradient(45deg, #eca2f0 0%, #7acde3 52%, #7acde3 90%);
     border-radius: 20px 0px 0px 20px;
 
 }
 
 #idle_inhibitor.activated {
-    background-color: #eca2f0;
+    background-color: #8EC5FC;
     background-image: linear-gradient(45deg, #eca2f0 0%, #7acde3 52%, #7acde3 90%);
     color: black;
     border-radius: 20px 0px 0px 20px;
@@ -299,7 +342,7 @@ label:focus {
 }
 
 #language {
-    background-color: #eca2f0;
+    background-color: #8EC5FC;
     background-image: linear-gradient(45deg, #eca2f0 0%, #7acde3 52%, #7acde3 90%);
     color: black;
     min-width: 16px;

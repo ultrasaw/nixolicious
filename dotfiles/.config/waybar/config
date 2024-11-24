@@ -27,9 +27,8 @@
         "icon-size": 20,
         "icon-theme": "Star",
         "tooltip-format": "{title}",
-        "on-click": "minimize",
-        "on-click-middle": "close",
-        "on-click-right": "activate"
+        "on-click": "activate",
+        "on-click-right": "close"
     },
    "sway/language": {
     "format": " {}",
@@ -126,7 +125,7 @@
         "on-click": "playerctl play-pause"
     },
     "custom/os_button":{
-        "format": "📁",
+        "format": "🔍",
         "on-click": "rofi -show drun -show-icon",
         "on-click-right": "killall rofi"
     },
@@ -136,7 +135,7 @@
         "on-click-right": "killall nwg-bar"
     },
     "custom/browse":{
-        "format": "🔍",
+        "format": "📁",
         "on-click": "nautilus"
     }
 }

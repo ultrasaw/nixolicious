@@ -54,7 +54,7 @@
         };
         "inputbar" = {
           enabled = true;
-          padding = mkLiteral "10px 10px 200px 10px";
+          padding = mkLiteral "10px 10px 50px 10px";
           margin = mkLiteral "10px";
           background-color = lib.mkForce (mkLiteral "transparent");
           border-radius = "25px";
