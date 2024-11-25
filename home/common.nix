@@ -42,6 +42,10 @@
       gc = "git commit";
       gp = "git push";
 
+      # Kubernetes
+      k = "kubectl";
+      kcurl = "k run tmp --restart=Never --rm -i --image=nginx:alpine -- curl -m 5";
+
       # Other Aliases
       ld = "lazydocker";
       docker-clean = "docker container prune -f && docker image prune -f && docker network prune -f && docker volume prune -f";
@@ -60,6 +64,15 @@
       plugins = [ ];
       theme = "agnoster";
     };
+
+    initExtra = ''
+      # Environment variables
+      export do="--dry-run=client -o yaml"
+      export now="--force --grace-period 0"
+
+      # Source kubectl completion script
+      source <(kubectl completion zsh)
+    '';
   };
 
   programs.git = {
@@ -85,6 +98,8 @@
     wl-clipboard
 
     nwg-bar
+
+    kubectl
 
     (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
   ];
