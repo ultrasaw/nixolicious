@@ -33,17 +33,30 @@
     syntaxHighlighting.enable = true;
 
     shellAliases = {
-    
       ll = "ls -l";
       vim = "nvim";
       update = "sudo nixos-rebuild switch";
+
+      # Git Aliases
+      ga = "git add";
+      gc = "git commit";
+      gp = "git push";
+
+      # Other Aliases
+      ld = "lazydocker";
+      docker-clean = "docker container prune -f && docker image prune -f && docker network prune -f && docker volume prune -f";
+      cr = "cargo run";
+      battery = "upower -i /org/freedesktop/UPower/devices/battery_BAT1";
+      y = "yazi";
     };
+
     history = {
       size = 10000;
       path = "${config.xdg.dataHome}/zsh/zsh_history";
     };
+
     oh-my-zsh = {
-      enable = true;
+      enable = false;
       plugins = [ ];
       theme = "agnoster";
     };
