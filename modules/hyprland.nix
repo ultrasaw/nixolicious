@@ -29,7 +29,16 @@
   environment.sessionVariables = {
     WLR_NO_HARDWARE_CURSORS = "1";
     NIXOS_OZONE_WL = "1";
+    NAUTILUS_4_EXTENSION_DIR = "${pkgs.gnome.nautilus-python}/lib/nautilus/extensions-4";
   };
+
+  # "open alacritty here"
+  programs.nautilus-open-any-terminal = {
+    enable = true;
+    terminal = "alacritty";
+  };
+
+  environment.pathsToLink = [ "/share/nautilus-python/extensions" ];
 
   environment.systemPackages = with pkgs; [
     via # for qmk
@@ -50,6 +59,7 @@
     polkit_gnome # polkit agent for GNOME
     gnome.seahorse # keyring manager GUI
     gnome.nautilus # file manager
+    gnome.nautilus-python # further extend GNOME w/ python scripts; for nautilus-open-any-terminal
 
     playerctl # media player control
     brightnessctl # brightness control
