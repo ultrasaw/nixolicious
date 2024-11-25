@@ -9,6 +9,7 @@
     ../../home/looks.nix
     ../../home/waybar.nix
     ../../home/rofi.nix
+    ../../home/starship.nix
     inputs.nix-colors.homeManagerModules.default
   ];
 

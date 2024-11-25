@@ -15,13 +15,14 @@
   programs.vscode = {
     enable = true;
      extensions = with pkgs.vscode-extensions; [
-       bbenoist.nix
-       golang.go
-       ms-python.python
-       github.github-vscode-theme
-       # vscodevim.vim
-       yzhang.markdown-all-in-one
-       tal7aouy.icons
+      bbenoist.nix
+      golang.go
+      ms-python.python
+      github.github-vscode-theme
+      vscodevim.vim
+      yzhang.markdown-all-in-one
+      tamasfe.even-better-toml
+      tal7aouy.icons
      ];
   };
 
