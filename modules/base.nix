@@ -5,6 +5,7 @@
   nixpkgs.config.allowUnfree = true;
   
   programs.zsh.enable = true;
+  virtualisation.docker.enable = true;
   
   users.defaultUserShell=pkgs.zsh;
 

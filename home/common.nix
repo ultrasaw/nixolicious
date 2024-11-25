@@ -60,7 +60,7 @@
     };
 
     oh-my-zsh = {
-      enable = false;
+      enable = true;
       plugins = [ ];
       theme = "agnoster";
     };
@@ -100,6 +100,7 @@
     nwg-bar
 
     kubectl
+    k9s
 
     (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
   ];
