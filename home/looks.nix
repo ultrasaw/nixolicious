@@ -11,6 +11,7 @@
       # # Config directories
       ".config/alacritty".source = ../dotfiles/.config/alacritty;
       ".config/starship.toml".source = ../dotfiles/.config/starship/starship.toml;
+      ".config/rstudio/themes".source = ../dotfiles/.config/rstudio/themes;
       # ".config/dunst".source = ../../dotfiles/.config/dunst;
       # ".config/tmux/tmux.conf".source = ../../dotfiles/.config/tmux/tmux.conf;
       ".config/swappy".source = ../dotfiles/.config/swappy;
