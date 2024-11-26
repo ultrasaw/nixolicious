@@ -36,8 +36,8 @@
       "editor.smoothScrolling" = true;
       "workbench.colorTheme" = "GitHub Dark";
       "workbench.colorCustomizations" = {
-        "editor.background" = "#1c2022";
-        "terminal.background" = "#1c2022";
+        "editor.background" = "#1c1f21";
+        "terminal.background" = "#1c1f21";
       };
       "editor.tokenColorCustomizations" = {
         textMateRules = [
