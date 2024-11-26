@@ -16,6 +16,8 @@
       tamasfe.even-better-toml
       tal7aouy.icons
       ms-kubernetes-tools.vscode-kubernetes-tools
+      redhat.vscode-yaml
+      oderwat.indent-rainbow
       hashicorp.terraform
       eamodio.gitlens
       ms-azuretools.vscode-docker
@@ -90,6 +92,7 @@
         "plaintext"
         "python"
         "r"
+        "nix"
       ];
       "terraform.languageServer.enable" = true;
     };
