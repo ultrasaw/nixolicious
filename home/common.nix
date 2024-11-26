@@ -11,21 +11,6 @@
     yazi.enable = true; # terminal file manager
   };
 
-  # Enable Visual Studio Code with extensions
-  programs.vscode = {
-    enable = true;
-     extensions = with pkgs.vscode-extensions; [
-      bbenoist.nix
-      golang.go
-      ms-python.python
-      github.github-vscode-theme
-      vscodevim.vim
-      yzhang.markdown-all-in-one
-      tamasfe.even-better-toml
-      tal7aouy.icons
-     ];
-  };
-
   programs.zsh = {
     enable = true;
     enableCompletion = true;
@@ -89,6 +74,7 @@
     htop
     alacritty
     neovim
+    sublime
     google-chrome
     firefox
 

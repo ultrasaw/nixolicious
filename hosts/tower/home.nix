@@ -5,6 +5,7 @@
 
   imports = [
     ../../home/common.nix
+    ../../home/vscode.nix
     ../../home/tiled.nix
     ../../home/looks.nix
     ../../home/waybar.nix
