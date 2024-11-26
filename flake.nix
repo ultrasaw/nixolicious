@@ -43,6 +43,7 @@
           ./modules/base.nix
           ./modules/greetd.nix
           ./modules/hyprland.nix
+          ./modules/r.nix
           # ./modules/stylix.nix
           # ./modules/gnome.nix
           # ./modules/nvidia.nix
