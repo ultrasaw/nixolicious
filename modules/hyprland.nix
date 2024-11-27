@@ -43,6 +43,9 @@
   environment.systemPackages = with pkgs; [
     via # for qmk
 
+    slack
+    telegram-desktop
+
     dunst
     libnotify
 
