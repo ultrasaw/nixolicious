@@ -44,6 +44,9 @@
           ./modules/greetd.nix
           ./modules/hyprland.nix
           ./modules/r.nix
+          ./modules/python.nix
+          ./modules/go.nix
+          ./modules/rust.nix
           # ./modules/stylix.nix
           # ./modules/gnome.nix
           # ./modules/nvidia.nix

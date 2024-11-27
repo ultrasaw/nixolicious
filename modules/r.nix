@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  shared = with pkgs.rPackages; [
+  rPackages = with pkgs.rPackages; [
     dplyr
     ggplot2
     plotly
@@ -12,11 +12,11 @@ let
   ];
 
   r = pkgs.rWrapper.override {
-    packages = shared;
+    packages = rPackages;
   };
 
   rstudio = pkgs.rstudioWrapper.override {
-    packages = shared;
+    packages = rPackages;
   };
 in
 {
