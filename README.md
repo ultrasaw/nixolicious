@@ -1,6 +1,6 @@
 # nixolicious
 
-# what's inside
+## what's inside
 - browser - chrome, firefox
 - text editor / IDE - nvim, sublime, vscode
 - talking - telegram, slack
@@ -10,7 +10,7 @@
 - terminal emulator - alacritty
 - compositor & related - hyprland; rofi, waybar, nautilus
 
-# showcase
+## showcase
 ![plot](./assets/showcase.png)
 ![plot](./assets/showcase-windows.png)
 ![plot](./assets/showcase-rofi.png)
