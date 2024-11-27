@@ -6,7 +6,7 @@
 - talking - telegram, slack
 - coding - golang, rust, python, r
 - dev tools - docker, kubectl, k9s 
-- shell - zsh + oh-my-zsh + starhip
+- shell - zsh + oh-my-zsh + starship
 - terminal emulator - alacritty
 - compositor & related - hyprland; rofi, waybar, nautilus
 
