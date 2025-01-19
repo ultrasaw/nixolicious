@@ -9,6 +9,7 @@
   programs = {
     home-manager.enable = true;
     yazi.enable = true; # terminal file manager
+    btop.enable = true; # TUI for resource usage monitoring
   };
 
   programs.zsh = {
