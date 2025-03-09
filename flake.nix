@@ -54,5 +54,22 @@
           inputs.stylix.nixosModules.stylix
         ];
       };
+      nixosConfigurations.lenovo = nixpkgs.lib.nixosSystem {
+        specialArgs = {
+          inherit inputs theme system;
+        };
+        modules = [
+          ./hosts/lenovo/configuration.nix
+          ./modules/base.nix
+          ./modules/greetd.nix
+          ./modules/hyprland.nix
+          ./modules/r.nix
+          ./modules/python.nix
+          ./modules/go.nix
+          ./modules/rust.nix
+          inputs.home-manager.nixosModules.default
+          inputs.stylix.nixosModules.stylix
+        ];
+      };
     };
 }
