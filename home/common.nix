@@ -79,6 +79,8 @@
     google-chrome
     firefox
 
+    unzip
+
     grim
     slurp
     swappy
