@@ -1,7 +1,7 @@
 {
     "layer": "top",
     "position": "bottom",
-    "height": 35,
+    "height": 41,
     "spacing": 4,
     "margin-top": 1,
     "margin-bottom":5,
@@ -9,8 +9,10 @@
     // Choose the order of the modules
 
     "modules-left":["idle_inhibitor", "pulseaudio", "cpu", "memory", "disk", "temperature"],
-    "modules-center": ["custom/browse",  "custom/search", "custom/media","wlr/taskbar", "custom/power"],
-    "modules-right":["backlight", "keyboard-state", "battery", "network", "tray", "hyprland/language", "clock"],
+    // "modules-center": ["custom/browse",  "custom/search", "custom/media","wlr/taskbar", "custom/power"],
+    "modules-center": ["custom/browse",  "custom/search", "wlr/taskbar", "custom/power"],
+    // "modules-right":["backlight", "keyboard-state", "battery", "network", "tray", "hyprland/language", "clock"],
+    "modules-right":["network", "battery", "tray", "hyprland/language", "clock"],
     // Modules configuration
 
     "keyboard-state": {
@@ -86,8 +88,8 @@
     },
     "battery": {
         "states": {
-            "good": 95,
-            "warning": 30,
+            "good": 100,
+            "warning": 50,
             "critical": 20
         },
         "format": "{capacity}% {icon}",

@@ -121,6 +121,8 @@ window#waybar.hidden {
 #battery {
     background-color: @bg_image;
     color: black;
+    /* padding-left: 5px; */
+    padding-right: 10px;
 }
 
 #battery.charging, #battery.plugged {

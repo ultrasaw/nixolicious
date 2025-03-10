@@ -63,6 +63,7 @@
           ./modules/base.nix
           ./modules/greetd.nix
           ./modules/hyprland.nix
+          # ./modules/power-profiles-d.nix
           ./modules/r.nix
           ./modules/python.nix
           ./modules/go.nix

@@ -6,7 +6,7 @@
   imports = [
     ../../home/common.nix
     ../../home/vscode.nix
-    ../../home/tiled.nix
+    ../../home/tiled_lenovo.nix
     ../../home/looks.nix
     ../../home/waybar.nix
     ../../home/rofi.nix

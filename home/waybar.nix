@@ -5,7 +5,7 @@
 
     enable = true;
     systemd = {
-      enable = false; # disable it, autostart it in hyprland conf
+      enable = true; # disable it, autostart it in hyprland conf
       target = "graphical-session.target";
     };
   };
