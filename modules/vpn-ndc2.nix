@@ -4,7 +4,7 @@
     conn = (pkgs.formats.ini { }).generate "NDC2.nmconnection" {
       connection = {
         id = "NDC2";
-        uuid = "9f39a22d-d644-470a-bcc8-b4585478fd40";
+        uuid = "9f39a22d-d644-470a-bcc8-b4585478fd41";
         type = "vpn";
       };
 
@@ -18,7 +18,7 @@
         "data-ciphers" = "AES-128-GCM:AES-128-CBC";
         dev = "tun";
         key = builtins.toString /home/gio/Documents/NDC2/key.pem;
-        remote = "84.242.8.194:1194:udp4";
+        remote = "84.242.8.194:1194:tcp4";
         "remote-cert-tls" = "server";
         ta = builtins.toString /home/gio/Documents/NDC2/tls-auth.pem;
         "ta-dir" = 1;
@@ -28,7 +28,6 @@
 
       ipv4 = {
         method = "auto";
-        "never-default" = true;
       };
 
       ipv6 = {
