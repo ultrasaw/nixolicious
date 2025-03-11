@@ -68,6 +68,7 @@
           ./modules/python.nix
           ./modules/go.nix
           ./modules/rust.nix
+          ./modules/vpn-ndc2.nix
           inputs.home-manager.nixosModules.default
           inputs.stylix.nixosModules.stylix
         ];

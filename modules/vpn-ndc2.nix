@@ -10,17 +10,17 @@
 
       vpn = {
         auth = "SHA256";
-        ca = builtins.toString ./NDC2/ca.pem;
-        cert = builtins.toString ./NDC2/cert.pem;
+        ca = builtins.toString /home/gio/Documents/NDC2/ca.pem;
+        cert = builtins.toString /home/gio/Documents/NDC2/cert.pem;
         "challenge-response-flags" = 2;
         compress = "lz4";
         "connection-type" = "tls";
         "data-ciphers" = "AES-128-GCM:AES-128-CBC";
         dev = "tun";
-        key = builtins.toString ./NDC2/key.pem;
+        key = builtins.toString /home/gio/Documents/NDC2/key.pem;
         remote = "84.242.8.194:1194:udp4";
         "remote-cert-tls" = "server";
-        ta = builtins.toString ./NDC2/tls-auth.pem;
+        ta = builtins.toString /home/gio/Documents/NDC2/tls-auth.pem;
         "ta-dir" = 1;
         "verify-x509-name" = "name:firewall01.local";
         "service-type" = "org.freedesktop.NetworkManager.openvpn";
