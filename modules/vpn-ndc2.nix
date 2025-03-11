@@ -28,6 +28,7 @@
 
       ipv4 = {
         method = "auto";
+        "never-default" = true;
       };
 
       ipv6 = {
