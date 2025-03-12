@@ -29,7 +29,13 @@
   environment.sessionVariables = {
     WLR_NO_HARDWARE_CURSORS = "1";
     NIXOS_OZONE_WL = "1";
-    NAUTILUS_4_EXTENSION_DIR = "${pkgs.gnome.nautilus-python}/lib/nautilus/extensions-4";
+    NAUTILUS_4_EXTENSION_DIR = "${pkgs.nautilus-python}/lib/nautilus/extensions-4";
+    SDL_VIDEODRIVER = "wayland";
+    _JAVA_AWT_WM_NONREPARENTING = "1";
+    QT_QPA_PLATFORM = "wayland";
+    XDG_CURRENT_DESKTOP = "Hyprland";
+    XDG_SESSION_TYPE = "wayland";
+    XDG_SESSION_DESKTOP = "Hyprland";
   };
 
   # "open alacritty here"
@@ -60,9 +66,9 @@
     udiskie # removable media/disk mounting
 
     polkit_gnome # polkit agent for GNOME
-    gnome.seahorse # keyring manager GUI
-    gnome.nautilus # file manager
-    gnome.nautilus-python # further extend GNOME w/ python scripts; for nautilus-open-any-terminal
+    seahorse # keyring manager GUI
+    nautilus # file manager
+    nautilus-python # further extend GNOME w/ python scripts; for nautilus-open-any-terminal
 
     playerctl # media player control
     brightnessctl # brightness control
@@ -82,8 +88,22 @@
 
   ];
 
-  xdg.portal.enable = true;
-  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  # xdg.portal.enable = true;
+  # xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+
+ xdg = {
+   portal = {
+     enable = true;
+     xdgOpenUsePortal = true;
+     config = {
+       common.default = ["gtk"];
+       hyprland.default = ["gtk" "hyprland"];
+     };
+     extraPortals = [
+       pkgs.xdg-desktop-portal-gtk
+     ];
+   };
+ };
 
   # hardware = {
   #   opengl.enable = true;

@@ -94,6 +94,10 @@
     kubectl
     k9s
 
+    s3cmd
+
+    openssl
+
     (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
   ];
 

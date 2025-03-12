@@ -6,6 +6,8 @@
 
   wayland.windowManager.hyprland = {
     enable = true;
+    xwayland.enable = true;
+    systemd.enable = true;
     # monitor = "eDP-1, 1920x1080@60.00Hz, 0x0, 1";
 
     # # Version mismatch error
