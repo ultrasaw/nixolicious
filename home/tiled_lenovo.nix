@@ -31,7 +31,7 @@
 
         "$mod, Return, exec, $terminal"
         "$mod, W, killactive,"
-        "$mod CTRL, Q, exit,"
+        "$mod&CTRL_L, E, exit,"
         "$mod, E, exec, $terminal -e $fileManager"
         "$mod, V, togglefloating,"
         "$mod, R, exec, $menu"
@@ -112,7 +112,7 @@
         [ "~/Pictures/bin.jpg" ];
 
       wallpaper = [
-        "eDP-1,~/Pictures/bin.jpg"
+        ",~/Pictures/bin.jpg"
       ];
     };
   };
