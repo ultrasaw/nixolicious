@@ -61,8 +61,9 @@
         modules = [
           ./hosts/lenovo/configuration.nix
           ./modules/base.nix
-          ./modules/greetd.nix
-          ./modules/hyprland.nix
+	        ./modules/gnome.nix
+          # ./modules/greetd.nix
+          # ./modules/hyprland.nix
           ./modules/r.nix
           ./modules/python.nix
           ./modules/go.nix

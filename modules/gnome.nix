@@ -8,4 +8,12 @@
     desktopManager.gnome.enable = true;
     xkb = { layout = "us"; variant = ""; };
   };
+
+  environment.systemPackages = with pkgs; [
+  via # for qmk
+
+  slack
+  telegram-desktop
+
+  ];
 }
