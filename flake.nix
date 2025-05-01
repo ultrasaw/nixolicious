@@ -21,6 +21,11 @@
       url = "github:hyprwm/hyprland-plugins";
       inputs.hyprland.follows = "hyprland";
     };
+
+    niri = {
+      url = "github:sodiboo/niri-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, nixpkgs, ... }@inputs: 
@@ -48,7 +53,8 @@
           ./modules/go.nix
           ./modules/rust.nix
           # ./modules/stylix.nix
-          ./modules/gnome.nix
+          # ./modules/gnome.nix
+          ./modules/niri.nix
           # ./modules/nvidia.nix
           inputs.home-manager.nixosModules.default
           inputs.stylix.nixosModules.stylix
