@@ -61,6 +61,20 @@
     };
 
     initExtra = ''
+      # --- Start: Custom Terminal Title ---
+
+      export DISABLE_AUTO_TITLE="true"
+
+      set_term_title() {
+        local my_emoji="🫥" # 🫥 👾
+        print -Pn "\e]0;''${my_emoji}\a"
+      }
+
+      autoload -Uz add-zsh-hook
+      add-zsh-hook precmd set_term_title
+
+      # --- End: Custom Terminal Title ---
+
       # https://github.com/alacritty/alacritty/issues/1408#issuecomment-467970836
       bindkey "^[[1;3C" forward-word
       bindkey "^[[1;3D" backward-word
@@ -164,6 +178,7 @@
 
     (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
     # nerd-fonts.jetbrains-mono
+    noto-fonts-emoji
   ];
 
   # fonts.fontconfig.enable = true;
