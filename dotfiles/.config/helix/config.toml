@@ -1,4 +1,4 @@
-theme = "onedark"
+theme = "adwaita-dark"
 
 [keys.normal]
 H = ":buffer-previous"
