@@ -9,11 +9,15 @@
     xkb = { layout = "us"; variant = ""; };
   };
 
+  programs.nautilus-open-any-terminal = {
+    enable = true;
+    terminal = "alacritty";
+  };
+
   environment.systemPackages = with pkgs; [
-  via # for qmk
-
-  slack
-  telegram-desktop
-
+    via
+    slack
+    telegram-desktop
+    gnomeExtensions.paperwm
   ];
 }

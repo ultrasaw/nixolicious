@@ -53,8 +53,8 @@
           ./modules/go.nix
           ./modules/rust.nix
           # ./modules/stylix.nix
-          # ./modules/gnome.nix
-          ./modules/niri.nix
+          ./modules/gnome.nix
+          # ./modules/niri.nix
           # ./modules/nvidia.nix
           inputs.home-manager.nixosModules.default
           inputs.stylix.nixosModules.stylix

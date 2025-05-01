@@ -6,11 +6,12 @@
   imports = [
     ../../home/common.nix
     ../../home/vscode.nix
-    ../../home/tiled.nix
+    # ../../home/tiled.nix
     ../../home/looks.nix
-    ../../home/waybar.nix
+    # ../../home/waybar.nix
     ../../home/rofi.nix
     ../../home/starship.nix
+    ../../home/flameshot.nix
     inputs.nix-colors.homeManagerModules.default
   ];
 

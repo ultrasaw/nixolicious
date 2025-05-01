@@ -55,7 +55,7 @@
     };
 
     oh-my-zsh = {
-      enable = false;
+      enable = true;
       plugins = [ ];
       theme = "clean"; # agnoster, amuse, arrow, clean
     };
