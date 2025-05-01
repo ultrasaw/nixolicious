@@ -7,14 +7,14 @@ layout {
                 args "-c" "fzf --bind 'enter:execute(~/.config/zellij/scripts/fzf-hx-open.sh {})'"
                 start_suspended false
                 close_on_exit false
-                size "20%"
+                size "15%"
             }
             pane {
                 name "helix"
                 command "hx"
                 start_suspended false
                 close_on_exit false
-                size "80%"
+                size "85%"
             }
         }
         pane size=1 borderless=true {

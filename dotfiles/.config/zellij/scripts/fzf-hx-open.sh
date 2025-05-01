@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/run/current-system/sw/bin/bash
 # ~/.config/zellij/scripts/fzf-helix-open.sh
 #
 # This script is called by fzf to open the selected file ($1)
