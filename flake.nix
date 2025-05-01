@@ -41,14 +41,14 @@
         modules = [
           ./hosts/tower/configuration.nix
           ./modules/base.nix
-          # ./modules/greetd.nix
-          # ./modules/hyprland.nix
+          ./modules/greetd.nix
+          ./modules/hyprland.nix
           ./modules/r.nix
           ./modules/python.nix
           ./modules/go.nix
           ./modules/rust.nix
           # ./modules/stylix.nix
-          ./modules/gnome.nix
+          # ./modules/gnome.nix
           # ./modules/nvidia.nix
           inputs.home-manager.nixosModules.default
           inputs.stylix.nixosModules.stylix
