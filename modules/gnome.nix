@@ -11,7 +11,7 @@
 
   programs.nautilus-open-any-terminal = {
     enable = true;
-    terminal = "alacritty";
+    terminal = "kitty";
   };
 
   environment.systemPackages = with pkgs; [
