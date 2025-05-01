@@ -1,4 +1,4 @@
-theme = "adwaita-dark"
+theme = "monokai_pro_spectrum"
 
 [keys.normal]
 H = ":buffer-previous"
