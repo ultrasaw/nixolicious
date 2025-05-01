@@ -19,5 +19,6 @@
 
 ```bash
 sudo nixos-rebuild switch --flake ~/Documents/_projects/nixolicious#tower
-sudo nixos-rebuild build --flake ~/Documents/_projects/nixolicious#tower
+sudo nixos-rebuild boot --flake ~/Documents/_projects/nixolicious#tower # build the new configuration and make it the boot default, but do not activate it.
+sudo nixos-rebuild build --flake ~/Documents/_projects/nixolicious#tower # neither activate it nor add it to the GRUB boot menu.
 ```
