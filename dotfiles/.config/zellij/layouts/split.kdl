@@ -1,0 +1,35 @@
+layout {
+    tab name="hx" {
+        pane split_direction="vertical" {
+            pane {
+                name "fzf"
+                command "zsh"
+                args "-c" "fzf --bind 'enter:execute(~/.config/zellij/scripts/fzf-hx-open.sh {})'"
+                start_suspended false
+                close_on_exit false
+                size "20%"
+            }
+            pane {
+                name "helix"
+                command "hx"
+                start_suspended false
+                close_on_exit false
+                size "80%"
+            }
+        }
+        pane size=1 borderless=true {
+            plugin location="zellij:compact-bar";
+        }
+    }
+    tab name="one" {
+        pane {
+            name "shell"
+            command "sh"
+            args "-c" "zsh"
+            start_suspended false
+        }
+        pane size=1 borderless=true {
+            plugin location="zellij:compact-bar";
+        }
+    }
+}

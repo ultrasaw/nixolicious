@@ -1,0 +1,38 @@
+theme = "onedark"
+
+[keys.normal]
+H = ":buffer-previous"
+L = ":buffer-next"
+C-q = ":buffer-close"
+C-h = "jump_view_left"
+C-l = "jump_view_right"
+C-j = "jump_view_down"
+C-k = "jump_view_up"
+# "C-;" = "jump_view_right"
+# C-l = "jump_view_left"
+# C-k = "jump_view_up"
+# C-j = "jump_view_down"
+# l = "move_char_left"
+# ";" = "move_char_right"
+# j = "move_visual_line_down"
+# k = "move_visual_line_up"
+
+# [keys.select]
+# l = "move_char_left"
+# ";" = "move_char_right"
+# j = "move_visual_line_down"
+# k = "move_visual_line_up"
+# h = "collapse_selection"
+# A-h = "flip_selections"
+
+[keys.insert]
+C-n = "normal_mode"
+
+[keys.normal.space]
+"." = "file_picker_in_current_buffer_directory"
+
+[editor.file-picker]
+max-depth = 4
+
+[editor]
+bufferline = "always"

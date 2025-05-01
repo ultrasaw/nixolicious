@@ -1,8 +1,6 @@
 { config, pkgs, lib, ... }:
 
 {
-  home.username = "gio";
-  home.homeDirectory = "/home/gio";
 
   home.stateVersion = "24.11";
 
@@ -10,6 +8,7 @@
     home-manager.enable = true;
     yazi.enable = true; # terminal file manager
     btop.enable = true; # TUI for resource usage monitoring
+    bat.enable = true; # cat with syntax highlighting
   };
 
   programs.zsh = {
@@ -21,12 +20,17 @@
     shellAliases = {
       ll = "ls -l";
       vim = "nvim";
-      update = "sudo nixos-rebuild switch";
 
       # Git Aliases
       ga = "git add";
       gc = "git commit";
       gp = "git push";
+
+      # cat
+      cat = "bat --style=numbers --color=always -P";
+
+      # fzf
+      fp = "fzf --preview 'bat --style=numbers --color=always {}'"; # file preview
 
       # Kubernetes
       k = "kubectl";
@@ -36,8 +40,9 @@
       ld = "lazydocker";
       docker-clean = "docker container prune -f && docker image prune -f && docker network prune -f && docker volume prune -f";
       cr = "cargo run";
-      battery = "upower -i /org/freedesktop/UPower/devices/battery_BAT1";
       y = "yazi";
+      zc = "zellij --layout compact";
+      zs = "zellij --layout split";
     };
 
     history = {
@@ -46,12 +51,28 @@
     };
 
     oh-my-zsh = {
-      enable = true;
+      enable = false;
       plugins = [ ];
-      theme = "agnoster";
+      theme = "clean"; # agnoster, amuse, arrow, clean
     };
 
     initExtra = ''
+      # https://github.com/alacritty/alacritty/issues/1408#issuecomment-467970836
+      bindkey "^[[1;3C" forward-word
+      bindkey "^[[1;3D" backward-word
+
+      # ripgrep + fzf
+      ff() {
+        if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
+        rg --files-with-matches --no-messages --hidden "$1" | fzf --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}"
+      }
+
+      # ripgrep + fzf -> helix
+      fh() {
+        if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
+        rg --files-with-matches --no-messages --hidden "$1" | fzf --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}" | xargs hx
+      }
+
       # Environment variables
       export do="--dry-run=client -o yaml"
       export now="--force --grace-period 0"
@@ -64,6 +85,10 @@
     '';
   };
 
+  # ls replacement
+  programs.eza.enable = true;
+  programs.eza.enableZshIntegration = true;
+
   programs.git = {
     enable = true;
     aliases = {
@@ -73,34 +98,57 @@
     };
   };
 
+  # a 'post-modern' text editor
+  programs.helix = {
+    enable = true;
+    defaultEditor = true;
+  };
+
+  # a modern tmux
+  programs.zellij = {
+    enable = true;
+    enableZshIntegration = false;
+  };
+
+  # a better 'cd'
+  programs.zoxide = {
+    enable = true;
+    enableZshIntegration = true;
+  };
+
+  # a fuzzy finder
+  programs.fzf = {
+    enable = true;
+    enableZshIntegration = true;
+  };
+
+  # a recursive search tool
+  programs.ripgrep = {
+    enable = true;
+  };
+
   # Define user environment packages
   home.packages = with pkgs; [
     htop
-    alacritty
+    # alacritty
     neovim
-    sublime
-    google-chrome
-    firefox
+
+    terraform
 
     unzip
-
-    grim
-    slurp
-    swappy
-    wl-clipboard
-
-    nwg-bar
 
     kubectl
     k9s
 
+    awscli2
     s3cmd
+    aws-sam-cli
 
     openssl
 
     (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
   ];
 
-  fonts.fontconfig.enable = true;
+  # fonts.fontconfig.enable = true;
 
 }

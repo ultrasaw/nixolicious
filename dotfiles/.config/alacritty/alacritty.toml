@@ -73,6 +73,7 @@ dynamic_padding = false
 dynamic_title = true
 opacity = 1.0
 title = "🥱"
+option_as_alt = "Both"
 
 [window.dimensions]
 columns = 130
