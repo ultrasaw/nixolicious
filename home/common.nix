@@ -2,6 +2,9 @@
 
 {
 
+  home.username = "gio";
+  home.homeDirectory = "/home/gio";
+
   home.stateVersion = "24.11";
 
   programs = {
@@ -40,6 +43,7 @@
       ld = "lazydocker";
       docker-clean = "docker container prune -f && docker image prune -f && docker network prune -f && docker volume prune -f";
       cr = "cargo run";
+      battery = "upower -i /org/freedesktop/UPower/devices/battery_BAT1";
       y = "yazi";
       zc = "zellij --layout compact";
       zs = "zellij --layout split";
@@ -130,10 +134,20 @@
   # Define user environment packages
   home.packages = with pkgs; [
     htop
-    # alacritty
+    alacritty
     neovim
 
-    terraform
+    google-chrome
+    firefox
+
+    # terraform
+
+    grim
+    slurp
+    swappy
+    wl-clipboard
+
+    nwg-bar
 
     unzip
 
@@ -147,6 +161,7 @@
     openssl
 
     (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+    # nerd-fonts.jetbrains-mono
   ];
 
   # fonts.fontconfig.enable = true;
