@@ -1,27 +1,35 @@
 { config, pkgs, lib, ... }:
 
-{
+let
+  extensions = (with pkgs.vscode-extensions; [
+    bbenoist.nix
+    golang.go
+    ms-python.python
+    github.github-vscode-theme
+    # vscodevim.vim
+    yzhang.markdown-all-in-one
+    tamasfe.even-better-toml
+    tal7aouy.icons
+    ms-kubernetes-tools.vscode-kubernetes-tools
+    redhat.vscode-yaml
+    oderwat.indent-rainbow
+    hashicorp.terraform
+    eamodio.gitlens
+    ms-azuretools.vscode-docker
+  ]) ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
+    {
+      name = "kdl";
+      publisher = "kdl-org";
+      version = "2.1.3";
+      sha256 = "sha256-Jssmb5owrgNWlmLFSKCgqMJKp3sPpOrlEUBwzZSSpbM=";
+    }
+  ];
+in {
   programs.vscode = {
     enable = true;
     enableUpdateCheck = false;
     mutableExtensionsDir = false;
-
-    extensions = with pkgs.vscode-extensions; [
-      bbenoist.nix
-      golang.go
-      ms-python.python
-      github.github-vscode-theme
-      # vscodevim.vim
-      yzhang.markdown-all-in-one
-      tamasfe.even-better-toml
-      tal7aouy.icons
-      ms-kubernetes-tools.vscode-kubernetes-tools
-      redhat.vscode-yaml
-      oderwat.indent-rainbow
-      hashicorp.terraform
-      eamodio.gitlens
-      ms-azuretools.vscode-docker
-    ];
+    extensions = extensions;
 
     userSettings = {
       "git.confirmSync" = false;
