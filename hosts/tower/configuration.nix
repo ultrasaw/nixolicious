@@ -63,6 +63,7 @@
       inherit inputs;
       inherit theme;
       inherit system;
+      niriStable = inputs.niri-stable;
     };
     users = {
       "gio" = import ./home.nix;
