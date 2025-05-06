@@ -51,23 +51,23 @@
       nixosConfigurations.tower = nixpkgs.lib.nixosSystem {
         specialArgs = {
           inherit inputs theme system;
-          niriStable = inputs.niri-stable;
         };
         modules = [
           { nixpkgs.overlays = [ unstable-waybar-overlay ]; }
 
           ./hosts/tower/configuration.nix
           ./modules/base.nix
-          ./modules/greetd.nix
+          # ./modules/greetd.nix
           # ./modules/hyprland.nix
           ./modules/r.nix
           ./modules/python.nix
           ./modules/go.nix
           ./modules/rust.nix
-          ./modules/niri2.nix
+          # ./modules/niri.nix
           # ./modules/stylix.nix
-          # ./modules/gnome.nix
+          ./modules/gnome.nix
           # ./modules/nvidia.nix
+          inputs.niri.nixosModules.niri
           inputs.home-manager.nixosModules.default
           # inputs.stylix.nixosModules.stylix
         ];
