@@ -102,7 +102,7 @@ in
           tray.icon-size = 20;
         };
       };
-      # style = ./waybar.css;
+      style = ../dotfiles/.config/waybar/style.css;
       systemd.enable = true;
     };
 }

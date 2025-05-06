@@ -42,4 +42,22 @@ in
       show-failed-attempts = true;
     };
   };
+
+  systemd = {
+    user.services = {
+      swaybg = {
+        unitConfig = {
+          Description = "swaybg service";
+        };
+        serviceConfig = {
+          Type = "simple";
+          ExecStart = "${pkgs.swaybg}/bin/swaybg -m fill -i ${config.home.homeDirectory}/Pictures/bin.jpg"; # Corrected ExecStart
+          Restart = "on-failure";
+        };
+        installConfig = {
+          WantedBy = [ "graphical-session.target" ];
+        };
+      };
+    };
+  };
 }

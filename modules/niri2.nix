@@ -17,9 +17,10 @@ in
 
   xdg.portal = {
     enable = true;
+    wlr.enable = true;
     extraPortals = with pkgs; [
+      xdg-desktop-portal-wlr
       xdg-desktop-portal-gtk
-      xdg-desktop-portal-gnome
     ];
   };
 
@@ -30,21 +31,39 @@ in
     SDL_VIDEODRIVER = "wayland";
     _JAVA_AWT_WM_NONREPARENTING = "1";
     QT_QPA_PLATFORM = "wayland";
-    # XDG_CURRENT_DESKTOP = "Hyprland";
+    XDG_CURRENT_DESKTOP = "niri";
     XDG_SESSION_TYPE = "wayland";
-    # XDG_SESSION_DESKTOP = "Hyprland";
+    XDG_SESSION_DESKTOP = "niri";
   };
+
+  # "open alacritty here"
+  programs.nautilus-open-any-terminal = {
+    enable = true;
+    terminal = "alacritty";
+  };
+
+  # environment.pathsToLink = [ "/share/nautilus-python/extensions" ];
+  
+  environment.pathsToLink = [
+    "/share/xdg-desktop-portal"
+    "/share/applications"
+    "/share/nautilus-python/extensions"
+  ]; 
 
   environment.systemPackages = with pkgs; [
     playerctl
     swaynotificationcenter
     swayosd
     dbus
+    xdg-utils
 
     blueman
     blueberry # bluetooth manager GUI
     networkmanager # network manager, including nmtui, a network manager TUI
     networkmanagerapplet # nm-applet --indicator &
+
+    nautilus # file manager
+    nautilus-python # further extend GNOME w/ python scripts; for nautilus-open-any-terminal
   ];
 
   services = {

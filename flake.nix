@@ -51,6 +51,7 @@
       nixosConfigurations.tower = nixpkgs.lib.nixosSystem {
         specialArgs = {
           inherit inputs theme system;
+          niriStable = inputs.niri-stable;
         };
         modules = [
           { nixpkgs.overlays = [ unstable-waybar-overlay ]; }

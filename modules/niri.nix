@@ -33,16 +33,16 @@
     #     };
     #   };
 
-    #   swaybg = {
-    #     description = "swaybg service";
-    #     serviceConfig = {
-    #       Type = "simple";
-    #       ExecStart = "${pkgs.swaybg}/bin/.swaybg-wrapped -m fill -i ${
-    #         pkgs.graphite-gtk-theme.override { wallpapers = true; }
-    #       }/share/backgrounds/wave-Dark.png";
-    #       Restart = "on-failure";
-    #     };
-    #   };
+      # swaybg = {
+      #   description = "swaybg service";
+      #   serviceConfig = {
+      #     Type = "simple";
+      #     ExecStart = "${pkgs.swaybg}/bin/.swaybg-wrapped -m fill -i ${
+      #       pkgs.graphite-gtk-theme.override { wallpapers = true; }
+      #     }/share/backgrounds/wave-Dark.png";
+      #     Restart = "on-failure";
+      #   };
+      # };
     };
   };
 

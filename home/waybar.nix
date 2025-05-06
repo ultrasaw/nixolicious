@@ -4,6 +4,7 @@
   programs.waybar = {
 
     enable = true;
+    package = pkgs.waybar-unstable;
     systemd = {
       enable = true; # disable it, autostart it in hyprland conf
       target = "graphical-session.target";
