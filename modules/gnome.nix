@@ -19,5 +19,8 @@
     slack
     telegram-desktop
     gnomeExtensions.paperwm
+    # vscode
+    # eza
+    # helix
   ];
 }

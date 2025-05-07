@@ -1,29 +1,34 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 
 {
 
-  home = {
-    file = {
-      # # Top Level Files symlinks
-      # ".zshrc".source = ../../dotfiles/.zshrc;
-      # ".zshenv".source = ../../dotfiles/.zshenv;
+  # home = {
+  #   file = {
+  #     # # Top Level Files symlinks
+  #     # ".zshrc".source = ../../dotfiles/.zshrc;
+  #     # ".zshenv".source = ../../dotfiles/.zshenv;
       
-      # # Config directories
-      ".config/alacritty".source = ../dotfiles/.config/alacritty;
-      ".config/helix".source = ../dotfiles/.config/helix;
-      ".config/niri".source = ../dotfiles/.config/niri;
-      ".config/starship.toml".source = ../dotfiles/.config/starship/starship.toml;
-      # ".config/rstudio/themes".source = ../dotfiles/.config/rstudio/themes;
-      ".config/waybar".source = ../dotfiles/.config/waybar;
-      ".config/swappy".source = ../dotfiles/.config/swappy;
-      ".config/zellij".source = ../dotfiles/.config/zellij;
+  #     # # Config directories
+  #     ".config/alacritty".source = ../dotfiles/.config/alacritty;
+  #     ".config/helix".source = ../dotfiles/.config/helix;
+  #     ".config/niri".source = ../dotfiles/.config/niri;
+  #     ".config/starship.toml".source = ../dotfiles/.config/starship/starship.toml;
+  #     # ".config/rstudio/themes".source = ../dotfiles/.config/rstudio/themes;
+  #     ".config/waybar".source = ../dotfiles/.config/waybar;
+  #     ".config/swappy".source = ../dotfiles/.config/swappy;
+  #     ".config/zellij".source = ../dotfiles/.config/zellij;
 
-      # still have to do 'chmod +x dotfiles/.config/zellij/scripts/fzf-hx-open.sh'
-      ".config/zellij/scripts/fzf-hx-open.sh" = {
-        text      = builtins.readFile ../dotfiles/.config/zellij/scripts/fzf-hx-open.sh;
-        executable = true;
-      };
-    };
+  #     # still have to do 'chmod +x dotfiles/.config/zellij/scripts/fzf-hx-open.sh'
+  #     ".config/zellij/scripts/fzf-hx-open.sh" = {
+  #       text      = builtins.readFile ../dotfiles/.config/zellij/scripts/fzf-hx-open.sh;
+  #       executable = true;
+  #     };
+  #   };
+  # };
+
+  home.file."${config.xdg.configHome}" = {
+    source = ../dotfiles;
+    recursive = true;
   };
 
   # home.pointerCursor = {
