@@ -14,7 +14,8 @@
       ".config/niri".source = ../dotfiles/.config/niri;
       ".config/starship.toml".source = ../dotfiles/.config/starship/starship.toml;
       # ".config/rstudio/themes".source = ../dotfiles/.config/rstudio/themes;
-      # ".config/waybar".source = ../dotfiles/.config/waybar;
+      ".config/waybar".source = ../dotfiles/.config/waybar;
+      ".config/swappy".source = ../dotfiles/.config/swappy;
       ".config/zellij".source = ../dotfiles/.config/zellij;
 
       # still have to do 'chmod +x dotfiles/.config/zellij/scripts/fzf-hx-open.sh'

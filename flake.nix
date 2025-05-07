@@ -29,6 +29,11 @@
       url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    astal = {
+      url = "github:aylur/astal";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, nixpkgs, ... }@inputs: 
@@ -54,20 +59,28 @@
         };
         modules = [
           { nixpkgs.overlays = [ unstable-waybar-overlay ]; }
-
+          # base
           ./hosts/tower/configuration.nix
           ./modules/base.nix
-          # ./modules/greetd.nix
-          # ./modules/hyprland.nix
           ./modules/r.nix
           ./modules/python.nix
           ./modules/go.nix
           ./modules/rust.nix
-          # ./modules/niri.nix
-          # ./modules/stylix.nix
-          ./modules/gnome.nix
           # ./modules/nvidia.nix
-          inputs.niri.nixosModules.niri
+
+          # # niri
+          # ./modules/niri3.nix
+          # ./modules/greetd_niri.nix
+          # inputs.niri.nixosModules.niri
+
+          # gnome
+          ./modules/gnome.nix
+
+          # hyprland
+          # ./modules/greetd.nix
+          # ./modules/hyprland.nix
+          # ./modules/stylix.nix
+          
           inputs.home-manager.nixosModules.default
           # inputs.stylix.nixosModules.stylix
         ];

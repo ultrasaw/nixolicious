@@ -16,7 +16,7 @@ in
       enable = true;
 
       # Get v0.11 from unstable to get niri modules
-      package = pkgs.waybar-unstable;
+      # package = pkgs.waybar-unstable;
 
       settings = {
         mainBar = {

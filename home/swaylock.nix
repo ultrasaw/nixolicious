@@ -1,63 +1,47 @@
 { config, lib, pkgs, ... }:
 
-let
-  colors = (import ./colors.nix).catppuccin-macchiato;
-in
 {
   programs.swaylock = {
     enable = true;
-    settings = with colors; {
-      color = mantle;
-      font-size = 48;
-      font = "Cantarell";
-
-      indicator-radius = 160;
-      indicator-thickness = 20;
-
-      ring-color = teal;
-      inside-color = mantle;
-      text-color = text;
-
-      key-hl-color = green;
-      bs-hl-color = maroon;
-
-      ring-clear-color = peach;
-      inside-clear-color = peach;
-      text-clear-color = mantle;
-
-      # "ver" is short for "Verifying"
-      ring-ver-color = mauve;
-      inside-ver-color = mauve;
-      text-ver-color = mantle;
-
-      ring-wrong-color = red;
-      inside-wrong-color = red;
-      text-wrong-color = mantle;
-
-      line-color = crust;
-      separator-color = crust;
-
-      ignore-empty-password = true;
-      indicator-idle-visible = false;
+    package = pkgs.swaylock-effects;
+    settings = {
+      clock = true;
       show-failed-attempts = true;
+      indicator = true;
+      indicator-radius = 200;
+      indicator-thickness = 20;
+      line-uses-ring = false;
+      grace = 0;
+      grace-no-mouse = true;
+      grace-no-touch = true;
+      datestr = "%d.%m";
+      fade-in = "0.1";
+      ignore-empty-password = true;
     };
   };
 
-  systemd = {
-    user.services = {
-      swaybg = {
-        unitConfig = {
-          Description = "swaybg service";
-        };
-        serviceConfig = {
-          Type = "simple";
-          ExecStart = "${pkgs.swaybg}/bin/swaybg -m fill -i ${config.home.homeDirectory}/Pictures/bin.jpg"; # Corrected ExecStart
-          Restart = "on-failure";
-        };
-        installConfig = {
-          WantedBy = [ "graphical-session.target" ];
-        };
-      };
-    };
+  services.swayidle = {
+    enable = true;
+    events = [
+      {
+        event = "before-sleep";
+        command = "swaylock";
+      }
+      {
+        event = "lock";
+        command = "swaylock";
+      }
+    ];
+    timeouts = [
+      {
+        timeout = 300;
+        command = "hyprctl dispatch dpms off";
+        resumeCommand = "hyprctl dispatch dpms on";
+      }
+      {
+        timeout = 310;
+        command = "loginctl lock-session";
+      }
+    ];
   };
 }
