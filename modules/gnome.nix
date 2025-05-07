@@ -21,6 +21,7 @@
     gnomeExtensions.paperwm
     # vscode
     # eza
+    # git
     # helix
   ];
 }
