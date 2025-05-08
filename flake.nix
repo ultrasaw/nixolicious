@@ -69,12 +69,12 @@
           # ./modules/nvidia.nix
 
           # # niri
-          # ./modules/niri3.nix
-          # ./modules/greetd_niri.nix
-          # inputs.niri.nixosModules.niri
+          ./modules/niri3.nix
+          ./modules/greetd_niri.nix
+          inputs.niri.nixosModules.niri
 
           # gnome
-          ./modules/gnome.nix
+          # ./modules/gnome.nix
 
           # hyprland
           # ./modules/greetd.nix

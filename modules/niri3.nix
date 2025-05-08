@@ -14,6 +14,21 @@
   };
 
   systemd.user.services.niri-flake-polkit.enable = false;
+  systemd = {
+    user.services = {
+      swaybg = {
+        description = "swaybg service";
+        serviceConfig = {
+          Type = "simple";
+          ExecStart = "${pkgs.swaybg}/bin/.swaybg-wrapped -m fill -i ${
+            pkgs.graphite-gtk-theme.override { wallpapers = true; }
+          }~/Pictures/bin.png";
+          Restart = "on-failure";
+        };
+      };
+    };
+  };
+
   services.gnome.sushi.enable = true;
 
   environment = {
@@ -48,10 +63,19 @@
       # dbus
       xdg-utils
 
-      blueman
-      blueberry # bluetooth manager GUI
+      # blueman
+      # blueberry # bluetooth manager GUI
       networkmanager # network manager, including nmtui, a network manager TUI
       networkmanagerapplet # nm-applet --indicator &
+      linssid
+
+      seahorse # keyring manager GUI
+
+      pwvucontrol # sound control
+      playerctl # media player control
+
+      inter # font
+      bibata-cursors # Material Based Cursor Theme
 
       nautilus # file manager
       nautilus-python # further extend GNOME w/ python scripts; for nautilus-open-any-terminal
@@ -77,7 +101,7 @@
   services = {
     udev.packages = [ pkgs.via ]; # for qmk
     gnome.gnome-keyring.enable = true;
-    blueman.enable = true;
+    # blueman.enable = true;
     # flatpak.enable = true; # to use Flatpak you must enable XDG Desktop Portals with xdg.portal.enable.
   };
 }

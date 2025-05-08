@@ -3,18 +3,32 @@
 let
   theme = config.lib.stylix.colors;
 in {
-  xdg.portal.extraPortals = [pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-gnome pkgs.gnome-keyring];
-  home.packages = [pkgs.dconf pkgs.swww pkgs.brightnessctl pkgs.wl-clipboard inputs.astal.packages.${pkgs.system}.default];
+  services.hyprpaper = {
+    enable = true;
+    settings = {
+      ipc = "on";
+      splash = false;
+      splash_offset = 2.0;
+
+      preload =
+        [ "~/Pictures/bin.jpg" ];
+
+      wallpaper = [
+        "HDMI-A-2,~/Pictures/bin.jpg"
+      ];
+    };
+  };
+
+  # xdg.portal.extraPortals = [pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-gnome pkgs.gnome-keyring];
+  xdg.portal.extraPortals = [pkgs.xdg-desktop-portal-gnome];
+  home.packages = [pkgs.dconf pkgs.swww pkgs.brightnessctl pkgs.wl-clipboard];
   programs.niri.settings = {
     binds = with config.lib.niri.actions; let
       sh = spawn "sh" "-c";
     in {
       "Mod+Shift+Slash".action = show-hotkey-overlay;
 
-      "Mod+Q".action = spawn "wezterm";
-      "Mod+D".action = sh "astal launcher";
-      "Mod+W".action = sh "astal toggle all";
-      "Mod+P".action = sh "astal toggle right";
+      "Mod+Q".action = spawn "kitty";
 
       "Mod+F".action = fullscreen-window;
       "Mod+V".action = toggle-window-floating;

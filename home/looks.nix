@@ -34,7 +34,14 @@
   # home.pointerCursor = {
   #   package = pkgs.catppuccin-cursors.mochaLavender;
   #   name = "Catppuccin-Mocha-Lavender-Cursors";
-  #   gtk.enable = true;
+  #   # gtk.enable = true;
+  # };
+
+  # dconf = {
+  #   enable = true;
+  #   settings = {
+  #     "org/gnome/desktop/interface" = { color-scheme = "prefer-dark"; };
+  #   };
   # };
 
   gtk = {
@@ -44,10 +51,38 @@
       package = pkgs.whitesur-icon-theme;
       name    = "WhiteSur";
     };
+    
+    cursorTheme = {
+      # package = pkgs.bibata-cursors;
+      # name = "Bibata-Modern-Classic";
 
-    theme = {
-      package = pkgs.catppuccin-gtk.override { accents = [ "lavender" ]; size = "standard"; variant = "mocha"; };
-      name = "Catppuccin-Mocha-Standard-Peach-Dark";
+      package = pkgs.gnome.adwaita-icon-theme;
+      name = "Adwaita";
     };
   };
-} 
+
+  gtk = {
+    theme = {
+      name = "Nordic"; # It's inherently dark; variants like "Nordic-Darker" might also exist
+      package = pkgs.nordic;
+    };
+  };
+
+  # gtk = {
+  #   enable = true;
+
+  #   iconTheme = {
+  #     package = pkgs.whitesur-icon-theme;
+  #     name    = "WhiteSur";
+  #   };
+
+  #   theme = {
+  #     package = pkgs.catppuccin-gtk.override {
+  #       accents = [ "lavender" ];
+  #       size = "standard";
+  #       variant = "mocha";
+  #     };
+  #     name = "catppuccin-mocha-lavender-standard";
+  #   };
+  # };
+}

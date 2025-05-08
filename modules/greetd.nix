@@ -5,7 +5,7 @@
     enable = true;
     settings = rec {
       initial_session = {
-        command = "${pkgs.niri}/bin/niri";
+        command = "${pkgs.hyprland}/bin/Hyprland";
         user = "gio";
       };
       default_session = initial_session;

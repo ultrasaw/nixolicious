@@ -12,6 +12,7 @@
     yazi.enable = true; # terminal file manager
     btop.enable = true; # TUI for resource usage monitoring
     bat.enable = true; # cat with syntax highlighting
+    starship.enable = true;
   };
 
   programs.zsh = {

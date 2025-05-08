@@ -8,10 +8,9 @@
     ../../home/common.nix
     ../../home/vscode.nix
     ../../home/looks.nix
-    ../../home/starship.nix
 
     # gnome
-    ../../home/flameshot.nix
+    # ../../home/flameshot.nix
 
     # hyprland
     # ../../home/tiled.nix
@@ -19,13 +18,12 @@
     # ../../home/waybar.nix
 
     # niri
-    # ../../home/niri.nix
-    # ../../home/rofi.nix
-    # ../../home/waybar.nix
-    # ../../home/waybar_niri.nix
-    # ../../home/swayidle.nix
-    # ../../home/swaylock.nix
-    # ../../home/xwayland-satellite.nix
+    ../../home/niri.nix
+    ../../home/rofi.nix
+    ../../home/waybar_niri.nix
+    ../../home/swayidle.nix
+    ../../home/swaylock.nix
+    ../../home/xwayland-satellite.nix
 
     inputs.nix-colors.homeManagerModules.default
   ];

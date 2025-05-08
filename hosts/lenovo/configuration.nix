@@ -8,11 +8,18 @@
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
+  # boot.loader.systemd-boot.configurationLimit = 5;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.initrd.luks.devices = {
     luksroot = {
       device = "/dev/disk/by-uuid/5131de79-6e64-498d-bd08-a1389472f8cb";
     };
+  };
+
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 1w";
   };
 
   # Hostname
