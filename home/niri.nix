@@ -3,21 +3,6 @@
 let
   theme = config.lib.stylix.colors;
 in {
-  services.hyprpaper = {
-    enable = true;
-    settings = {
-      ipc = "on";
-      splash = false;
-      splash_offset = 2.0;
-
-      preload =
-        [ "~/Pictures/bin.jpg" ];
-
-      wallpaper = [
-        "HDMI-A-2,~/Pictures/bin.jpg"
-      ];
-    };
-  };
 
   # xdg.portal.extraPortals = [pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-gnome pkgs.gnome-keyring];
   xdg.portal.extraPortals = [pkgs.xdg-desktop-portal-gnome];
