@@ -264,7 +264,7 @@
     swappy
     wl-clipboard
 
-    nwg-bar
+    nwg-bara
 
     unzip
 
