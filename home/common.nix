@@ -83,13 +83,13 @@
       # ripgrep + fzf
       ff() {
         if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
-        rg --files-with-matches --no-messages --hidden "$1" | fzf --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}"
+        rg --files-with-matches --no-messages --hidden "$1" --glob "!.git/*" | fzf --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}"
       }
 
       # ripgrep + fzf -> helix
       fh() {
         if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
-        rg --files-with-matches --no-messages --hidden "$1" | fzf --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}" | xargs hx
+        rg --files-with-matches --no-messages --hidden "$1" --glob "!.git/*" | fzf --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}" | xargs hx
       }
 
       # Environment variables
@@ -253,6 +253,7 @@
   # Define user environment packages
   home.packages = with pkgs; [
     htop
+    lsof
 
     google-chrome
     firefox
