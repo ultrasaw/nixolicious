@@ -63,6 +63,9 @@
       # dbus
       xdg-utils
 
+      telegram
+      slack
+
       # blueman
       # blueberry # bluetooth manager GUI
       networkmanager # network manager, including nmtui, a network manager TUI

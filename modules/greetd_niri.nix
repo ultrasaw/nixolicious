@@ -16,6 +16,8 @@ let
     # start Waybar in the background
     systemctl --user start waybar.service &
 
+    ${pkgs.swww}/bin/swww img ../assets/bin.png} &
+
     # when Niri exits, the wait will end,
     # the script will exit, and greetd will end the session.
     wait $NIRI_PID

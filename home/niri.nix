@@ -13,8 +13,12 @@ in {
     in {
       "Mod+Shift+Slash".action = show-hotkey-overlay;
 
-      "Mod+Q".action = spawn "kitty";
+      "Alt+Tab".action = focus-window-previous;
 
+      "Mod+T".action = spawn "kitty";
+      "Mod+S".action = spawn "rofi -show drun -show-icon";
+
+      "Ctrl+Alt+Q".action = sh "swaylock -f -c 000000";
       "Mod+F".action = fullscreen-window;
       "Mod+V".action = toggle-window-floating;
 
@@ -44,7 +48,7 @@ in {
       "Mod+Ctrl+Minus".action = set-window-height "-10%";
       "Mod+Ctrl+Shift+Equal".action = set-window-height "+10%";
 
-      "Mod+S".action = screenshot;
+      # "Mod+S".action = screenshot;
       # "Mod+Shift+S".action = screenshot-screen;
 
       "Mod+WheelScrollDown" = {
@@ -72,8 +76,8 @@ in {
 
       "XF86MonBrightnessUp".action = sh "brightnessctl set 5%+";
       "XF86MonBrightnessDown".action = sh "brightnessctl set 5%-";
-      "XF86Calculator".action = sh "${pkgs.qalculate-gtk}/bin/qalculate-gtk";
-
+      # "XF86Calculator".action = sh "${jpkgs.qalculate-gtk}/bin/qalculate-gtk";
+      ######
       "Mod+1".action = focus-workspace 1;
       "Mod+2".action = focus-workspace 2;
       "Mod+3".action = focus-workspace 3;
@@ -155,6 +159,14 @@ in {
     input = {
       focus-follows-mouse.enable = true;
       touchpad.click-method = "clickfinger";
+      
+      # does not change the kb to beave like an apple one
+      # keyboard = {
+      #   xkb = {
+      #     layout = "us(mac)";
+      #     model = "applealu_ansi";
+      #   };
+      # };
     };
 
     animations = let
@@ -172,14 +184,14 @@ in {
     };
 
     window-rules = [
-      {
-        matches = [
-          {
-            app-id = "^org.wezfurlong.wezterm$";
-          }
-        ];
-        default-column-width = {};
-      }
+      # {
+      #   matches = [
+      #     {
+      #       app-id = "^org.wezfurlong.wezterm$";
+      #     }
+      #   ];
+      #   default-column-width = {};
+      # }
 
       {
         geometry-corner-radius = {

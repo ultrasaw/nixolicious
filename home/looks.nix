@@ -47,10 +47,10 @@
   gtk = {
     enable = true;
 
-    iconTheme = {
-      package = pkgs.whitesur-icon-theme;
-      name    = "WhiteSur";
-    };
+    # iconTheme = {
+    #   package = pkgs.whitesur-icon-theme;
+    #   name    = "WhiteSur";
+    # };
     
     cursorTheme = {
       # package = pkgs.bibata-cursors;
@@ -63,7 +63,7 @@
 
   gtk = {
     theme = {
-      name = "Nordic"; # It's inherently dark; variants like "Nordic-Darker" might also exist
+      name = "Nordic-darker";
       package = pkgs.nordic;
     };
   };

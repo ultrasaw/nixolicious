@@ -2,13 +2,13 @@
 
 ## what's inside
 - browser - chrome, firefox
-- text editor / IDE - nvim, sublime, vscode
+- text editor / IDE - helix, vscode, sublime
 - talking - telegram, slack
 - coding - golang, rust, python, r
-- dev tools - docker, kubectl, k9s 
+- dev tools - docker, kubectl, k9s, opentofu
 - shell - zsh + oh-my-zsh + starship
-- terminal emulator - alacritty
-- compositor & related - hyprland; rofi, waybar, nautilus
+- terminal emulator - kitty (I have two cats now, so alacritty had to go)
+- compositor & related - niri; rofi, waybar, nautilus
 
 ## showcase
 ![plot](./assets/showcase.png)

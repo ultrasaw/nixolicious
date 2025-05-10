@@ -148,10 +148,10 @@
     enable = true;
   };
 
-  programs.wezterm = {
-    enable = true;
-    package = pkgs.wezterm;
-  };
+  # programs.wezterm = {
+  #   enable = true;
+  #   package = pkgs.wezterm;
+  # };
 
   programs.kitty = {
     enable = true;
@@ -258,13 +258,9 @@
   # Define user environment packages
   home.packages = with pkgs; [
     htop
-    alacritty
-    # neovim
 
     google-chrome
     firefox
-
-    # terraform
 
     grim
     slurp
@@ -275,8 +271,10 @@
 
     unzip
 
+    sublime
     kubectl
     k9s
+    opentofu
 
     awscli2
     s3cmd
