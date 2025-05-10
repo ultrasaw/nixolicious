@@ -29,7 +29,7 @@
       }
       {
         event = "lock";
-        command = "swaylock";
+        command = "swaylock -f -c 000000";
       }
     ];
     timeouts = [

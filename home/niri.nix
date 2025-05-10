@@ -169,7 +169,7 @@ in {
     };
 
     input = {
-      focus-follows-mouse.enable = true;
+      focus-follows-mouse.enable = false;
       touchpad.click-method = "clickfinger";
       
       # does not change the kb to beave like an apple one
