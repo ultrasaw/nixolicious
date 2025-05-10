@@ -16,7 +16,11 @@ let
     # start Waybar in the background
     systemctl --user start waybar.service &
 
+    # wallpaper
     ${pkgs.swww}/bin/swww img ../assets/bin.png} &
+
+    # idle locking
+    systemctl --user start swayidle.service &
 
     # add every private key in ~/.ssh (skip .pub files)
     for k in ~/.ssh/*; do
