@@ -23,6 +23,7 @@ in {
 
       "Ctrl+Alt+Q".action = sh "swaylock -f -c 000000";
       "Mod+F".action = fullscreen-window;
+      "Mod+M".action = maximize-column;
       "Mod+V".action = toggle-window-floating;
 
       "Mod+H".action = focus-column-left;
@@ -51,7 +52,6 @@ in {
 
       "Ctrl+Alt+D".action = switch-preset-column-width;
       "Ctrl+Alt+A".action = switch-preset-window-height;
-      "Ctrl+Alt+W".action = maximize-column;
       "Ctrl+Alt+Tab".action = toggle-column-tabbed-display;
 
       "Mod+Minus".action = set-column-width "-10%";
