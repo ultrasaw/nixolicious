@@ -47,7 +47,7 @@
   # Pipewire for audio
   hardware.pulseaudio.enable = false;
   hardware.bluetooth.enable = true;
-  services.blueman.enable = true;
+  # services.blueman.enable = true;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;

@@ -51,6 +51,11 @@
     #   package = pkgs.whitesur-icon-theme;
     #   name    = "WhiteSur";
     # };
+
+    iconTheme = {
+      package = (pkgs.catppuccin-papirus-folders.override { flavor = "mocha"; accent = "lavender"; });
+      name  = "Papirus-Dark";
+    };
     
     cursorTheme = {
       # package = pkgs.bibata-cursors;
@@ -63,10 +68,17 @@
 
   gtk = {
     theme = {
-      name = "Nordic-darker";
-      package = pkgs.nordic;
+      name = "Andromeda";
+      package = pkgs.andromeda-gtk-theme;
     };
   };
+
+  # gtk = {
+  #   theme = {
+  #     name = "Nordic-darker";
+  #     package = pkgs.nordic;
+  #   };
+  # };
 
   # gtk = {
   #   enable = true;

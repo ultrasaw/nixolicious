@@ -261,6 +261,7 @@
 
     google-chrome
     firefox
+    obsidian
 
     grim
     slurp
@@ -271,7 +272,6 @@
 
     unzip
 
-    sublime
     kubectl
     k9s
     opentofu

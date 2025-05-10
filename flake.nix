@@ -68,8 +68,8 @@
           ./modules/rust.nix
           # ./modules/nvidia.nix
 
-          # # niri
-          ./modules/niri3.nix
+          # niri
+          ./modules/niri.nix
           ./modules/greetd_niri.nix
           inputs.niri.nixosModules.niri
 

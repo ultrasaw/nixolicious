@@ -16,7 +16,10 @@ in {
       "Alt+Tab".action = focus-window-previous;
 
       "Mod+T".action = spawn "kitty";
-      "Mod+S".action = spawn "rofi -show drun -show-icon";
+      "Mod+Space".action = sh "rofi -show drun -show-icon ";
+
+      "Mod+Shift+S".action = screenshot;
+      "Mod+S".action = sh "grim -g \"$(slurp)\" - | swappy -f - -o -";
 
       "Ctrl+Alt+Q".action = sh "swaylock -f -c 000000";
       "Mod+F".action = fullscreen-window;
@@ -41,6 +44,15 @@ in {
       "Mod+Shift+Down".action = move-window-down-or-to-workspace-down;
       "Mod+Shift+Up".action = move-window-up-or-to-workspace-up;
       "Mod+Shift+Right".action = move-column-right;
+
+      "Ctrl+Alt+Right".action = consume-or-expel-window-right;
+      "Ctrl+Alt+Left".action = consume-or-expel-window-left;
+      "Ctrl+Alt+Return".action = move-window-to-monitor-next;
+
+      "Ctrl+Alt+D".action = switch-preset-column-width;
+      "Ctrl+Alt+A".action = switch-preset-window-height;
+      "Ctrl+Alt+W".action = maximize-column;
+      "Ctrl+Alt+Tab".action = toggle-column-tabbed-display;
 
       "Mod+Minus".action = set-column-width "-10%";
       "Mod+Shift+Equal".action = set-column-width "+10%";

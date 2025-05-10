@@ -2,7 +2,7 @@
 
 ## what's inside
 - browser - chrome, firefox
-- text editor / IDE - helix, vscode, sublime
+- text editor / IDE - helix, vscode, obsidian
 - talking - telegram, slack
 - coding - golang, rust, python, r
 - dev tools - docker, kubectl, k9s, opentofu
