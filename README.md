@@ -9,6 +9,7 @@
 - shell - zsh + oh-my-zsh + starship
 - terminal emulator - kitty (I have two cats now, so alacritty had to go)
 - compositor & related - niri; rofi, waybar, nautilus
+- misc - zellij, eza, zoxide, ripgrep, fzf, yazi, bat
 
 ## showcase
 ![plot](./assets/showcase.png)
@@ -26,3 +27,8 @@ sudo nix-env -p /nix/var/nix/profiles/system --delete-generations +10
 sudo nix-collect-garbage --delete-old
 sudo nix-store --delete --ignore-liveness
 ```
+
+## extras
+Hyprland and Gnome also available; edit the following:
+- `flake.nix` - `nixosConfiguration.<HOST>` section in order to include the necessary modules;
+- `hosts/<HOST>/home.nix` - `imports` to include the user environment modules & settings.
