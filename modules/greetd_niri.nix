@@ -18,6 +18,14 @@ let
 
     ${pkgs.swww}/bin/swww img ../assets/bin.png} &
 
+    # add every private key in ~/.ssh (skip .pub files)
+    for k in ~/.ssh/*; do
+      case $k in
+        *.pub|*config) continue ;;
+      esac
+      ssh-add "$k" 2>/dev/null
+    done &
+
     # when Niri exits, the wait will end,
     # the script will exit, and greetd will end the session.
     wait $NIRI_PID

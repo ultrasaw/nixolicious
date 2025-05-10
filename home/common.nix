@@ -148,11 +148,6 @@
     enable = true;
   };
 
-  # programs.wezterm = {
-  #   enable = true;
-  #   package = pkgs.wezterm;
-  # };
-
   programs.kitty = {
     enable = true;
     shellIntegration.enableZshIntegration = false;

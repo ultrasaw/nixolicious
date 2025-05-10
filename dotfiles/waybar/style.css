@@ -228,6 +228,8 @@ label:focus {
     font-size: 25px;
     border-radius: 20px;
     margin-left: 2px;
+    padding-left: 10px;
+    padding-right: 16px;
 }
 
 #custom-power:hover {

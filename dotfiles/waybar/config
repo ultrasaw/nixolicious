@@ -149,7 +149,7 @@
         "on-click-right": "killall rofi"
     },
     "custom/power":{
-        "format": "↪️",
+        "format": "⏻",
         "on-click": "nwg-bar",
         "on-click-right": "killall nwg-bar"
     },
