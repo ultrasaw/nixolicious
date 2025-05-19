@@ -1,4 +1,4 @@
-theme = "onedark"
+theme = "tad-darker"
 
 [keys.normal]
 H = ":buffer-previous"
