@@ -2,8 +2,8 @@
 
 {
   environment.systemPackages = with pkgs; [
-    go
-    gopls
+    unstable.go
+    unstable.gopls
     golangci-lint
     golangci-lint-langserver
   ];
