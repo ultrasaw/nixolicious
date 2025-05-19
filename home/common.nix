@@ -270,7 +270,10 @@
 
     kubectl
     k9s
-    opentofu
+    kubernetes-helm
+
+    unstable.opentofu
+    unstable.terragrunt
 
     awscli2
     s3cmd

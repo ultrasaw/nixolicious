@@ -25,14 +25,48 @@ C-k = "jump_view_up"
 # h = "collapse_selection"
 # A-h = "flip_selections"
 
+A-d = "delete_selection"
+d = "delete_selection_noyank"
+A-c = "change_selection"
+c = "change_selection_noyank"
+
+"A-j" = [
+  "extend_to_line_bounds",
+  "delete_selection",
+  "paste_after",
+  "select_mode",
+  "goto_line_start",
+  "normal_mode",
+] # Move line(s) down
+"A-k" = [
+  "extend_to_line_bounds",
+  "delete_selection",
+  "move_line_up",
+  "paste_before",
+  "flip_selections",
+] # Move line(s) up
+
+[keys.select]
+C-n = "normal_mode"
+
 [keys.insert]
 C-n = "normal_mode"
 C-a = "insert_at_line_start"
 C-e = "insert_at_line_end"
 C-b = "move_char_left"
 C-f = "move_char_right"
-C-h = ["move_prev_word_end", "collapse_selection"]
-C-l = ["move_next_word_start", "collapse_selection"]
+
+C-j = "move_line_down"
+C-k = "move_line_up"
+C-h = ["move_prev_word_start", "collapse_selection"]
+C-l = ["move_next_word_start", "move_char_right", "collapse_selection"]
+
+C-u = "kill_to_line_start"
+C-i = "kill_to_line_end"
+C-o = "insert_newline"
+
+"A-down" = ["normal_mode", "extend_to_line_bounds", "delete_selection", "paste_after", "insert_mode"]  # Move line down
+"A-up" = ["normal_mode", "extend_to_line_bounds", "delete_selection", "move_line_up", "paste_before", "insert_mode"]  # Move line up
 
 [keys.normal.space]
 "." = "file_picker_in_current_buffer_directory"

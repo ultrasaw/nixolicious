@@ -2,7 +2,7 @@
 
 let
   niriPackage = pkgs.niri;
-  waybarPackage = pkgs.waybar-unstable;
+  waybarPackage = pkgs.unstable.waybar;
 
   # This is the script greetd will run
   niriSessionScript = pkgs.writeShellScriptBin "niri-session-start" ''

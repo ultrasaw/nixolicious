@@ -9,7 +9,7 @@ in
   programs.waybar = {
 
     enable = true;
-    package = pkgs.waybar-unstable;
+    package = pkgs.unstable.waybar;
     systemd = {
       enable = true;
       # target = "swaync.service";

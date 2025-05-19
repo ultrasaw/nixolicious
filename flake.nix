@@ -42,10 +42,11 @@
       pkgs = nixpkgs.legacyPackages.${system};
       lib = nixpkgs.lib;
       theme = "sakura";
+      # unstablePkgs = nixpkgs-unstable.legacyPackages.${system};
 
       # define the overlay function
-      unstable-waybar-overlay = final: prev: {
-        waybar-unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.system}.waybar;
+      unstable-overlay = final: prev: {
+        unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.system};
       };
 
     in {
@@ -58,7 +59,7 @@
           inherit inputs theme system;
         };
         modules = [
-          { nixpkgs.overlays = [ unstable-waybar-overlay ]; }
+          { nixpkgs.overlays = [ unstable-overlay ]; }
           # base
           ./hosts/tower/configuration.nix
           ./modules/base.nix
