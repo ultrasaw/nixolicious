@@ -67,7 +67,7 @@
           ./modules/python.nix
           ./modules/go.nix
           ./modules/rust.nix
-          # ./modules/nvidia.nix
+          ./modules/nvidia.nix
 
           # niri
           ./modules/niri.nix

@@ -115,8 +115,17 @@ in {
       DISPLAY = ":0"; # xwayland-satellite
     };
 
-    outputs."eDP-1" = {
-      variable-refresh-rate = true;
+    # run 'niri msg outputs'
+    outputs."DP-2" = {
+      mode = {
+        width = 3840;
+        height = 2160;
+        refresh = 120.000; # Ensure this is an integer
+      };
+    };
+
+    outputs."HDMI-A-2" = {
+      enable = false;
     };
 
     spawn-at-startup = [
