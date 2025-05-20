@@ -204,50 +204,53 @@
 
     # See: https://sw.kovidgoyal.net/kitty/actions/
     # Use `kitty --debug-keyboard` to find key names
-    # keybindings = {
-    #   # --- Navigation ---
-    #   "kitty_mod+left" = "previous_window";
-    #   "kitty_mod+right" = "next_window";
-    #   "kitty_mod+up" = "previous_tab";
-    #   "kitty_mod+down" = "next_tab";
-    #   "kitty_mod+shift+," = "move_tab_backward";
-    #   "kitty_mod+shift+." = "move_tab_forward";
+    keybindings = {
+      # # --- Navigation ---
+      # "kitty_mod+left" = "previous_window";
+      # "kitty_mod+right" = "next_window";
+      # "kitty_mod+up" = "previous_tab";
+      # "kitty_mod+down" = "next_tab";
+      # "kitty_mod+shift+," = "move_tab_backward";
+      # "kitty_mod+shift+." = "move_tab_forward";
 
-    #   # --- Window/Tab Management ---
-    #   "kitty_mod+t" = "new_tab"; # Default new tab
-    #   "kitty_mod+w" = "close_tab"; # Close tab (default)
-    #   "kitty_mod+enter" = "new_window"; # Default new window
-    #   "kitty_mod+shift+enter" = "new_os_window"; # New OS window
+      # # --- Window/Tab Management ---
+      "super+t" = "new_tab_with_cwd";
+      "super+]" = "next_tab";
+      "super+[" = "previous_tab";
+      # "kitty_mod+t" = "new_tab"; # Default new tab
+      # "kitty_mod+w" = "close_tab"; # Close tab (default)
+      # "kitty_mod+enter" = "new_window"; # Default new window
+      # "kitty_mod+shift+enter" = "new_os_window"; # New OS window
 
-    #   # --- Copy/Paste ---
-    #   "ctrl+shift+c" = "copy_to_clipboard";
-    #   "ctrl+shift+v" = "paste_from_clipboard";
-    #   # "shift+insert"      = "paste_from_selection"; # Linux middle-click style paste
+      # # --- Copy/Paste ---
+      # "ctrl+shift+c" = "copy_to_clipboard";
+      # "ctrl+shift+v" = "paste_from_clipboard";
+      # # "shift+insert"      = "paste_from_selection"; # Linux middle-click style paste
 
-    #   # --- Font Size ---
-    #   "kitty_mod+equal" = "increase_font_size";
-    #   "kitty_mod+minus" = "decrease_font_size";
-    #   "kitty_mod+backspace" = "restore_font_size";
+      # # --- Font Size ---
+      # "kitty_mod+equal" = "increase_font_size";
+      # "kitty_mod+minus" = "decrease_font_size";
+      # "kitty_mod+backspace" = "restore_font_size";
 
-    #   # --- Scrolling ---
-    #   "kitty_mod+k" = "scroll_line_up";
-    #   "kitty_mod+j" = "scroll_line_down";
-    #   "kitty_mod+page_up" = "scroll_page_up";
-    #   "kitty_mod+page_down" = "scroll_page_down";
-    #   "kitty_mod+home" = "scroll_home";
-    #   "kitty_mod+end" = "scroll_end";
+      # # --- Scrolling ---
+      # "kitty_mod+k" = "scroll_line_up";
+      # "kitty_mod+j" = "scroll_line_down";
+      # "kitty_mod+page_up" = "scroll_page_up";
+      # "kitty_mod+page_down" = "scroll_page_down";
+      # "kitty_mod+home" = "scroll_home";
+      # "kitty_mod+end" = "scroll_end";
 
-    #   # --- Shell Interaction ---
-    #   # Map Ctrl+Left/Right to move by word in many shells (sends Alt+B/F)
-    #   "ctrl+left" = "send_text all \\x1b\\x62"; # Send Alt+B (backward-word)
-    #   "ctrl+right" = "send_text all \\x1b\\x66"; # Send Alt+F (forward-word)
+      # # --- Shell Interaction ---
+      # # Map Ctrl+Left/Right to move by word in many shells (sends Alt+B/F)
+      # "ctrl+left" = "send_text all \\x1b\\x62"; # Send Alt+B (backward-word)
+      # "ctrl+right" = "send_text all \\x1b\\x66"; # Send Alt+F (forward-word)
 
-    #   # --- Misc ---
-    #   "kitty_mod+shift+k" = "clear_terminal scrollback"; # Clear scrollback
-    #   "kitty_mod+shift+f11" = "toggle_fullscreen";
-    #   "kitty_mod+f1" = "show_scrollback"; # View scrollback in pager (less)
-    #   "kitty_mod+," = "edit_config_file"; # Open kitty.conf for editing
-    # };
+      # # --- Misc ---
+      # "kitty_mod+shift+k" = "clear_terminal scrollback"; # Clear scrollback
+      # "kitty_mod+shift+f11" = "toggle_fullscreen";
+      # "kitty_mod+f1" = "show_scrollback"; # View scrollback in pager (less)
+      # "kitty_mod+," = "edit_config_file"; # Open kitty.conf for editing
+    };
   };
 
   # Define user environment packages
@@ -268,9 +271,10 @@
 
     unzip
 
-    kubectl
-    k9s
-    kubernetes-helm
+    unstable.kubectl
+    unstable.k9s
+    unstable.kubernetes-helm
+    unstable.fluxcd
 
     unstable.opentofu
     unstable.terragrunt

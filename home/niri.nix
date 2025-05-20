@@ -15,7 +15,7 @@ in {
 
       "Alt+Tab".action = focus-window-previous;
 
-      "Mod+T".action = spawn "kitty";
+      "Mod+Return".action = spawn "kitty";
       "Mod+Space".action = sh "rofi -show drun -show-icon ";
 
       "Mod+Shift+S".action = screenshot;
