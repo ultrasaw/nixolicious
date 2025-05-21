@@ -5,7 +5,7 @@
     unstable.go
     unstable.gopls
     unstable.gotools
-    golangci-lint
-    golangci-lint-langserver
+    unstable.golangci-lint
+    unstable.golangci-lint-langserver
   ];
 }

@@ -2,9 +2,7 @@
 
 {
   environment.systemPackages = with pkgs; [
-    rustc
-    cargo
-    libgccjit
-    gcc
+    unstable.rustc
+    unstable.cargo
   ];
 }
