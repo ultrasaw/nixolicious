@@ -120,7 +120,7 @@ in {
       mode = {
         width = 3840;
         height = 2160;
-        refresh = 120.000; # Ensure this is an integer
+        refresh = 120.000;
       };
     };
 

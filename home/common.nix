@@ -214,9 +214,9 @@
       # "kitty_mod+shift+." = "move_tab_forward";
 
       # # --- Window/Tab Management ---
-      "super+t" = "new_tab_with_cwd";
-      "super+]" = "next_tab";
-      "super+[" = "previous_tab";
+      "alt+t" = "new_tab_with_cwd";
+      "alt+shift+]" = "next_tab";
+      "alt+shift+[" = "previous_tab";
       # "kitty_mod+t" = "new_tab"; # Default new tab
       # "kitty_mod+w" = "close_tab"; # Close tab (default)
       # "kitty_mod+enter" = "new_window"; # Default new window
