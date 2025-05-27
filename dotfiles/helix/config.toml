@@ -47,10 +47,10 @@ c = "change_selection_noyank"
 ] # Move line(s) up
 
 [keys.select]
-C-n = "normal_mode"
+C-q = "normal_mode"
 
 [keys.insert]
-C-n = "normal_mode"
+C-q = "normal_mode"
 C-a = "insert_at_line_start"
 C-e = "insert_at_line_end"
 C-b = "move_char_left"
