@@ -11,7 +11,7 @@ let
     # start Niri in the background
     ${niriPackage}/bin/niri &
     NIRI_PID=$!
-    sleep 2
+    sleep 3
 
     # start Waybar in the background
     systemctl --user start waybar.service &
