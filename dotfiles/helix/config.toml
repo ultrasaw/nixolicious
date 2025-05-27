@@ -76,3 +76,7 @@ max-depth = 4
 
 [editor]
 bufferline = "always"
+
+[editor.auto-save]
+after-delay.enable = true
+after-delay.timeout = 180000
