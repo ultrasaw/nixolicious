@@ -80,3 +80,4 @@ bufferline = "always"
 [editor.auto-save]
 after-delay.enable = true
 after-delay.timeout = 6000
+focus-lost=true
