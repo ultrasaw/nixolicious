@@ -79,4 +79,4 @@ bufferline = "always"
 
 [editor.auto-save]
 after-delay.enable = true
-after-delay.timeout = 180000
+after-delay.timeout = 6000
