@@ -46,7 +46,7 @@ in
       timeouts = [
         { timeout = screen-blank-timeout; command = "${niri-bin} msg action power-off-monitors"; }
         { timeout = screen-blank-timeout + lock-after-blank-timeout; command = "${loginctl} lock-session"; }
-        { timeout = sleep-timeout; command = "${systemctl} suspend"; }
+        # { timeout = sleep-timeout; command = "${systemctl} suspend"; }
       ];
       events = [
         { event = "lock"; command = lock-session.outPath; }
