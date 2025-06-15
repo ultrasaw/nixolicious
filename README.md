@@ -4,7 +4,7 @@
 - browser - chrome, firefox
 - text editor / IDE - helix, vscode, obsidian
 - talking - telegram, slack
-- coding - golang, rust, python, r
+- coding - golang, rust, python
 - dev tools - docker, kubectl, k9s, opentofu
 - shell - zsh + oh-my-zsh + starship
 - terminal emulator - kitty (I have two cats now, so alacritty had to go)
