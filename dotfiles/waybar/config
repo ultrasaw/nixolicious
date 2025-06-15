@@ -27,7 +27,7 @@
      "wlr/taskbar": {
         "format": "{icon}",
         "icon-size": 30,
-        "icon-theme": "Star",
+        "icon-theme": "Papirus-Dark", // Star
         "tooltip-format": "{title}",
         "on-click": "activate",
         "on-click-right": "close"

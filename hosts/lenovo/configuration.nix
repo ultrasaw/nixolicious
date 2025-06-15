@@ -94,5 +94,5 @@
   home-manager.useUserPackages = true;
 
   # System version
-  system.stateVersion = "24.11";
+  system.stateVersion = "25.05";
 }

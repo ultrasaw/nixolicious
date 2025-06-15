@@ -55,7 +55,7 @@ in
       systemdTarget = "niri.service";
     };
 
-  systemd.user.services.swayidle.Unit.After = "niri.service";
+  # systemd.user.services.swayidle.Unit.After = "niri.service";
 
   # OSD for volume, brightness changes
   systemd.user.services.swayosd = {

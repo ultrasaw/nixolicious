@@ -24,9 +24,25 @@ let
       sha256 = "sha256-Jssmb5owrgNWlmLFSKCgqMJKp3sPpOrlEUBwzZSSpbM=";
     }
   ];
+
+  # create the wrapped VS Code package to disable gpu, otherwise flickering
+  vscodeWithGpuDisabled = pkgs.symlinkJoin {
+    name = "vscode-with-gpu-disabled";
+
+    pname = pkgs.vscode.pname;
+    version = pkgs.vscode.version;
+
+    paths = [ pkgs.vscode ];
+    buildInputs = [ pkgs.makeWrapper ]; # add tool to wrap the program
+    postBuild = ''
+      wrapProgram $out/bin/code --add-flags "--disable-gpu"
+    '';
+  };
+
 in {
   programs.vscode = {
     enable = true;
+    package = vscodeWithGpuDisabled;
     enableUpdateCheck = false;
     mutableExtensionsDir = false;
     extensions = extensions;
