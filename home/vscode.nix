@@ -16,6 +16,7 @@ let
     hashicorp.terraform
     eamodio.gitlens
     ms-azuretools.vscode-docker
+    ms-pyright.pyright
   ]) ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
     {
       name = "kdl";

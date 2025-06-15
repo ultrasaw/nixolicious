@@ -1,17 +1,12 @@
 { config, pkgs, ... }:
 
-let
-  pythonPackages = with pkgs.python3Packages; [
-    numpy
-    yq
-    jq
-  ];
-
-  pythonEnv = pkgs.python3.withPackages (ps: pythonPackages);
-in
 {
   environment.systemPackages = with pkgs; [
-    pythonEnv
-    pyright
+    # Core Python interpreter from unstable
+    python313
+
+    pyright        # Pyright is a full-featured, standards-based static type checker for Python
+    black          # Code formatter
+    isort          # Import sorter
   ];
 }
