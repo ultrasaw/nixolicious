@@ -17,6 +17,7 @@ let
     eamodio.gitlens
     ms-azuretools.vscode-docker
     ms-pyright.pyright
+    ms-toolsai.jupyter
   ]) ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
     {
       name = "kdl";
