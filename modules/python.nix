@@ -1,12 +1,18 @@
 { config, pkgs, ... }:
 
+let
+  python-with-packages = pkgs.python312.withPackages (ps: with ps; [
+    jq # example system-wide packages
+    yq
+  ]);
+in
 {
   environment.systemPackages = with pkgs; [
-    # Core Python interpreter from unstable
-    python313
+    pyright
+    black
+    isort
 
-    pyright        # Pyright is a full-featured, standards-based static type checker for Python
-    black          # Code formatter
-    isort          # Import sorter
+    # py pkgs
+    python-with-packages
   ];
 }

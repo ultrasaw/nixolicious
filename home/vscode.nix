@@ -4,7 +4,6 @@ let
   extensions = (with pkgs.vscode-extensions; [
     bbenoist.nix
     golang.go
-    ms-python.python
     github.github-vscode-theme
     # vscodevim.vim
     yzhang.markdown-all-in-one
@@ -15,9 +14,6 @@ let
     oderwat.indent-rainbow
     hashicorp.terraform
     eamodio.gitlens
-    ms-azuretools.vscode-docker
-    ms-pyright.pyright
-    ms-toolsai.jupyter
   ]) ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
     {
       name = "kdl";
@@ -45,11 +41,15 @@ in {
   programs.vscode = {
     enable = true;
     package = vscodeWithGpuDisabled;
-    enableUpdateCheck = false;
-    mutableExtensionsDir = false;
+    enableUpdateCheck = true;
+    mutableExtensionsDir = true;
     extensions = extensions;
 
     userSettings = {
+      # python.formatting.blackPath = "${pkgs.black}/bin/black";
+      # python.defaultInterpreterPath = "./venv/bin/python";
+      # python.terminal.activateEnvironment = true; # activate the selected interpreter in new terminals.
+
       "git.confirmSync" = false;
       "workbench.iconTheme" = "icons";
       "window.zoomLevel" = 2.2;
