@@ -3,11 +3,6 @@
 let
   pythonPackages = with pkgs.python3Packages; [
     numpy
-    pandas
-    matplotlib
-    plotly
-    scikit-learn
-    catboost
     yq
     jq
   ];

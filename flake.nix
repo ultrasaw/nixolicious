@@ -63,7 +63,6 @@
           # base
           ./hosts/tower/configuration.nix
           ./modules/base.nix
-          ./modules/r.nix
           ./modules/python.nix
           ./modules/go.nix
           ./modules/rust.nix
@@ -96,7 +95,6 @@
 	        ./modules/gnome.nix
           # ./modules/greetd.nix
           # ./modules/hyprland.nix
-          ./modules/r.nix
           ./modules/python.nix
           ./modules/go.nix
           ./modules/rust.nix
