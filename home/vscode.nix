@@ -65,6 +65,12 @@ in {
         "editor.background" = "#1c1f21";
         "terminal.background" = "#1c1f21";
       };
+      "dataWrangler.outputRenderer.enabledTypes" = {
+        "polars.dataframe.frame.DataFrame" = true;
+        "polars.series.series.Series" = true;
+        "pyspark.sql.dataframe.DataFrame" = true;
+        "pyspark.sql.connect.dataframe.DataFrame" = true;
+      };
       "editor.tokenColorCustomizations" = {
         textMateRules = [
           {
