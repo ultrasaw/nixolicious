@@ -49,6 +49,7 @@
 
       telegram-desktop
       slack
+      discord
 
       # blueman
       blueberry # bluetooth manager GUI
