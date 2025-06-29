@@ -232,5 +232,9 @@ in {
         clip-to-geometry = true;
       }
     ];
+
+    gestures = {
+      hot-corners.enable = false;
+    };
   };
 }
