@@ -269,6 +269,7 @@
 
     nwg-bar
 
+    zip
     unzip
 
     unstable.kubectl
