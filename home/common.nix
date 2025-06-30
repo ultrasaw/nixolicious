@@ -272,6 +272,8 @@
     zip
     unzip
 
+    argo-workflows
+
     unstable.kubectl
     unstable.k9s
     unstable.kubernetes-helm
