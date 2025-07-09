@@ -49,6 +49,10 @@ disabled = false
 context_pattern = "arn:aws:eks:.*:.*:cluster/(?P<cluster>.*)"
 context_alias = "$cluster"
 
+[[kubernetes.contexts]]
+context_pattern = "gke_.*_.*_(?P<cluster>.*)"
+context_alias = "$cluster"
+
 [cmd_duration]
 format = "[$duration]($style) "
 style = "yellow"
