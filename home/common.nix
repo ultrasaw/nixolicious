@@ -257,6 +257,7 @@
   # Define user environment packages
   home.packages = with pkgs; [
     htop
+    hyperfine
     lsof
 
     google-chrome
