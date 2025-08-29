@@ -276,6 +276,7 @@
 
     argo-workflows
 
+    unstable.gemini-cli
     unstable.kubectl
     unstable.k9s
     unstable.kubernetes-helm
