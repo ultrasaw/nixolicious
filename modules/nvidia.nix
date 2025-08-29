@@ -1,7 +1,7 @@
 { lib, pkgs, config, ...}:
 
 let
-  nvidiaDriverChannel = config.boot.kernelPackages.nvidiaPackages.latest; # stable, beta, etc.
+  nvidiaDriverChannel = config.boot.kernelPackages.nvidiaPackages.stable; # stable, beta, latest, etc.
 in {
   # Load nvidia driver for Xorg and Wayland
   services.xserver.videoDrivers = ["nvidia"]; # or "nvidiaLegacy470 etc.
