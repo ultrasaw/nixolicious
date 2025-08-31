@@ -29,6 +29,7 @@
       ga = "git add";
       gc = "git commit";
       gp = "git push";
+      gx = "git checkout";
 
       # cat
       cat = "bat --style=numbers --color=always -P";
