@@ -53,6 +53,7 @@ in {
       "git.confirmSync" = false;
       "workbench.iconTheme" = "icons";
       "window.zoomLevel" = 2.2;
+      "terminal.integrated.defaultProfile.linux" = "zsh";
       # "terminal.integrated.fontFamily" = "monospace";
       "editor.mouseWheelScrollSensitivity" = 3;
       "editor.fontFamily" = "'JetBrains Mono', Consolas, 'Courier New', monospace";
