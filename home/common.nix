@@ -282,6 +282,7 @@
     unstable.k9s
     unstable.kubernetes-helm
     unstable.fluxcd
+    unstable.kind
 
     unstable.opentofu
     unstable.terragrunt
