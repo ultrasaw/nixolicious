@@ -42,11 +42,14 @@
       pkgs = nixpkgs.legacyPackages.${system};
       lib = nixpkgs.lib;
       theme = "sakura";
-      # unstablePkgs = nixpkgs-unstable.legacyPackages.${system};
+      unstablePkgs = import inputs.nixpkgs-unstable {
+        inherit system;
+        config.allowUnfree = true;
+      };
 
       # define the overlay function
       unstable-overlay = final: prev: {
-        unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.system};
+        unstable = unstablePkgs;
       };
 
     in {
