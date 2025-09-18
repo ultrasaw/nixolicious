@@ -260,6 +260,7 @@
     htop
     hyperfine
     lsof
+    jq
 
     google-chrome
     firefox
