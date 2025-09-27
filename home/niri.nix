@@ -186,6 +186,7 @@ in {
     };
 
     input = {
+      mouse.scroll-factor = 2.0;
       focus-follows-mouse.enable = false;
       touchpad.click-method = "clickfinger";
       

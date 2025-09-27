@@ -55,7 +55,7 @@ in {
       "window.zoomLevel" = 2.2;
       "terminal.integrated.defaultProfile.linux" = "zsh";
       # "terminal.integrated.fontFamily" = "monospace";
-      "editor.mouseWheelScrollSensitivity" = 3;
+      "editor.mouseWheelScrollSensitivity" = 2;
       "editor.fontFamily" = "'JetBrains Mono', Consolas, 'Courier New', monospace";
       "editor.fontSize" = 13;
       "editor.fontLigatures" = true;
