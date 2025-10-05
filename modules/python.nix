@@ -5,6 +5,7 @@ let
     jq # example system-wide packages
     yq
     numpy
+    polars
   ]);
 in
 {
