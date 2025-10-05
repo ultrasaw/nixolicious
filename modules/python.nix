@@ -4,6 +4,7 @@ let
   python-with-packages = pkgs.python312.withPackages (ps: with ps; [
     jq # example system-wide packages
     yq
+    numpy
   ]);
 in
 {
