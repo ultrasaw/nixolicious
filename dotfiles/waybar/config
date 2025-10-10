@@ -10,7 +10,7 @@
 
     "modules-left":["idle_inhibitor", "pulseaudio", "cpu", "memory", "disk", "temperature"],
     // "modules-center": ["custom/browse",  "custom/search", "custom/media","wlr/taskbar", "custom/power"],
-    "modules-center": ["custom/browse",  "custom/search", "wlr/taskbar", "custom/power"],
+    "modules-center": ["custom/browse",  "custom/search", "custom/power"],
     // "modules-right":["backlight", "keyboard-state", "battery", "network", "tray", "hyprland/language", "clock"],
     "modules-right":["network", "battery", "tray", "hyprland/language", "clock"],
     // Modules configuration
