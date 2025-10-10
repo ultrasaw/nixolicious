@@ -13,7 +13,7 @@ in {
     in {
       "Mod+Shift+Slash".action = show-hotkey-overlay;
 
-      "Alt+Tab".action = sh "rofi -show window -kb-accept-entry 'Alt_L' -kb-row-up 'Up,Control-p,k' -kb-row-down 'Down,Control-n,j'";
+      "Alt+Tab".action = sh "rofi -show window -kb-accept-entry 'Alt_L,Return' -kb-row-up 'Up,Control-p,k' -kb-row-down 'Down,Control-n,j'";
 
       "Mod+Return".action = spawn "kitty";
       "Mod+Space".action = sh "rofi -show drun -show-icon ";
