@@ -6,10 +6,28 @@ let
     # Get window information from niri
     windows_output=$(${config.programs.niri.package}/bin/niri msg windows)
 
+    # Function to find icon for an app-id
+    get_icon() {
+        local app_id="$1"
+        # Try to find desktop file for this app
+        for dir in /run/current-system/sw/share/applications ~/.local/share/applications /usr/share/applications; do
+            if [[ -f "$dir/$app_id.desktop" ]]; then
+                icon=$(grep -m1 "^Icon=" "$dir/$app_id.desktop" | cut -d= -f2)
+                if [[ -n "$icon" ]]; then
+                    echo "$icon"
+                    return
+                fi
+            fi
+        done
+        # Fallback to app-id itself
+        echo "$app_id"
+    }
+
     # Arrays to store window data
     declare -a window_ids
     declare -a window_titles
     declare -a window_apps
+    declare -a window_icons
     declare -a focused_index
 
     # Parse the output
@@ -27,6 +45,7 @@ let
                 window_ids+=("$current_id")
                 window_titles+=("$current_title")
                 window_apps+=("$current_app")
+                window_icons+=("$(get_icon "$current_app")")
                 if $is_focused; then
                     focused_index=$index
                 fi
@@ -53,40 +72,58 @@ let
         window_ids+=("$current_id")
         window_titles+=("$current_title")
         window_apps+=("$current_app")
+        window_icons+=("$(get_icon "$current_app")")
         if $is_focused; then
             focused_index=$index
         fi
     fi
 
-    # Build rofi list - focused window first, then others
-    declare -a rofi_lines
-    declare -a rofi_ids
+    # Exit if no windows
+    if [[ ''${#window_ids[@]} -eq 0 ]]; then
+        exit 0
+    fi
+
+    # Build sorted window list - focused first, then others
+    declare -a sorted_ids
+    declare -a sorted_titles
+    declare -a sorted_apps
+    declare -a sorted_icons
 
     # Add focused window first
     if [[ -n "$focused_index" ]]; then
-        rofi_lines+=("''${window_apps[$focused_index]}: ''${window_titles[$focused_index]}")
-        rofi_ids+=("''${window_ids[$focused_index]}")
+        sorted_ids+=("''${window_ids[$focused_index]}")
+        sorted_titles+=("''${window_titles[$focused_index]}")
+        sorted_apps+=("''${window_apps[$focused_index]}")
+        sorted_icons+=("''${window_icons[$focused_index]}")
     fi
 
     # Add other windows
     for i in "''${!window_ids[@]}"; do
         if [[ $i -ne ''${focused_index:-999} ]]; then
-            rofi_lines+=("''${window_apps[$i]}: ''${window_titles[$i]}")
-            rofi_ids+=("''${window_ids[$i]}")
+            sorted_ids+=("''${window_ids[$i]}")
+            sorted_titles+=("''${window_titles[$i]}")
+            sorted_apps+=("''${window_apps[$i]}")
+            sorted_icons+=("''${window_icons[$i]}")
         fi
     done
 
-    # Show in rofi and get selection
-    if [[ ''${#rofi_lines[@]} -eq 0 ]]; then
-        exit 0
-    fi
+    # Build and pipe rofi entries with icon information
+    rofi_input() {
+        for i in "''${!sorted_ids[@]}"; do
+            # Entry format: "display text\0icon\x1ficon-name\n"
+            printf "%s: %s\0icon\x1f%s\n" "''${sorted_apps[$i]}" "''${sorted_titles[$i]}" "''${sorted_icons[$i]}"
+        done
+    }
 
-    selected_index=$(printf '%s\n' "''${rofi_lines[@]}" | ${pkgs.rofi-wayland}/bin/rofi -dmenu -i -p "Windows" -format i -kb-accept-entry 'Alt_L,Return' -kb-row-up 'Up,Control-p,k' -kb-row-down 'Down,Control-n,j')
+    # Show in rofi dmenu and get selection index
+    selected_index=$(rofi_input | ${pkgs.rofi-wayland}/bin/rofi -dmenu -i -p "Windows" -show-icons -format i -kb-accept-entry 'Alt_L,Return' -kb-row-up 'Up,Control-p,k' -kb-row-down 'Down,Control-n,j')
 
-    # Focus the selected window
-    if [[ -n "$selected_index" ]] && [[ "$selected_index" =~ ^[0-9]+$ ]]; then
-        selected_id="''${rofi_ids[$selected_index]}"
-        ${config.programs.niri.package}/bin/niri msg action focus-window --id "$selected_id"
+    # If an entry was selected, focus the corresponding window
+    if [[ -n "$selected_index" && "$selected_index" -ge 0 ]]; then
+        selected_id="''${sorted_ids[$selected_index]}"
+        if [[ -n "$selected_id" ]]; then
+            ${config.programs.niri.package}/bin/niri msg action focus-window --id "$selected_id"
+        fi
     fi
   '';
 in {
