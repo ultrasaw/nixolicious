@@ -5,7 +5,7 @@
     enable = true;
     package = pkgs.rofi-wayland;
     extraConfig = {
-      modi = "drun,filebrowser,run";
+      modi = "drun,filebrowser,run,window";
       show-icons = true;
       icon-theme = "Papirus";
       location = 0;

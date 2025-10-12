@@ -290,6 +290,8 @@
     unstable.opentofu
     unstable.terragrunt
 
+    # unstable.walker # rofi alternative
+
     awscli2
     s3cmd
 
