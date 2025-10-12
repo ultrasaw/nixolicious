@@ -2,18 +2,105 @@
 
 let
   theme = config.lib.stylix.colors;
+  windowSwitcher = pkgs.writeShellScriptBin "niri-window-switcher" ''
+    # Get window information from niri
+    windows_output=$(${config.programs.niri.package}/bin/niri msg windows)
+
+    # Arrays to store window data
+    declare -a window_ids
+    declare -a window_titles
+    declare -a window_apps
+    declare -a focused_index
+
+    # Parse the output
+    current_id=""
+    current_title=""
+    current_app=""
+    is_focused=false
+    index=0
+
+    while IFS= read -r line; do
+        # Check if line starts with "Window ID"
+        if [[ $line =~ ^Window\ ID\ ([0-9]+):(.*) ]]; then
+            # Save previous window if exists
+            if [[ -n "$current_id" ]]; then
+                window_ids+=("$current_id")
+                window_titles+=("$current_title")
+                window_apps+=("$current_app")
+                if $is_focused; then
+                    focused_index=$index
+                fi
+                ((index++))
+            fi
+            
+            # Start new window
+            current_id="''${BASH_REMATCH[1]}"
+            is_focused=false
+            if [[ $line == *"(focused)"* ]]; then
+                is_focused=true
+            fi
+            current_title=""
+            current_app=""
+        elif [[ $line =~ ^[[:space:]]*Title:\ \"(.*)\"$ ]]; then
+            current_title="''${BASH_REMATCH[1]}"
+        elif [[ $line =~ ^[[:space:]]*App\ ID:\ \"(.*)\"$ ]]; then
+            current_app="''${BASH_REMATCH[1]}"
+        fi
+    done <<< "$windows_output"
+
+    # Save last window
+    if [[ -n "$current_id" ]]; then
+        window_ids+=("$current_id")
+        window_titles+=("$current_title")
+        window_apps+=("$current_app")
+        if $is_focused; then
+            focused_index=$index
+        fi
+    fi
+
+    # Build rofi list - focused window first, then others
+    declare -a rofi_lines
+    declare -a rofi_ids
+
+    # Add focused window first
+    if [[ -n "$focused_index" ]]; then
+        rofi_lines+=("''${window_apps[$focused_index]}: ''${window_titles[$focused_index]}")
+        rofi_ids+=("''${window_ids[$focused_index]}")
+    fi
+
+    # Add other windows
+    for i in "''${!window_ids[@]}"; do
+        if [[ $i -ne ''${focused_index:-999} ]]; then
+            rofi_lines+=("''${window_apps[$i]}: ''${window_titles[$i]}")
+            rofi_ids+=("''${window_ids[$i]}")
+        fi
+    done
+
+    # Show in rofi and get selection
+    if [[ ''${#rofi_lines[@]} -eq 0 ]]; then
+        exit 0
+    fi
+
+    selected_index=$(printf '%s\n' "''${rofi_lines[@]}" | ${pkgs.rofi-wayland}/bin/rofi -dmenu -i -p "Windows" -format i -kb-accept-entry 'Alt_L,Return' -kb-row-up 'Up,Control-p,k' -kb-row-down 'Down,Control-n,j')
+
+    # Focus the selected window
+    if [[ -n "$selected_index" ]] && [[ "$selected_index" =~ ^[0-9]+$ ]]; then
+        selected_id="''${rofi_ids[$selected_index]}"
+        ${config.programs.niri.package}/bin/niri msg action focus-window --id "$selected_id"
+    fi
+  '';
 in {
 
   # xdg.portal.extraPortals = [pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-gnome pkgs.gnome-keyring];
   xdg.portal.extraPortals = [pkgs.xdg-desktop-portal-gnome];
-  home.packages = [pkgs.dconf pkgs.swww pkgs.brightnessctl pkgs.wl-clipboard];
+  home.packages = [pkgs.dconf pkgs.swww pkgs.brightnessctl pkgs.wl-clipboard windowSwitcher];
   programs.niri.settings = {
     binds = with config.lib.niri.actions; let
       sh = spawn "sh" "-c";
     in {
       "Mod+Shift+Slash".action = show-hotkey-overlay;
 
-      "Alt+Tab".action = sh "rofi -show window -kb-accept-entry 'Alt_L,Return' -kb-row-up 'Up,Control-p,k' -kb-row-down 'Down,Control-n,j'";
+      "Alt+Tab".action = spawn "niri-window-switcher";
 
       "Mod+Return".action = spawn "kitty";
       "Mod+Space".action = sh "rofi -show drun -show-icon ";
