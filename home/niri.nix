@@ -83,27 +83,93 @@ let
         exit 0
     fi
 
-    # Build sorted window list - focused first, then others
+    # --- MRU Sorting Logic ---
+
+    # History file for MRU list
+    history_file="''${XDG_RUNTIME_DIR:-/tmp}/niri_window_history_''${UID}"
+    touch "$history_file" # Ensure the file exists
+
+    # Get the ID of the currently focused window
+    focused_id=""
+    if [[ -n "$focused_index" ]]; then
+        focused_id="''${window_ids[$focused_index]}"
+    fi
+
+    # Read old history from file
+    mapfile -t old_history < "$history_file"
+
+    # Build the new history list in MRU order
+    declare -a new_history
+    
+    # 1. Add the currently focused window to the top
+    if [[ -n "$focused_id" ]]; then
+        new_history+=("$focused_id")
+    fi
+
+    # 2. Add windows from the old history, if they still exist and are not the focused one
+    for id in "''${old_history[@]}"; do
+        # Don't add the focused window again
+        if [[ "$id" == "$focused_id" ]]; then
+            continue
+        fi
+        
+        # Check if window still exists among the open windows
+        is_open=false
+        for open_id in "''${window_ids[@]}"; do
+            if [[ "$id" == "$open_id" ]]; then
+                is_open=true
+                break
+            fi
+        done
+
+        if $is_open; then
+            new_history+=("$id")
+        fi
+    done
+
+    # 3. Add any newly opened windows that aren't in the history yet
+    for id in "''${window_ids[@]}"; do
+        is_in_new_history=false
+        for history_id in "''${new_history[@]}"; do
+            if [[ "$id" == "$history_id" ]]; then
+                is_in_new_history=true
+                break
+            fi
+        done
+        if ! $is_in_new_history; then
+            new_history+=("$id")
+        fi
+    done
+
+    # Write the updated MRU list back to the history file
+    printf "%s\n" "''${new_history[@]}" > "$history_file"
+
+    # --- Build sorted arrays for Rofi based on MRU order ---
+
     declare -a sorted_ids
     declare -a sorted_titles
     declare -a sorted_apps
     declare -a sorted_icons
 
-    # Add focused window first
-    if [[ -n "$focused_index" ]]; then
-        sorted_ids+=("''${window_ids[$focused_index]}")
-        sorted_titles+=("''${window_titles[$focused_index]}")
-        sorted_apps+=("''${window_apps[$focused_index]}")
-        sorted_icons+=("''${window_icons[$focused_index]}")
-    fi
-
-    # Add other windows
+    # Create lookup maps for window details for efficient reordering
+    declare -A window_titles_map
+    declare -A window_apps_map
+    declare -A window_icons_map
     for i in "''${!window_ids[@]}"; do
-        if [[ $i -ne ''${focused_index:-999} ]]; then
-            sorted_ids+=("''${window_ids[$i]}")
-            sorted_titles+=("''${window_titles[$i]}")
-            sorted_apps+=("''${window_apps[$i]}")
-            sorted_icons+=("''${window_icons[$i]}")
+        id="''${window_ids[$i]}"
+        window_titles_map[$id]="''${window_titles[$i]}"
+        window_apps_map[$id]="''${window_apps[$i]}"
+        window_icons_map[$id]="''${window_icons[$i]}"
+    done
+
+    # Populate the sorted_* arrays in the correct MRU order from new_history
+    for id in "''${new_history[@]}"; do
+        # Ensure the window from history still exists before adding it
+        if [[ -v "window_titles_map[$id]" ]]; then
+            sorted_ids+=("$id")
+            sorted_titles+=("''${window_titles_map[$id]}")
+            sorted_apps+=("''${window_apps_map[$id]}")
+            sorted_icons+=("''${window_icons_map[$id]}")
         fi
     done
 
@@ -116,7 +182,7 @@ let
     }
 
     # Show in rofi dmenu and get selection index
-    selected_index=$(rofi_input | ${pkgs.rofi-wayland}/bin/rofi -dmenu -i -p "Windows" -show-icons -format i -kb-accept-entry 'Alt_L,Return' -kb-row-up 'Up,Control-p,k' -kb-row-down 'Down,Control-n,j')
+    selected_index=$(rofi_input | ${pkgs.rofi-wayland}/bin/rofi -dmenu -i -p "Windows" -show-icons -format i -selected-row 1 -kb-accept-entry 'Alt_L,Return' -kb-row-up 'Up,Control-p,k' -kb-row-down 'Down,Control-n,j')
 
     # If an entry was selected, focus the corresponding window
     if [[ -n "$selected_index" && "$selected_index" -ge 0 ]]; then
