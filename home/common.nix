@@ -279,6 +279,7 @@
     argo-workflows
 
     unstable.gemini-cli
+    unstable.claude-code
     # unstable.code-cursor
 
     unstable.kubectl
