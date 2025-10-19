@@ -208,7 +208,7 @@ in {
       "Mod+Return".action = spawn "kitty";
       "Mod+Space".action = sh "rofi -show drun -show-icon ";
 
-      "Mod+Shift+S".action = screenshot;
+      "Mod+Shift+S".action = sh "niri msg action screenshot";
       "Mod+S".action = sh "grim -g \"$(slurp)\" - | swappy -f - -o -";
 
       "Ctrl+Alt+Q".action = sh "swaylock -f -c 000000";
@@ -379,18 +379,10 @@ in {
       mouse.scroll-factor = 2.0;
       focus-follows-mouse.enable = false;
       touchpad.click-method = "clickfinger";
-      
-      # does not change the kb to beave like an apple one
-      # keyboard = {
-      #   xkb = {
-      #     layout = "us(mac)";
-      #     model = "applealu_ansi";
-      #   };
-      # };
     };
 
     animations = let
-      movement-conf = {
+      spring-kind = {
         spring = {
           damping-ratio = 0.760000;
           epsilon = 0.000100;
@@ -398,9 +390,9 @@ in {
         };
       };
     in {
-      horizontal-view-movement = movement-conf;
-      window-movement = movement-conf;
-      workspace-switch = movement-conf;
+      horizontal-view-movement.kind = spring-kind;
+      window-movement.kind = spring-kind;
+      workspace-switch.kind = spring-kind;
     };
 
     window-rules = [

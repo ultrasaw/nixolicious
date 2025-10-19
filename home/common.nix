@@ -266,6 +266,7 @@
     firefox
     obsidian
 
+    unstable.xmodmap
     grim
     slurp
     swappy
@@ -279,8 +280,6 @@
     argo-workflows
 
     unstable.gemini-cli
-    unstable.claude-code
-    # unstable.code-cursor
 
     unstable.kubectl
     unstable.k9s

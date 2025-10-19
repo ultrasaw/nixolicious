@@ -68,7 +68,7 @@
   users.users.gio = {
     isNormalUser = true;
     # shell = pkgs.zsh; # defined in modules/base.nix; redundant, but kept for reference
-    extraGroups = [ "networkmanager" "wheel" "docker" "kvm" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" "kvm" "keyd" ];
   };
 
   security.sudo.wheelNeedsPassword = false;

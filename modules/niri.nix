@@ -103,6 +103,22 @@
   services = {
     udev.packages = [ pkgs.via ]; # for qmk
     gnome.gnome-keyring.enable = true;
+
+    # # capslock remapping
+    # keyd = {
+    #   enable = true;
+    #   keyboards = {
+    #     default = {
+    #       ids = [ "*" ];
+    #       settings = {
+    #         main = {
+    #           capslock = "print";
+    #         };
+    #       };
+    #     };
+    #   };
+    # };
+
     # blueman.enable = true;
     # flatpak.enable = true; # to use Flatpak you must enable XDG Desktop Portals with xdg.portal.enable.
   };

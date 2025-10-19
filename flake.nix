@@ -7,7 +7,7 @@
     hyprland.url = "github:hyprwm/Hyprland";
     nix-colors.url = "github:misterio77/nix-colors";
     # stylix.url = "github:danth/stylix";
-    niri-stable.url = "github:YaLTeR/niri/v25.02";
+    niri-stable.url = "github:YaLTeR/niri/v25.08";
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -70,6 +70,7 @@
           ./modules/go.nix
           ./modules/rust.nix
           ./modules/nvidia.nix
+          ./modules/agents.nix
 
           # niri
           ./modules/niri.nix
