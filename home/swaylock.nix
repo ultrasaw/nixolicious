@@ -20,28 +20,4 @@
     };
   };
 
-  services.swayidle = {
-    enable = true;
-    events = [
-      {
-        event = "before-sleep";
-        command = "swaylock";
-      }
-      {
-        event = "lock";
-        command = "swaylock -f -c 000000";
-      }
-    ];
-    timeouts = [
-      {
-        timeout = 300;
-        command = "hyprctl dispatch dpms off";
-        resumeCommand = "hyprctl dispatch dpms on";
-      }
-      {
-        timeout = 310;
-        command = "loginctl lock-session";
-      }
-    ];
-  };
 }

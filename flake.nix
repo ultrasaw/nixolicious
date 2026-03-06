@@ -10,7 +10,7 @@
     niri-stable.url = "github:YaLTeR/niri/v25.08";
 
     home-manager = {
-      url = "github:nix-community/home-manager";
+      url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
