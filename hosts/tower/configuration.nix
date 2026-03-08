@@ -45,7 +45,7 @@
   hardware.keyboard.qmk.enable = true;
 
   # Pipewire for audio
-  hardware.pulseaudio.enable = false;
+  services.pulseaudio.enable = false;
   hardware.bluetooth.enable = true;
   # services.blueman.enable = true;
   security.rtkit.enable = true;
@@ -77,7 +77,6 @@
     };
     sharedModules = [
       ./vars.nix
-      ({ config, pkgs, ... }: { nixpkgs.config.allowUnfree = true; })
     ];
   };
 

@@ -29,9 +29,10 @@ let
 
     pname = pkgs.vscode.pname;
     version = pkgs.vscode.version;
+    meta.mainProgram = "code";
 
     paths = [ pkgs.vscode ];
-    buildInputs = [ pkgs.makeWrapper ]; # add tool to wrap the program
+    buildInputs = [ pkgs.makeWrapper ];
     postBuild = ''
       wrapProgram $out/bin/code --add-flags "--disable-gpu"
     '';
@@ -41,11 +42,11 @@ in {
   programs.vscode = {
     enable = true;
     package = vscodeWithGpuDisabled;
-    enableUpdateCheck = true;
     mutableExtensionsDir = true;
-    extensions = extensions;
-
-    userSettings = {
+    profiles.default = {
+      enableUpdateCheck = true;
+      extensions = extensions;
+      userSettings = {
       # python.formatting.blackPath = "${pkgs.black}/bin/black";
       # python.defaultInterpreterPath = "./venv/bin/python";
       # python.terminal.activateEnvironment = true; # activate the selected interpreter in new terminals.
@@ -128,6 +129,7 @@ in {
         "nix"
       ];
       "terraform.languageServer.enable" = true;
+    };
     };
   };
 }

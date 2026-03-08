@@ -62,7 +62,7 @@
       theme = "clean"; # agnoster, amuse, arrow, clean
     };
 
-    initExtra = ''
+    initContent = ''
       # --- Start: Custom Terminal Title ---
 
       export DISABLE_AUTO_TITLE="true"
@@ -111,13 +111,17 @@
 
   programs.git = {
     enable = true;
-    aliases = {
-      pu = "push";
-      co = "checkout";
-      cm = "commit";
+    settings = {
+      alias = {
+        pu = "push";
+        co = "checkout";
+        cm = "commit";
+      };
+      user = {
+        email = "giordano2407@gmail.com";
+        name = "gio";
+      };
     };
-    userEmail = "giordano2407@gmail.com";
-    userName = "gio";
   };
 
   # a 'post-modern' text editor
@@ -153,7 +157,7 @@
   programs.kitty = {
     enable = true;
     shellIntegration.enableZshIntegration = false;
-    theme = "Adwaita dark";
+    themeFile = "adwaita_dark";
 
     font = {
       # Use the Nerd Font package installed above.
