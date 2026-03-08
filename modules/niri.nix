@@ -47,7 +47,7 @@
       xdg-utils
       angryipscanner
 
-      telegram-desktop
+      unstable.telegram-desktop
       slack
       discord
 
