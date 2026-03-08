@@ -1,0 +1,5 @@
+[mgr]
+prepend_keymap = [
+  # Enter: open file using opener (helix)
+  { on = ["<Enter>"], run = "open", desc = "Open in Helix" },
+]

@@ -1,0 +1,53 @@
+[mgr]
+ratio = [0, 3, 4]
+show_hidden = true
+sort_by = "natural"
+sort_dir_first = true
+
+[preview]
+max_width = 1920
+max_height = 1080
+image_quality = 90
+ueberzug_scale = 1
+ueberzug_offset = [0, 0, 0, 0]
+
+[opener]
+# Text files -> helix (via zellij pane or direct)
+helix = [
+  { run = '$HOME/.config/zellij/scripts/yazi-hx-open.sh "$@"', block = true, for = "unix" },
+]
+# Non-text files -> system default
+default = [
+  { run = 'xdg-open "$@"', desc = "Open with system default", for = "unix" },
+]
+
+[open]
+rules = [
+  # Folders
+  { name = "*/", use = "folder" },
+
+  # Images -> system default
+  { mime = "image/*", use = "default" },
+
+  # PDFs -> system default
+  { mime = "application/pdf", use = "default" },
+
+  # Videos/Audio -> system default
+  { mime = "video/*", use = "default" },
+  { mime = "audio/*", use = "default" },
+
+  # Text files -> helix
+  { mime = "text/*", use = "helix" },
+  { mime = "application/json", use = "helix" },
+  { mime = "application/javascript", use = "helix" },
+  { mime = "application/x-sh", use = "helix" },
+  { mime = "application/toml", use = "helix" },
+  { mime = "application/xml", use = "helix" },
+  { mime = "application/x-yaml", use = "helix" },
+
+  # Other application types -> system default
+  { mime = "application/*", use = "default" },
+
+  # Fallback: unknown files -> helix (probably text)
+  { name = "*", use = "helix" },
+]

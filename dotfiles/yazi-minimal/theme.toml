@@ -1,0 +1,65 @@
+# Minimal yazi theme - matching helix background (#1d1d1d)
+
+[mgr]
+# Main background matching helix
+cwd = { fg = "#6699cc" }
+hovered = { fg = "#ffffff", bg = "#505050" }
+preview_hovered = { underline = true }
+
+# Tabs
+tab_active = { fg = "#1d1d1d", bg = "#6699cc" }
+tab_inactive = { fg = "#888888", bg = "#2a2a2a" }
+tab_width = 1
+
+# Borders
+border_symbol = "│"
+border_style = { fg = "#444444" }
+
+# File highlighting
+folder = { fg = "#6699cc" }
+file = { fg = "#cccccc" }
+symlink = { fg = "#cc99cc" }
+orphan = { fg = "#cc6666" }
+executable = { fg = "#99cc99" }
+hidden = { fg = "#666666" }
+
+[status]
+# Footer background slightly brighter than main (#1d1d1d -> #2a2a2a)
+separator_open = ""
+separator_close = ""
+
+# Left side (mode, file count)
+mode_normal = { fg = "#888888", bg = "#2a2a2a" }
+mode_select = { fg = "#99cc99", bg = "#2a2a2a" }
+mode_unset = { fg = "#888888", bg = "#2a2a2a" }
+
+# Progress bar
+progress_label = { fg = "#666666", bg = "#2a2a2a" }
+progress_normal = { fg = "#444444", bg = "#2a2a2a" }
+progress_error = { fg = "#884444", bg = "#2a2a2a" }
+
+# Right side (permissions, position)
+perm_type = { fg = "#666666" }
+perm_read = { fg = "#668866" }
+perm_write = { fg = "#886666" }
+perm_exec = { fg = "#668888" }
+perm_sep = { fg = "#444444" }
+
+[mode]
+normal_main = { fg = "#888888", bg = "#2a2a2a" }
+normal_alt = { fg = "#666666", bg = "#2a2a2a" }
+select_main = { fg = "#99cc99", bg = "#2a2a2a" }
+select_alt = { fg = "#668866", bg = "#2a2a2a" }
+unset_main = { fg = "#888888", bg = "#2a2a2a" }
+unset_alt = { fg = "#666666", bg = "#2a2a2a" }
+
+[input]
+border = { fg = "#444444" }
+title = { fg = "#888888" }
+value = { fg = "#cccccc" }
+selected = { reversed = true }
+
+[completion]
+border = { fg = "#444444" }
+active = { fg = "#1d1d1d", bg = "#6699cc" }
+inactive = { fg = "#888888" }

@@ -246,7 +246,126 @@ load_plugins {
 // Choose the theme that is specified in the themes section.
 // Default: default
 // 
-theme "dracula"
+theme "dracula-dark-frames"
+
+// Custom theme: dracula with dark grey frames
+themes {
+    dracula-dark-frames {
+        // Dark grey frames
+        frame_unselected {
+            base 50 50 50
+            background 40 42 54
+            emphasis_0 50 50 50
+            emphasis_1 50 50 50
+            emphasis_2 50 50 50
+            emphasis_3 50 50 50
+        }
+        frame_selected {
+            base 80 80 80
+            background 40 42 54
+            emphasis_0 80 80 80
+            emphasis_1 80 80 80
+            emphasis_2 80 80 80
+            emphasis_3 80 80 80
+        }
+        frame_highlight {
+            base 139 233 253
+            background 40 42 54
+            emphasis_0 139 233 253
+            emphasis_1 139 233 253
+            emphasis_2 139 233 253
+            emphasis_3 139 233 253
+        }
+        text_unselected {
+            base 248 248 242
+            background 40 42 54
+            emphasis_0 255 121 198
+            emphasis_1 189 147 249
+            emphasis_2 139 233 253
+            emphasis_3 80 250 123
+        }
+        text_selected {
+            base 40 42 54
+            background 248 248 242
+            emphasis_0 255 85 85
+            emphasis_1 255 184 108
+            emphasis_2 241 250 140
+            emphasis_3 189 147 249
+        }
+        ribbon_unselected {
+            base 248 248 242
+            background 68 71 90
+            emphasis_0 255 121 198
+            emphasis_1 189 147 249
+            emphasis_2 139 233 253
+            emphasis_3 80 250 123
+        }
+        ribbon_selected {
+            base 40 42 54
+            background 80 250 123
+            emphasis_0 255 85 85
+            emphasis_1 255 184 108
+            emphasis_2 241 250 140
+            emphasis_3 189 147 249
+        }
+        table_title {
+            base 189 147 249
+            background 40 42 54
+            emphasis_0 255 121 198
+            emphasis_1 139 233 253
+            emphasis_2 80 250 123
+            emphasis_3 255 184 108
+        }
+        table_cell_unselected {
+            base 248 248 242
+            background 40 42 54
+            emphasis_0 255 121 198
+            emphasis_1 189 147 249
+            emphasis_2 139 233 253
+            emphasis_3 80 250 123
+        }
+        table_cell_selected {
+            base 40 42 54
+            background 68 71 90
+            emphasis_0 255 85 85
+            emphasis_1 255 184 108
+            emphasis_2 241 250 140
+            emphasis_3 189 147 249
+        }
+        list_unselected {
+            base 248 248 242
+            background 40 42 54
+            emphasis_0 255 121 198
+            emphasis_1 189 147 249
+            emphasis_2 139 233 253
+            emphasis_3 80 250 123
+        }
+        list_selected {
+            base 40 42 54
+            background 68 71 90
+            emphasis_0 255 85 85
+            emphasis_1 255 184 108
+            emphasis_2 241 250 140
+            emphasis_3 189 147 249
+        }
+        exit_code_success {
+            base 80 250 123
+            background 40 42 54
+            emphasis_0 80 250 123
+            emphasis_1 80 250 123
+            emphasis_2 80 250 123
+            emphasis_3 80 250 123
+        }
+        exit_code_error {
+            base 255 85 85
+            background 40 42 54
+            emphasis_0 255 85 85
+            emphasis_1 255 85 85
+            emphasis_2 255 85 85
+            emphasis_3 255 85 85
+        }
+    }
+}
  
 // Choose the base input mode of zellij.
 // Default: normal
@@ -411,4 +530,3 @@ default_mode "locked"
 // (Requires restart)
 // Default: true (if the host terminal supports it)
 // 
-// support_kitty_keyboard_protocol false

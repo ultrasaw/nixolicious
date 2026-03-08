@@ -4,4 +4,4 @@ ui.background = "black"
 
 [palette]
 # some darker alternatives: #24282e, #1e2228, or #1c1f24.
-black = "#1e2023"
+black = "#1d1d1d"

@@ -47,11 +47,11 @@ disabled = false
 
 [[kubernetes.contexts]]
 context_pattern = "arn:aws:eks:.*:.*:cluster/(?P<cluster>.*)"
-context_alias = "$cluster"
+context_alias = "eks: $cluster"
 
 [[kubernetes.contexts]]
 context_pattern = "gke_.*_.*_(?P<cluster>.*)"
-context_alias = "$cluster"
+context_alias = "gke: $cluster"
 
 [cmd_duration]
 format = "[$duration]($style) "

@@ -1,0 +1,51 @@
+# Minimal yazi config for Zellij side panel (no preview)
+[mgr]
+# Layout ratios: [parent, current, preview] - no preview
+ratio = [0, 1, 0]
+show_hidden = true
+sort_by = "extension"
+sort_reverse = false
+sort_dir_first = true
+
+[opener]
+# Text files -> helix (via zellij pane)
+edit = [
+  { run = '$HOME/.config/zellij/scripts/yazi-hx-open.sh "$@"', block = true, for = "unix" },
+]
+# Non-text files -> system default
+open = [
+  { run = 'xdg-open "$@"', for = "unix" },
+]
+
+[open]
+rules = [
+  # Folders
+  { name = "*/", use = "folder" },
+  
+  # Images -> system default
+  { mime = "image/*", use = "open" },
+  
+  # PDFs -> system default
+  { mime = "application/pdf", use = "open" },
+  
+  # Videos/Audio -> system default
+  { mime = "video/*", use = "open" },
+  { mime = "audio/*", use = "open" },
+  
+  # Archives -> system default
+  { mime = "application/zip", use = "open" },
+  { mime = "application/gzip", use = "open" },
+  { mime = "application/x-tar", use = "open" },
+  
+  # Text files -> helix
+  { mime = "text/*", use = "edit" },
+  { mime = "application/json", use = "edit" },
+  { mime = "application/javascript", use = "edit" },
+  { mime = "application/x-sh", use = "edit" },
+  { mime = "application/toml", use = "edit" },
+  { mime = "application/xml", use = "edit" },
+  { mime = "application/x-yaml", use = "edit" },
+  
+  # Fallback: unknown files -> helix (probably text)
+  { name = "*", use = "edit" },
+]

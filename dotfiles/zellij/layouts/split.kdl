@@ -1,35 +1,28 @@
 layout {
-    tab name="hx" {
+    default_tab_template {
+        pane size=1 borderless=true {
+            plugin location="zellij:compact-bar";
+        }
+        children
+    }
+
+    // Side-by-side: yazi (no preview) on left, helix on right
+    tab name="hx" focus=true {
         pane split_direction="vertical" {
-            pane {
-                name "fzf"
-                command "zsh"
-                args "-c" "fzf --bind 'enter:execute(~/.config/zellij/scripts/fzf-hx-open.sh {})'"
+            pane size="20%" focus=true {
+                name "yazi"
+                command "sh"
+                args "-c" "YAZI_CONFIG_HOME=$HOME/.config/yazi-minimal yazi"
                 start_suspended false
                 close_on_exit false
-                size "15%"
             }
-            pane {
+            pane size="80%" {
                 name "helix"
                 command "hx"
                 start_suspended false
                 close_on_exit false
-                size "85%"
             }
         }
-        pane size=1 borderless=true {
-            plugin location="zellij:compact-bar";
-        }
     }
-    tab name="one" {
-        pane {
-            name "shell"
-            command "sh"
-            args "-c" "zsh"
-            start_suspended false
-        }
-        pane size=1 borderless=true {
-            plugin location="zellij:compact-bar";
-        }
-    }
+
 }
