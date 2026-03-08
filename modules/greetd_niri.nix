@@ -17,7 +17,7 @@ let
     systemctl --user start waybar.service &
 
     # wallpaper
-    ${pkgs.swww}/bin/swww img ../assets/000011580013.JPG} &
+    ${pkgs.swww}/bin/swww img ../assets/000011580013.JPG} & # does not work, set manuall w/ swww img /home/gio/Documents/_projects/nixolicious/assets/000011580013.jpg
 
     # idle locking
     systemctl --user start swayidle.service &
