@@ -53,7 +53,7 @@ in {
       enable32Bit = true;
       extraPackages = with pkgs; [
         nvidia-vaapi-driver
-        vaapiVdpau
+        libva-vdpau-driver
         libvdpau-va-gl
         # Add CUDA packages to system graphics packages
         cudaPackages.cudatoolkit

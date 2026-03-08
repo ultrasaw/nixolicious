@@ -21,6 +21,6 @@
     powerline-symbols
     # (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
     nerd-fonts.symbols-only
-    noto-fonts-emoji
+    noto-fonts-color-emoji
   ];
 }

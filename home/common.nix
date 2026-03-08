@@ -28,7 +28,7 @@
       # Git Aliases
       ga = "git add";
       gc = "git commit";
-      gp = "git push";
+      gp = "git push --set-upstream origin HEAD";
       gx = "git checkout";
 
       # cat
@@ -302,7 +302,7 @@
 
     # (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
     nerd-fonts.jetbrains-mono
-    noto-fonts-emoji
+    noto-fonts-color-emoji
   ];
 
   # fonts.fontconfig.enable = true;

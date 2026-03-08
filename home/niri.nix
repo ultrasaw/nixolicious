@@ -182,7 +182,7 @@ let
     }
 
     # Show in rofi dmenu and get selection index
-    selected_index=$(rofi_input | ${pkgs.rofi-wayland}/bin/rofi -dmenu -i -p "Windows" -show-icons -format i -selected-row 1 -kb-accept-entry 'Alt_L,Return' -kb-row-up 'Up,Control-p,k' -kb-row-down 'Down,Control-n,j')
+    selected_index=$(rofi_input | ${pkgs.rofi}/bin/rofi -dmenu -i -p "Windows" -show-icons -format i -selected-row 1 -kb-accept-entry 'Alt_L,Return' -kb-row-up 'Up,Control-p,k' -kb-row-down 'Down,Control-n,j')
 
     # If an entry was selected, focus the corresponding window
     if [[ -n "$selected_index" && "$selected_index" -ge 0 ]]; then
