@@ -69,6 +69,7 @@
           ./modules/python.nix
           ./modules/go.nix
           ./modules/rust.nix
+          ./modules/turso.nix
           ./modules/nvidia.nix
           ./modules/agents.nix
 
