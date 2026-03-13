@@ -19,6 +19,8 @@
 ## commands
 
 ```bash
+export Z_AI_API_KEY=your_key # for z.ai vision mcp server
+
 sudo nixos-rebuild switch --flake .#tower
 sudo nixos-rebuild boot --flake .#tower # build the new configuration and make it the boot default, but do not activate it.
 sudo nixos-rebuild build --flake .#tower # neither activate it nor add it to the GRUB boot menu.

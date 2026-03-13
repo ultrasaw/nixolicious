@@ -71,7 +71,7 @@
           ./modules/rust.nix
           ./modules/turso.nix
           ./modules/nvidia.nix
-          ./modules/agents.nix
+          ./modules/node.nix
 
           # niri
           ./modules/niri.nix

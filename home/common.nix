@@ -155,6 +155,23 @@
     enable = true;
   };
 
+  programs.opencode = {
+    enable = true;
+    package = pkgs.unstable.opencode;
+    settings = {
+      mcp = {
+        "zai-mcp-server" = {
+          type = "local";
+          command = ["npx" "-y" "@z_ai/mcp-server"];
+          environment = {
+            Z_AI_API_KEY = "{env:Z_AI_API_KEY}"; # don't forget to set the env var! 
+            Z_AI_MODE = "ZAI";
+          };
+        };
+      };
+    };
+  };
+
   programs.kitty = {
     enable = true;
     shellIntegration.enableZshIntegration = false;
@@ -285,6 +302,8 @@
     argo-workflows
 
     unstable.gemini-cli
+    unstable.ollama
+    unstable.worktrunk
 
     unstable.kubectl
     unstable.k9s
