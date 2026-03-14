@@ -302,7 +302,6 @@
     argo-workflows
 
     unstable.gemini-cli
-    unstable.ollama
     unstable.worktrunk
 
     unstable.kubectl

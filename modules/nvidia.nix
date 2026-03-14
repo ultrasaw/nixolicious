@@ -2,6 +2,42 @@
 
 let
   nvidiaDriverChannel = config.boot.kernelPackages.nvidiaPackages.stable; # stable, beta, latest, etc.
+
+  # Prebuilt ollama with bundled CUDA libs -- works around nixpkgs CUDA toolkit
+  # compilation bugs (nixpkgs#389661, nixpkgs#458056) where ptxas/cicc segfault.
+  ollama-prebuilt = pkgs.stdenv.mkDerivation rec {
+    pname = "ollama";
+    version = "0.18.0";
+
+    src = pkgs.fetchzip {
+      url = "https://github.com/ollama/ollama/releases/download/v${version}/ollama-linux-amd64.tar.zst";
+      hash = "sha256-Ml4Gt4hZXTrIE+DR+5Mo6ZKCQDR1Mi4JOjmYVJFFcsQ=";
+      stripRoot = false;
+      nativeBuildInputs = [ pkgs.zstd ];
+    };
+
+    nativeBuildInputs = [ pkgs.autoPatchelfHook pkgs.makeWrapper ];
+    buildInputs = [ pkgs.stdenv.cc.cc.lib pkgs.zlib ];
+
+    autoPatchelfIgnoreMissingDeps = [ "libcuda.so.1" ];
+
+    dontBuild = true;
+
+    installPhase = ''
+      runHook preInstall
+      mkdir -p $out
+      cp -r bin $out/
+      cp -r lib $out/
+      runHook postInstall
+    '';
+
+    postFixup = ''
+      wrapProgram $out/bin/ollama \
+        --prefix LD_LIBRARY_PATH : "/run/opengl-driver/lib"
+    '';
+
+    meta.mainProgram = "ollama";
+  };
 in {
   # Load nvidia driver for Xorg and Wayland
   services.xserver.videoDrivers = ["nvidia"]; # or "nvidiaLegacy470 etc.
@@ -68,4 +104,9 @@ in {
     cudaPackages.cuda_nvcc
     cudaPackages.cuda_cudart
   ];
+
+  services.ollama = {
+    enable = true;
+    package = ollama-prebuilt;
+  };
 }
