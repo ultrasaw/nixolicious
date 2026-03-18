@@ -48,7 +48,8 @@
       angryipscanner
 
       unstable.telegram-desktop
-      slack
+      # TODO: uncomment when upstream .deb is fixed in nixpkgs
+      # slack
       discord
 
       # blueman
