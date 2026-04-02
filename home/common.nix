@@ -30,6 +30,7 @@
       gc = "git commit";
       gp = "git push --set-upstream origin HEAD";
       gx = "git checkout";
+      gg = "git pull"; 
 
       # cat
       cat = "bat --style=numbers --color=always -P";
