@@ -71,6 +71,7 @@
           ./modules/rust.nix
           ./modules/turso.nix
           ./modules/nvidia.nix
+          ./modules/steam.nix
           ./modules/node.nix
 
           # niri
