@@ -6,6 +6,10 @@
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
     gamescopeSession.enable = true;
+    extraPackages = with pkgs; [
+      gamescope
+      mangohud
+    ];
   };
 
   programs.gamemode.enable = true;
