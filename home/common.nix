@@ -304,6 +304,7 @@
 
     unstable.gemini-cli
     unstable.worktrunk
+    unstable.gh
 
     unstable.kubectl
     unstable.k9s
