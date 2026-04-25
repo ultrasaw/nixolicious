@@ -1,5 +1,8 @@
 { config, pkgs, lib, ... }:
 
+let
+  projectsDir = "${config.home.homeDirectory}/Documents/_projects";
+in
 {
 
   home.username = "gio";
@@ -160,6 +163,17 @@
     enable = true;
     package = pkgs.unstable.opencode;
     settings = {
+      "$schema" = "https://opencode.ai/config.json";
+      permission = {
+        external_directory = {
+          "*" = "ask";
+          "${projectsDir}/**" = "allow";
+          "/tmp/**" = "allow";
+        };
+      };
+      experimental = {
+        disable_paste_summary = true;
+      };
       mcp = {
         "zai-mcp-server" = {
           type = "local";

@@ -238,6 +238,14 @@
   background: transparent;
 }
 
+.floating-notifications.background .notification-row {
+  min-width: 420px;
+}
+
+.floating-notifications.background .notification-row .notification-background .notification {
+  min-height: 0;
+}
+
 /* Window behind control center and on all other monitors */
 .blank-window {
   background: alpha(black, 0.25);
