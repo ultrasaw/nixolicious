@@ -169,6 +169,8 @@ in
           "*" = "ask";
           "${projectsDir}/**" = "allow";
           "/tmp/**" = "allow";
+          "${config.home.homeDirectory}/go/**" = "allow";
+          "/proc/**" = "allow";
         };
       };
       experimental = {
