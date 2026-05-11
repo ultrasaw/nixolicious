@@ -36,10 +36,7 @@ in
       gg = "git pull"; 
 
       # cat
-      cat = "bat --style=numbers --color=always -P";
-
-      # fzf
-      fp = "fzf --preview 'bat --style=numbers --color=always {}'"; # file preview
+      bat = "bat --style=numbers --color=always -P";
 
       # Kubernetes
       k = "kubectl";
@@ -88,14 +85,25 @@ in
 
       # ripgrep + fzf
       ff() {
-        if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
-        rg --files-with-matches --no-messages --hidden "$1" --glob "!.git/*" | fzf --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}"
+        if [ "$#" -eq 0 ]; then
+          fzf --preview 'bat --style=numbers --color=always {}'
+          return
+        fi
+        rg --files-with-matches --no-messages --hidden "$1" --glob "!.git/*" \
+          | fzf --preview "bat --style=numbers --color=always {} | rg --passthru --color=always --colors 'match:bg:yellow' --colors 'match:fg:black' --ignore-case '$1'"
       }
 
       # ripgrep + fzf -> helix
       fh() {
-        if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
-        rg --files-with-matches --no-messages --hidden "$1" --glob "!.git/*" | fzf --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}" | xargs hx
+        if [ "$#" -eq 0 ]; then
+          rg --files --hidden --glob "!.git/*" \
+            | fzf --preview 'bat --style=numbers --color=always {}' \
+            | xargs -r hx
+          return
+        fi
+        rg --files-with-matches --no-messages --hidden "$1" --glob "!.git/*" \
+          | fzf --preview "bat --style=numbers --color=always {} | rg --passthru --color=always --colors 'match:bg:yellow' --colors 'match:fg:black' --ignore-case '$1'" \
+          | xargs -r hx
       }
 
       # Environment variables
@@ -171,6 +179,12 @@ in
           "/tmp/**" = "allow";
           "${config.home.homeDirectory}/go/**" = "allow";
           "/proc/**" = "allow";
+        };
+        bash = {
+          "*" = "allow";
+          "sudo *" = "ask";
+          "gcloud *" = "ask";
+          "firebase *" = "ask";
         };
       };
       experimental = {
