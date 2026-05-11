@@ -1,16 +1,12 @@
-{ config, pkgs, niriStable, lib, ... }:
+{ config, pkgs, lib, ... }:
 
-let
-  niri-bin = "${niriStable.packages.${pkgs.system}.default}/bin/niri";
-in
 {
 
   wayland.windowManager.sway.systemd.enable = true;
 
   services.swayidle =
     let
-      screen-blank-timeout = 5 * minutes;
-      lock-after-blank-timeout = 15 * seconds;
+      lock-timeout = 60 * minutes;
       sleep-timeout = 45 * minutes;
 
       seconds = 1;
@@ -33,7 +29,6 @@ in
         #   ${_1password} --lock
         # fi
 
-        ${niri-bin} msg action power-off-monitors
         ${playerctl} pause 2>/dev/null || true
       '';
 
@@ -44,8 +39,7 @@ in
     {
       enable = true;
       timeouts = [
-        { timeout = screen-blank-timeout; command = "${niri-bin} msg action power-off-monitors"; }
-        { timeout = screen-blank-timeout + lock-after-blank-timeout; command = "${loginctl} lock-session"; }
+        { timeout = lock-timeout; command = "${loginctl} lock-session"; }
         # { timeout = sleep-timeout; command = "${systemctl} suspend"; }
       ];
       events = [
