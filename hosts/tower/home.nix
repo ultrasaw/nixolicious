@@ -23,6 +23,7 @@
     ../../home/waybar_niri.nix
     ../../home/swayidle.nix
     ../../home/swaylock.nix
+    ../../home/swaync.nix
     ../../home/xwayland-satellite.nix
 
     inputs.nix-colors.homeManagerModules.default

@@ -126,7 +126,6 @@
 
 .notification-default-action:hover,
 .notification-action:hover {
-  -gtk-icon-effect: none;
   background: @noti-bg-hover;
 }
 
@@ -189,6 +188,7 @@
   margin-top: 0.5em;
   background-color: white;
   border-radius: 12px;
+  min-height: 0;
 }
 
 .summary {
@@ -381,7 +381,7 @@
   background-color: @noti-bg-alt;
   padding: 4px 8px 8px 8px;
   margin: 0px 8px 8px 8px;
-  border-radius: 12px
+  border-radius: 12px;
 }
 
 /* Backlight widget */

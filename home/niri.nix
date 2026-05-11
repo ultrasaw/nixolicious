@@ -328,9 +328,6 @@ in {
 
     spawn-at-startup = [
       {
-        command = ["ags"];
-      }
-      {
         command = ["swww-daemon"];
       }
       {

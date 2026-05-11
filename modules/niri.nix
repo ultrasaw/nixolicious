@@ -32,6 +32,7 @@
       XDG_SESSION_TYPE = "wayland";
       CLUTTER_BACKEND = "wayland";
       WLR_DRM_DEVICES = "/dev/dri/card1:/dev/dri/card0";
+      GSK_RENDERER = "gl";
     };
     loginShellInit = ''
       eval $(ssh-agent)
@@ -41,7 +42,6 @@
       libsForQt5.qt5.qtwayland
       qt6.qtwayland
       playerctl
-      swaynotificationcenter
       swayosd
       via # qmk
       xdg-utils
