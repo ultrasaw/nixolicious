@@ -23,6 +23,7 @@
     "control-center-positionX": "right",
     "control-center-positionY": "top",
     "notification-window-width": 420,
+    "notification-window-height": 220,
     "hide-on-clear": true,
     "hide-on-action": true,
     "keyboard-shortcuts": true,

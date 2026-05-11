@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
   home.packages = [ pkgs.swaynotificationcenter ];
@@ -10,9 +10,12 @@
       After = [ "graphical-session.target" ];
     };
     Service = {
-      ExecStart = "${pkgs.swaynotificationcenter}/bin/swaync";
+      ExecStart = "${pkgs.swaynotificationcenter}/bin/swaync -c ${config.xdg.configHome}/swaync/config.json -s ${config.xdg.configHome}/swaync/style.css";
       Restart = "on-failure";
-      Environment = [ "GSK_RENDERER=gl" ];
+      Environment = [
+        "GSK_RENDERER=gl"
+        "XDG_CONFIG_HOME=${config.xdg.cacheHome}/swaync-xdg"
+      ];
     };
     Install.WantedBy = [ "niri.service" ];
   };
