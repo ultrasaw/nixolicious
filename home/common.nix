@@ -2,6 +2,12 @@
 
 let
   projectsDir = "${config.home.homeDirectory}/Documents/_projects";
+  nwgPowerMenu = pkgs.writeShellScriptBin "nwg-power-menu" ''
+    exec ${pkgs.nwg-bar}/bin/nwg-bar \
+      -t ${pkgs.nwg-bar}/share/nwg-bar/bar.json \
+      -s ${pkgs.nwg-bar}/share/nwg-bar/style.css \
+      "$@"
+  '';
 in
 {
 
@@ -326,6 +332,7 @@ in
     wl-clipboard
 
     nwg-bar
+    nwgPowerMenu
 
     zip
     unzip

@@ -150,7 +150,7 @@
     },
     "custom/power":{
         "format": "⏻",
-        "on-click": "nwg-bar",
+        "on-click": "nwg-power-menu",
         "on-click-right": "killall nwg-bar"
     },
     "custom/browse":{
