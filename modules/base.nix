@@ -7,6 +7,11 @@
   programs.zsh.enable = true;
   users.defaultUserShell=pkgs.zsh;
   virtualisation.docker.enable = true;
+
+  boot.binfmt = {
+    emulatedSystems = [ "aarch64-linux" ];
+    preferStaticEmulators = true;
+  };
   
   # GnuPG
   services.pcscd.enable = true;
