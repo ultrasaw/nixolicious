@@ -119,10 +119,10 @@ in
       # Source kubectl completion script
       source <(kubectl completion zsh)
 
-      # kubeconfig from existing .yaml files. Glance is first when present,
-      # but absent clusters do not create broken KUBECONFIG entries.
+      # kubeconfig from existing .yaml files. Newest files are first, so the
+      # last refreshed cluster becomes the default without hard-coding names.
       kubeconfig_files=(
-        "$HOME"/.kube/*.yaml(N)
+        "$HOME"/.kube/*.yaml(Nom)
       )
       typeset -U kubeconfig_files
 
