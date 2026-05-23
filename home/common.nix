@@ -119,6 +119,11 @@ in
       # Source kubectl completion script
       source <(kubectl completion zsh)
 
+      # Worktrunk needs a shell wrapper so `wt switch` can cd in this shell.
+      if command -v wt >/dev/null 2>&1; then
+        eval "$(command wt config shell init zsh)"
+      fi
+
       # kubeconfig from existing .yaml files. Newest files are first, so the
       # last refreshed cluster becomes the default without hard-coding names.
       kubeconfig_files=(
@@ -349,7 +354,6 @@ in
 
     argo-workflows
 
-    unstable.gemini-cli
     unstable.worktrunk
     unstable.gh
 
