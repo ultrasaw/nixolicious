@@ -224,6 +224,20 @@ in
     };
   };
 
+  home.activation.opencodeThinkingMode = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    kv_file="${config.xdg.stateHome}/opencode/kv.json"
+    tmp_file="$(mktemp)"
+
+    mkdir -p "$(dirname "$kv_file")"
+    if [ -s "$kv_file" ]; then
+      ${pkgs.jq}/bin/jq '.thinking_mode = "show"' "$kv_file" > "$tmp_file"
+    else
+      ${pkgs.jq}/bin/jq -n '{ thinking_mode: "show" }' > "$tmp_file"
+    fi
+
+    mv "$tmp_file" "$kv_file"
+  '';
+
   programs.kitty = {
     enable = true;
     shellIntegration.enableZshIntegration = false;
