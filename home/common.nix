@@ -376,6 +376,7 @@ in
     unstable.kubernetes-helm
     unstable.fluxcd
     unstable.kind
+    unstable.sops
 
     unstable.opentofu
     unstable.terragrunt
