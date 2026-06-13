@@ -24,6 +24,18 @@ in
     starship.enable = true;
   };
 
+  xdg.desktopEntries.cursor-url-handler = {
+    name = "Cursor URL Handler";
+    exec = "${pkgs.unstable.code-cursor}/bin/cursor --open-url %U";
+    icon = "cursor";
+    terminal = false;
+    mimeType = [ "x-scheme-handler/cursor" ];
+  };
+
+  home.activation.registerCursorUrlHandler = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    $DRY_RUN_CMD ${pkgs.xdg-utils}/bin/xdg-mime default cursor-url-handler.desktop x-scheme-handler/cursor
+  '';
+
   programs.zsh = {
     enable = true;
     enableCompletion = true;
@@ -115,6 +127,12 @@ in
       # Environment variables
       export do="--dry-run=client -o yaml"
       export now="--force --grace-period 0"
+      export OPENSSL_CONF="/etc/ssl/openssl-no-hybrid.cnf"
+      case ",''${GODEBUG:-}," in
+        *,tlsmlkem=0,*) ;;
+        ,,) export GODEBUG="tlsmlkem=0" ;;
+        *) export GODEBUG="''${GODEBUG},tlsmlkem=0" ;;
+      esac
 
       # Source kubectl completion script
       source <(kubectl completion zsh)
@@ -352,6 +370,7 @@ in
 
     google-chrome
     firefox
+    unstable.code-cursor
     obsidian
 
     unstable.xmodmap
