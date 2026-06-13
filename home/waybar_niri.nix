@@ -12,7 +12,7 @@ in
     package = pkgs.unstable.waybar;
     systemd = {
       enable = true;
-      target = "swaync.service";
+      targets = [ "swaync.service" ];
     };
   };
 

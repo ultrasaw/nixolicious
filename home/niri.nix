@@ -196,7 +196,7 @@ in {
 
   # xdg.portal.extraPortals = [pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-gnome pkgs.gnome-keyring];
   xdg.portal.extraPortals = [pkgs.xdg-desktop-portal-gnome];
-  home.packages = [pkgs.dconf pkgs.swww pkgs.brightnessctl pkgs.wl-clipboard windowSwitcher];
+  home.packages = [pkgs.dconf pkgs.awww pkgs.brightnessctl pkgs.wl-clipboard windowSwitcher];
   programs.niri.settings = {
     binds = with config.lib.niri.actions; let
       sh = spawn "sh" "-c";
@@ -328,7 +328,7 @@ in {
 
     spawn-at-startup = [
       {
-        command = ["swww-daemon"];
+        command = ["awww-daemon"];
       }
       {
         command = ["dbus-update-activation-environment" "--all" "--systemd"];

@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  python-with-packages = pkgs.python312.withPackages (ps: with ps; [
+  python-with-packages = pkgs.python3.withPackages (ps: with ps; [
     jq # example system-wide packages
     yq
     numpy

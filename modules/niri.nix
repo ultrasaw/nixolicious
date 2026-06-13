@@ -6,7 +6,7 @@
   programs = {
     niri = {
       enable = true;
-      package = pkgs.niri-unstable;
+      package = pkgs.niri;
     };
   };
 
@@ -52,8 +52,7 @@
       # slack
       discord
 
-      # blueman
-      blueberry # bluetooth manager GUI
+      blueman # bluetooth manager GUI
       networkmanager # network manager, including nmtui, a network manager TUI
       networkmanagerapplet # nm-applet --indicator &
       linssid

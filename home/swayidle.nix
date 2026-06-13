@@ -42,11 +42,11 @@
         { timeout = lock-timeout; command = "${loginctl} lock-session"; }
         # { timeout = sleep-timeout; command = "${systemctl} suspend"; }
       ];
-      events = [
-        { event = "lock"; command = lock-session.outPath; }
-        { event = "before-sleep"; command = before-sleep.outPath; }
-      ];
-      systemdTarget = "niri.service";
+      events = {
+        lock = lock-session.outPath;
+        before-sleep = before-sleep.outPath;
+      };
+      systemdTargets = [ "niri.service" ];
     };
 
   # systemd.user.services.swayidle.Unit.After = "niri.service";

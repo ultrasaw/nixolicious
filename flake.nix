@@ -2,7 +2,7 @@
   description = "Nix configuration for my setup";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     hyprland.url = "github:hyprwm/Hyprland";
     nix-colors.url = "github:misterio77/nix-colors";
@@ -10,7 +10,7 @@
     niri-stable.url = "github:YaLTeR/niri/v25.08";
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.11";
+      url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -53,10 +53,6 @@
       };
 
     in {
-      nixConfig = {
-        nix.settings.experimental-features = [ "nix-command" "flakes" ];
-      };
-
       nixosConfigurations.tower = nixpkgs.lib.nixosSystem {
         specialArgs = {
           inherit inputs theme system;
@@ -87,24 +83,6 @@
           # ./modules/hyprland.nix
           # ./modules/stylix.nix
           
-          inputs.home-manager.nixosModules.default
-          # inputs.stylix.nixosModules.stylix
-        ];
-      };
-      nixosConfigurations.lenovo = nixpkgs.lib.nixosSystem {
-        specialArgs = {
-          inherit inputs theme system;
-        };
-        modules = [
-          ./hosts/lenovo/configuration.nix
-          ./modules/base.nix
-	        ./modules/gnome.nix
-          # ./modules/greetd.nix
-          # ./modules/hyprland.nix
-          ./modules/python.nix
-          ./modules/go.nix
-          ./modules/rust.nix
-          ./modules/vpn-ndc2.nix
           inputs.home-manager.nixosModules.default
           # inputs.stylix.nixosModules.stylix
         ];

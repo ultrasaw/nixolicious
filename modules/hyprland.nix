@@ -74,7 +74,7 @@
     brightnessctl # brightness control
     pwvucontrol # sound control
 
-    blueberry # bluetooth manager GUI
+    blueman # bluetooth manager GUI
     networkmanager # network manager, including nmtui, a network manager TUI
 
     inter # font
