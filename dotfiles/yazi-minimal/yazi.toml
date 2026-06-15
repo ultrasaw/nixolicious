@@ -20,7 +20,7 @@ open = [
 [open]
 rules = [
   # Folders
-  { name = "*/", use = "folder" },
+  { mime = "inode/directory", use = "folder" },
   
   # Images -> system default
   { mime = "image/*", use = "open" },
@@ -47,5 +47,5 @@ rules = [
   { mime = "application/x-yaml", use = "edit" },
   
   # Fallback: unknown files -> helix (probably text)
-  { name = "*", use = "edit" },
+  { url = "*", use = "edit" },
 ]
