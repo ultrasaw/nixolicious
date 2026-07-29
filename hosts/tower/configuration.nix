@@ -21,7 +21,13 @@
   networking.hostName = "nixos";
 
   # Networking
-  networking.networkmanager.enable = true;
+  networking.networkmanager = {
+    enable = true;
+    settings.connection = {
+      "ethernet.mtu" = 1452;
+      "wifi.mtu" = 1452;
+    };
+  };
 
   # Time and locale settings
   time.timeZone = "Europe/Vienna";

@@ -130,12 +130,6 @@ in
       # Environment variables
       export do="--dry-run=client -o yaml"
       export now="--force --grace-period 0"
-      export OPENSSL_CONF="/etc/ssl/openssl-no-hybrid.cnf"
-      case ",''${GODEBUG:-}," in
-        *,tlsmlkem=0,*) ;;
-        ,,) export GODEBUG="tlsmlkem=0" ;;
-        *) export GODEBUG="''${GODEBUG},tlsmlkem=0" ;;
-      esac
 
       # Source kubectl completion script
       source <(kubectl completion zsh)
