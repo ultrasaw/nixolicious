@@ -4,6 +4,7 @@
   services.tailscale = {
     enable = true;
     openFirewall = true;
+    package = pkgs.unstable.tailscale;
   };
 
   services.openssh = {
