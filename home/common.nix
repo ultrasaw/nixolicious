@@ -59,7 +59,9 @@ in
       y = "yazi";
       zc = "zellij --layout compact";
       zs = "zellij --layout split";
+      zj = "zellij attach --create main";
       oc = "opencode";
+      ocw = "opencode attach http://127.0.0.1:4096 --dir \"$PWD\"";
     };
 
     history = {
@@ -212,16 +214,6 @@ in
       };
       experimental = {
         disable_paste_summary = true;
-      };
-      mcp = {
-        "zai-mcp-server" = {
-          type = "local";
-          command = ["npx" "-y" "@z_ai/mcp-server"];
-          environment = {
-            Z_AI_API_KEY = "{env:Z_AI_API_KEY}"; # don't forget to set the env var! 
-            Z_AI_MODE = "ZAI";
-          };
-        };
       };
     };
   };

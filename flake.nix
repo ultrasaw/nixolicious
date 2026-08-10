@@ -62,6 +62,7 @@
           # base
           ./hosts/tower/configuration.nix
           ./modules/base.nix
+          ./modules/remote-access.nix
           ./modules/python.nix
           ./modules/go.nix
           ./modules/rust.nix
