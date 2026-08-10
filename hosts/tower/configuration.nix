@@ -29,6 +29,24 @@
     };
   };
 
+  services.logind.settings.Login = {
+    HandlePowerKey = "ignore";
+    HandlePowerKeyLongPress = "ignore";
+  };
+
+  # Apply logind configuration changes during nixos-rebuild switch without
+  # restarting logind and disrupting the graphical session.
+  systemd.services.systemd-logind.reloadTriggers = [
+    config.environment.etc."systemd/logind.conf".source
+  ];
+
+  # Ignore both ACPI devices that expose the chassis power button. The
+  # separate sleep button remains available, as does explicit suspend.
+  services.udev.extraRules = ''
+    ACTION=="add", SUBSYSTEM=="input", KERNEL=="event*", ENV{ID_PATH}=="acpi-PNP0C0C:00", TAG-="power-switch", ENV{LIBINPUT_IGNORE_DEVICE}="1"
+    ACTION=="add", SUBSYSTEM=="input", KERNEL=="event*", ENV{ID_PATH}=="acpi-LNXPWRBN:00", TAG-="power-switch", ENV{LIBINPUT_IGNORE_DEVICE}="1"
+  '';
+
   # Time and locale settings
   time.timeZone = "Europe/Vienna";
   i18n.defaultLocale = "en_US.UTF-8";

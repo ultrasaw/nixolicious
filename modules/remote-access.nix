@@ -25,8 +25,6 @@
   # SSH is reachable through the private tailnet, not the LAN or public NIC.
   networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 22 ];
 
-  services.logind.settings.Login.HandlePowerKey = "ignore";
-
   systemd.services.opencode-web = {
     description = "OpenCode web interface";
     wantedBy = [ "multi-user.target" ];

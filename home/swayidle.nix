@@ -15,7 +15,7 @@
       loginctl = "${pkgs.systemd}/bin/loginctl";
       systemctl = "${pkgs.systemd}/bin/systemctl";
       playerctl = "${pkgs.playerctl}/bin/playerctl";
-      swaylock = "${pkgs.swaylock}/bin/swaylock";
+      swaylock = "${config.programs.swaylock.package}/bin/swaylock";
       _1password = "${pkgs._1password-gui}/bin/1password";
 
       lock-session = pkgs.writeShellScript "lock-session" ''

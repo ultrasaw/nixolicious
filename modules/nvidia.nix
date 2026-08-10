@@ -80,7 +80,7 @@ in {
     nvidia = {
       open = false;
       nvidiaSettings = true;  # Changed to true for debugging
-      powerManagement.enable = false;
+      powerManagement.enable = true;
       modesetting.enable = true;
       package = nvidiaDriverChannel;
     };
