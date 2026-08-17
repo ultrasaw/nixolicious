@@ -204,6 +204,8 @@ in
           "/tmp/**" = "allow";
           "${config.home.homeDirectory}/go/**" = "allow";
           "/proc/**" = "allow";
+          "/usr/local/**" = "allow";
+          "/nix/store/**" = "allow";
         };
         bash = {
           "*" = "allow";
