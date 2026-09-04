@@ -128,12 +128,16 @@ in
       export WORKTRUNK_BIN="${pkgs.unstable.worktrunk}/bin/wt"
       eval "$("$WORKTRUNK_BIN" config shell init zsh)"
 
-      # kubeconfig from existing .yaml files. Newest files are first, so the
-      # last refreshed cluster becomes the default without hard-coding names.
+      # Merge the default kubeconfig with existing .yaml files. Newest YAML
+      # files are first, so the last refreshed cluster remains the default.
       kubeconfig_files=(
         "$HOME"/.kube/*.yaml(Nom)
       )
       typeset -U kubeconfig_files
+
+      if [[ -f "$HOME/.kube/config" ]]; then
+        kubeconfig_files+=("$HOME/.kube/config")
+      fi
 
       if (( ''${#kubeconfig_files} )); then
         export KUBECONFIG="''${(j/:/)kubeconfig_files}"
@@ -210,8 +214,8 @@ in
         bash = {
           "*" = "allow";
           "sudo *" = "ask";
-          "gcloud *" = "ask";
-          "firebase *" = "ask";
+          "gcloud *" = "allow";
+          "firebase *" = "allow";
         };
       };
       experimental = {
