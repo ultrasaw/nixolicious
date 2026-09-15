@@ -60,7 +60,7 @@ in
       zc = "zellij --layout compact";
       zs = "zellij --layout split";
       zj = "zellij attach --create main";
-      oc = "opencode";
+      oc = "${pkgs.bash}/bin/bash ${config.xdg.configHome}/zellij/scripts/opencode.sh";
       ocw = "opencode attach http://127.0.0.1:4096 --dir \"$PWD\"";
     };
 
