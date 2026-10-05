@@ -1,7 +1,118 @@
 { config, pkgs, lib, ... }:
 
 let
-  projectsDir = "${config.home.homeDirectory}/Documents/_projects";
+  ghGuard = pkgs.writeShellScriptBin "gh" ''
+    args=("$@")
+    command_name=""
+    subcommand=""
+    repo="''${GH_REPO:-}"
+    help=false
+    positional=false
+
+    # Cobra discovers commands before parsing leaf flags. Unknown parent flags
+    # consume a following word, even when the leaf later treats them as booleans.
+    skip=false
+    flag_args=("$@")
+    for index in "''${!args[@]}"; do
+      arg="''${args[index]}"
+      if [[ "$skip" == true ]]; then skip=false; continue; fi
+      case "$arg" in
+        --) break ;;
+        --help|--version|--*=*) continue ;;
+        --*|-?) skip=true; continue ;;
+        -*|"") continue ;;
+      esac
+      unset 'flag_args[index]'
+      if [[ -z "$command_name" ]]; then
+        command_name="$arg"
+      else
+        subcommand="$arg"
+        break
+      fi
+    done
+
+    # Cobra removes the command words before a cluster can consume flag values.
+    set -- "''${flag_args[@]}"
+    # Parse value-taking flags so notes/titles cannot be mistaken for repo flags.
+    while (( $# )); do
+      if [[ "$positional" == false ]]; then
+        case "$1" in
+          --) positional=true; shift; continue ;;
+          --repo)
+            repo="''${2:-}"
+            shift
+            if (( $# )); then shift; fi
+            continue ;;
+          --repo=*) repo="''${1#*=}"; shift; continue ;;
+          --discussion-category|--notes|--notes-file|--notes-start-tag|--target|--title|--tag)
+            shift
+            if (( $# )); then shift; fi
+            continue ;;
+          --help|--help=true|--help=True|--help=TRUE|--help=t|--help=T|--help=1)
+            help=true; shift; continue ;;
+          --help=*) help=false; shift; continue ;;
+          --*) shift; continue ;;
+          -?*)
+            flags="''${1#-}"
+            shift
+            # gh accepts shorthand clusters, e.g. -dRowner/repo and -ntitle.
+            while [[ -n "$flags" ]]; do
+              flag="''${flags:0:1}"
+              flags="''${flags:1}"
+              case "$flag" in
+                h) exec ${pkgs.unstable.gh}/bin/gh "''${args[@]}" ;;
+                R|n|F|t)
+                  if [[ -n "$flags" ]]; then
+                    value="''${flags#=}"
+                  else
+                    value="''${1:-}"
+                    if (( $# )); then shift; fi
+                  fi
+                  if [[ "$flag" == R ]]; then repo="$value"; fi
+                  break ;;
+                *)
+                  # A boolean's explicit value consumes the rest of the cluster.
+                  if [[ "$flags" == =* ]]; then break; fi ;;
+              esac
+            done
+            continue ;;
+        esac
+      fi
+      shift
+    done
+    repo="''${repo:-''${GH_REPO:-}}"
+
+    case "$command_name/$subcommand" in
+      release/create|release/new|release/edit|release/delete|release/upload|release/delete-asset)
+        if [[ "$help" != true ]]; then
+          # Block explicit protected targets offline, including URL/host forms.
+          shopt -s nocasematch
+          if [[ "$repo" == Atlas-Design/* || "$repo" == */Atlas-Design/* ]]; then
+            printf 'gh: release changes are blocked for Atlas-Design repositories (%s).\n' "$repo" >&2
+            exit 1
+          fi
+
+          target=()
+          if [[ -n "$repo" ]]; then target=("$repo"); fi
+          if ! resolved=$(${pkgs.unstable.gh}/bin/gh repo view "''${target[@]}" --json nameWithOwner --jq .nameWithOwner) || [[ "$resolved" != */* ]]; then
+            printf 'gh: refusing release change because the repository could not be resolved.\n' >&2
+            exit 1
+          fi
+          if [[ "$resolved" == Atlas-Design/* ]]; then
+            printf 'gh: release changes are blocked for Atlas-Design repositories (%s).\n' "$resolved" >&2
+            exit 1
+          fi
+        fi ;;
+    esac
+
+    exec ${pkgs.unstable.gh}/bin/gh "''${args[@]}"
+  '';
+  gh = pkgs.symlinkJoin {
+    name = "gh-guarded";
+    # Keep upstream man pages and completions, but expose only the guarded CLI.
+    paths = [ ghGuard pkgs.unstable.gh ];
+    meta.mainProgram = "gh";
+  };
   nwgPowerMenu = pkgs.writeShellScriptBin "nwg-power-menu" ''
     exec ${pkgs.nwg-bar}/bin/nwg-bar \
       -t ${pkgs.nwg-bar}/share/nwg-bar/bar.json \
@@ -202,15 +313,7 @@ in
     settings = {
       "$schema" = "https://opencode.ai/config.json";
       permission = {
-        external_directory = {
-          "*" = "ask";
-          "${projectsDir}/**" = "allow";
-          "/tmp/**" = "allow";
-          "${config.home.homeDirectory}/go/**" = "allow";
-          "/proc/**" = "allow";
-          "/usr/local/**" = "allow";
-          "/nix/store/**" = "allow";
-        };
+        external_directory = "allow";
         bash = {
           "*" = "allow";
           "sudo *" = "ask";
@@ -369,7 +472,7 @@ in
     argo-workflows
 
     unstable.worktrunk
-    unstable.gh
+    gh
 
     unstable.kubectl
     unstable.k9s
