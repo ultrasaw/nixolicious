@@ -33,6 +33,9 @@
 
     environment = {
       HOME = "/home/gio";
+      # System services do not inherit home.sessionVariables; use the same
+      # session database as the terminal client in home/common.nix.
+      OPENCODE_DB = "opencode-stable.db";
       PATH = lib.mkForce "/etc/profiles/per-user/gio/bin:/home/gio/.nix-profile/bin:/run/current-system/sw/bin";
       XDG_CONFIG_HOME = "/home/gio/.config";
       XDG_DATA_HOME = "/home/gio/.local/share";

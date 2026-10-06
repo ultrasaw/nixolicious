@@ -144,6 +144,12 @@ in
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
 
+    # Reapply on every shell startup: exec zsh inherits Home Manager's
+    # session-variable guards and otherwise skips settings added by a rebuild.
+    envExtra = ''
+      export OPENCODE_DB=${lib.escapeShellArg config.home.sessionVariables.OPENCODE_DB}
+    '';
+
     shellAliases = {
       ll = "ls -l";
       vim = "nvim";
@@ -306,6 +312,10 @@ in
   programs.ripgrep = {
     enable = true;
   };
+
+  # Keep the existing session history across nixpkgs' internal stable -> prod
+  # build-channel change, which changed OpenCode's default database filename.
+  home.sessionVariables.OPENCODE_DB = "opencode-stable.db";
 
   programs.opencode = {
     enable = true;
