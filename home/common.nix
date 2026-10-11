@@ -322,6 +322,11 @@ in
     package = pkgs.unstable.opencode;
     settings = {
       "$schema" = "https://opencode.ai/config.json";
+      compaction = {
+        auto = true;
+        # context-limit.js caps GPT input at 250k: compact at ~230k usage.
+        reserved = 20000;
+      };
       permission = {
         external_directory = "allow";
         bash = {
