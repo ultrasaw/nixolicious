@@ -1,5 +1,5 @@
-// With the 20k compaction reserve in home/common.nix, this triggers at ~230k.
-const MAX_INPUT_TOKENS = 250_000
+// With the 20k compaction reserve in home/common.nix, this triggers at ~300k.
+const MAX_INPUT_TOKENS = 320_000
 
 export default async function ContextLimit() {
   return {
