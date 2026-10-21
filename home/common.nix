@@ -321,6 +321,7 @@ in
     package = pkgs.unstable.opencode;
     settings = {
       "$schema" = "https://opencode.ai/config.json";
+      experimental.todo = true;
       compaction = {
         auto = true;
         # context-limit.js caps GPT input at 320k: compact at ~300k usage.
