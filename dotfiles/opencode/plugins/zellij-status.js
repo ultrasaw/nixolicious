@@ -4,12 +4,14 @@ import { promisify } from "node:util"
 
 const exec = promisify(execFile)
 
-export default async function ZellijStatus({ client, directory }) {
+export default { id: "local.zellij-status", setup: ZellijStatus }
+
+async function ZellijStatus({ session: sessionAPI, shell, event: events, location: { directory } }) {
   const sessionName = process.env.ZELLIJ_SESSION_NAME
   const paneID = process.env.ZELLIJ_PANE_ID
   const stateFile = process.env.OPENCODE_ZELLIJ_STATE
   if (process.env.OPENCODE_ZELLIJ_STATUS !== "1" || !sessionName || !/^\d+$/.test(paneID ?? "") ||
-      !stateFile || directory !== process.env.OPENCODE_ZELLIJ_DIRECTORY) return {}
+      !stateFile || directory !== process.env.OPENCODE_ZELLIJ_DIRECTORY) return
 
   const sessions = new Map()
   const pending = new Map()
@@ -38,8 +40,8 @@ export default async function ZellijStatus({ client, directory }) {
 
   async function session(id) {
     if (!sessions.has(id)) {
-      const result = await client.session.get({ path: { id } })
-      if (result.data) sessions.set(id, result.data)
+      const result = await sessionAPI.get({ sessionID: id })
+      if (result) sessions.set(id, result)
     }
     return sessions.get(id)
   }
@@ -87,34 +89,41 @@ export default async function ZellijStatus({ client, directory }) {
 
   await enqueue(render)
 
-  return {
-    "chat.message": (input) => enqueue(async () => {
-      if (await root(input.sessionID) !== input.sessionID) return
-      activeSession = input.sessionID
-      phase = "\u{1f528}"
-      await render()
-    }),
+  const registrations = []
+  const controller = new AbortController()
+  registrations.push(await sessionAPI.hook("prompt", (input) => enqueue(async () => {
+    if (await root(input.sessionID) !== input.sessionID) return
+    activeSession = input.sessionID
+    phase = "\u{1f528}"
+    await render()
+  })))
 
-    // Nested CLI commands launched by tools should not inherit ownership of this tab.
-    "shell.env": async (_input, output) => {
-      output.env.OPENCODE_ZELLIJ_STATUS = "0"
-    },
+  // Nested CLI commands launched by tools should not inherit ownership of this tab.
+  registrations.push(await shell.hook("create.before", (input) => {
+    input.env.OPENCODE_ZELLIJ_STATUS = "0"
+  }))
 
-    event: ({ event }) => {
-      const { type, properties: props } = event
-      if (!["session.created", "session.updated", "session.deleted", "session.status", "session.idle", "session.error",
-        "permission.asked", "permission.replied", "question.asked", "question.replied", "question.rejected"].includes(type)) return
+  const onEvent = (event) => {
+      if (event.location && event.location.directory !== directory) return
+      const { type, data: props } = event
+      if (!["session.created", "session.renamed", "session.deleted", "session.status", "session.idle",
+        "session.execution.failed", "session.execution.interrupted", "session.execution.started", "session.execution.succeeded",
+        "permission.asked", "permission.replied", "form.created", "form.replied", "form.cancelled"].includes(type)) return
 
       return enqueue(async () => {
-        if (type === "session.created" || type === "session.updated") {
-          sessions.set(props.info.id, props.info)
-          if (props.info.id === activeSession) await render()
+        if (type === "session.created" || type === "session.renamed") {
+          if (type === "session.created") sessions.set(props.sessionID, { ...props, id: props.sessionID })
+          else {
+            const info = await session(props.sessionID)
+            if (info) sessions.set(props.sessionID, { ...info, title: props.title })
+          }
+          if (props.sessionID === activeSession) await render()
           return
         }
         if (type === "session.deleted") {
-          sessions.delete(props.info.id)
-          for (const [key, id] of pending) if (id === props.info.id) pending.delete(key)
-          if (props.info.id === activeSession) {
+          sessions.delete(props.sessionID)
+          for (const [key, id] of pending) if (id === props.sessionID) pending.delete(key)
+          if (props.sessionID === activeSession) {
             activeSession = undefined
             phase = "\u00b7"
             pending.clear()
@@ -123,32 +132,35 @@ export default async function ZellijStatus({ client, directory }) {
           return
         }
 
-        const rootID = await root(props.sessionID)
+        const owner = type === "form.created" ? props.form.sessionID : props.sessionID
+        const rootID = await root(owner)
         if (!rootID) return
         // This is an activity indicator, not a TUI selection listener. Resumed
-        // sessions are discovered on their first event; chat.message selects new work.
+        // sessions are discovered on their first event; the prompt hook selects new work.
         activeSession ??= rootID
         let replied = false
-        if (type.endsWith(".asked")) {
-          pending.set(`${type.split(".")[0]}:${props.id}`, props.sessionID)
-        } else if (type.endsWith(".replied") || type === "question.rejected") {
-          replied = pending.delete(`${type.split(".")[0]}:${props.requestID}`)
+        if (type === "permission.asked" || type === "form.created") {
+          pending.set(type === "form.created" ? `form:${props.form.id}` : `permission:${props.id}`, owner)
+        } else if (type.endsWith(".replied") || type === "form.cancelled") {
+          replied = pending.delete(type.startsWith("form.") ? `form:${props.id}` : `permission:${props.requestID}`)
         }
-        const idle = type === "session.idle" || (type === "session.status" && props.status.type === "idle")
-        if (idle || type === "session.error") {
+        const failed = ["session.execution.failed", "session.execution.interrupted"].includes(type)
+        const busy = type === "session.execution.started" || (type === "session.status" && ["busy", "retry"].includes(props.status.type))
+        const idle = type === "session.execution.succeeded" || type === "session.idle" || (type === "session.status" && props.status.type === "idle")
+        if (idle || failed) {
           // Cancellation can remove a question/permission without a reply event.
-          for (const [key, id] of pending) if (id === props.sessionID) pending.delete(key)
+          for (const [key, id] of pending) if (id === owner) pending.delete(key)
         }
-        if (type === "session.status" && ["busy", "retry"].includes(props.status.type) && props.sessionID === rootID) {
+        if (busy && owner === rootID) {
           activeSession = rootID
         }
         if (rootID !== activeSession) return
 
-        if (props.sessionID === activeSession) {
-          if (type === "session.error") {
+        if (owner === activeSession) {
+          if (failed) {
             phase = "!"
             for (const [key, id] of pending) if (await root(id) === activeSession) pending.delete(key)
-          } else if (type === "session.status" && ["busy", "retry"].includes(props.status.type)) {
+          } else if (busy) {
             phase = "\u{1f528}"
           } else if (idle && phase !== "!") {
             phase = "\u2713"
@@ -157,21 +169,32 @@ export default async function ZellijStatus({ client, directory }) {
         if (replied && phase !== "!") phase = "\u{1f528}"
         await render()
       })
-    },
+    }
 
-    dispose: async () => {
-      disposed = true
-      await queue
-      try {
-        const list = await panes()
-        for (const [id, saved] of tabs) {
-          if (list.some((item) => item.tab_id === id && item.tab_name === saved.last)) {
-            await rename(id, saved.original)
-          }
+  // Subscribe before returning setup; events carry v2 data, not v1 properties.
+  const listening = (async () => {
+    try {
+      for await (const event of events.subscribe({ signal: controller.signal })) await onEvent(event)
+    } catch {
+      // A closing server/event stream must not interfere with the session.
+    }
+  })()
+
+  return async () => {
+    disposed = true
+    controller.abort()
+    await Promise.all(registrations.map((registration) => registration.dispose()))
+    await listening
+    await queue
+    try {
+      const list = await panes()
+      for (const [id, saved] of tabs) {
+        if (list.some((item) => item.tab_id === id && item.tab_name === saved.last)) {
+          await rename(id, saved.original)
         }
-      } catch {
-        // The Zellij session may already have closed. The launcher also restores on exit.
       }
-    },
+    } catch {
+      // The Zellij session may already have closed. The launcher also restores on exit.
+    }
   }
 }

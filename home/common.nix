@@ -178,7 +178,7 @@ in
       zs = "zellij --layout split";
       zj = "zellij attach --create main";
       oc = "${pkgs.bash}/bin/bash ${config.xdg.configHome}/zellij/scripts/opencode.sh";
-      ocw = "opencode attach http://127.0.0.1:4096 --dir \"$PWD\"";
+      ocw = "opencode --server http://127.0.0.1:4096 \"$PWD\"";
     };
 
     history = {
@@ -313,8 +313,7 @@ in
     enable = true;
   };
 
-  # Keep the existing session history across nixpkgs' internal stable -> prod
-  # build-channel change, which changed OpenCode's default database filename.
+  # Keep the existing session database for v2's built-in history migration.
   home.sessionVariables.OPENCODE_DB = "opencode-stable.db";
 
   programs.opencode = {
@@ -325,35 +324,48 @@ in
       compaction = {
         auto = true;
         # context-limit.js caps GPT input at 320k: compact at ~300k usage.
-        reserved = 20000;
+        buffer = 20000;
       };
-      permission = {
-        external_directory = "allow";
-        bash = {
-          "*" = "allow";
-          "sudo *" = "ask";
-          "gcloud *" = "allow";
-          "firebase *" = "allow";
-        };
-      };
-      experimental = {
-        disable_paste_summary = true;
-      };
+      permissions = [
+        { action = "external_directory"; resource = "*"; effect = "allow"; }
+        { action = "shell"; resource = "*"; effect = "allow"; }
+        { action = "shell"; resource = "sudo *"; effect = "ask"; }
+        { action = "shell"; resource = "gcloud *"; effect = "allow"; }
+        { action = "shell"; resource = "firebase *"; effect = "allow"; }
+      ];
     };
   };
 
-  home.activation.opencodeThinkingMode = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    kv_file="${config.xdg.stateHome}/opencode/kv.json"
-    tmp_file="$(mktemp)"
+  # V2 saves preferences here too: merge into a writable file rather than
+  # symlinking cli.json into the Nix store or replacing unrelated TUI settings.
+  home.activation.opencodeCliSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    cli_file="${config.xdg.configHome}/opencode/cli.json"
+    cli_dir="$(dirname "$cli_file")"
 
-    mkdir -p "$(dirname "$kv_file")"
-    if [ -s "$kv_file" ]; then
-      ${pkgs.jq}/bin/jq '.thinking_mode = "show"' "$kv_file" > "$tmp_file"
+    if [ -n "''${DRY_RUN_CMD:-}" ]; then
+      echo "Would merge OpenCode CLI settings into $cli_file"
     else
-      ${pkgs.jq}/bin/jq -n '{ thinking_mode: "show" }' > "$tmp_file"
-    fi
+      mkdir -p "$cli_dir"
+      tmp_file="$(mktemp "$cli_dir/cli.json.tmp.XXXXXX")"
+      input_file=/dev/null
+      if [ -e "$cli_file" ]; then input_file="$cli_file"; fi
+      if ! ${pkgs.jq}/bin/jq -e -s '
+        (if length == 0 then {} elif length == 1 and (.[0] | type) == "object"
+         then .[0] else error("cli.json must be one object") end) *
+        { "$schema": "https://opencode.ai/v2/cli.json",
+          prompt: { paste: "full" }, session: { thinking: "show" } }
+      ' "$input_file" > "$tmp_file"; then
+        rm -f "$tmp_file"
+        echo "Refusing to overwrite invalid OpenCode CLI settings: $cli_file" >&2
+        exit 1
+      fi
+      if [ -e "$cli_file" ] && [ ! -e "$cli_file.before-nix-v2" ]; then
+        cp -p "$cli_file" "$cli_file.before-nix-v2"
+      fi
 
-    mv "$tmp_file" "$kv_file"
+      chmod 0600 "$tmp_file"
+      mv "$tmp_file" "$cli_file"
+    fi
   '';
 
   programs.kitty = {

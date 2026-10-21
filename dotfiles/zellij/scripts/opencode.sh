@@ -13,12 +13,12 @@ project=$PWD
 for ((i = 1; i <= $#; i++)); do
   arg=${!i}
   case "$arg" in
-    --print-logs|--mdns|-c|--continue|--fork|--auto|--mini|--no-replay) ;;
-    --log-level|--port|--hostname|--mdns-domain|-m|--model|-s|--session|--prompt|--agent|--replay-limit)
+    --print-logs|--standalone|-c|--continue|--auto|--yolo|--dangerously-skip-permissions) ;;
+    -s|--session|--prompt)
       ((i++)) ;;
-    --log-level=*|--port=*|--hostname=*|--mdns-domain=*|--model=*|--session=*|--prompt=*|--agent=*|--replay-limit=*) ;;
+    --session=*|--prompt=*) ;;
     --) break ;;
-    completion|acp|mcp|attach|run|debug|providers|auth|agent|upgrade|uninstall|serve|web|models|stats|export|import|github|pr|session|plugin|plug|db|-*)
+    acp|api|mcp|run|mini|debug|auth|upgrade|update|uninstall|serve|models|stats|pair|reload|session|service|plugin|-*)
       exec opencode "$@" ;;
     *)
       if [[ ! -d $arg ]]; then exec opencode "$@"; fi
@@ -45,5 +45,7 @@ restore_tab() {
 }
 trap restore_tab EXIT
 
-OPENCODE_ZELLIJ_STATUS=1 OPENCODE_ZELLIJ_DIRECTORY="$project" OPENCODE_ZELLIJ_STATE="$state_file" opencode "$@"
+# V2 defaults to a shared background service, which cannot inherit per-pane
+# ownership. A private server keeps status and cleanup scoped to this launch.
+OPENCODE_ZELLIJ_STATUS=1 OPENCODE_ZELLIJ_DIRECTORY="$project" OPENCODE_ZELLIJ_STATE="$state_file" opencode --standalone "$@"
 exit "$?"

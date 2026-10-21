@@ -43,7 +43,7 @@
     };
 
     serviceConfig = {
-      ExecStart = "${pkgs.unstable.opencode}/bin/opencode web --hostname 127.0.0.1 --port 4096";
+      ExecStart = "${pkgs.unstable.opencode}/bin/opencode serve --hostname 127.0.0.1 --port 4096";
       Group = "users";
       Restart = "on-failure";
       RestartSec = 5;

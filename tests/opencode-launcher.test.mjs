@@ -100,7 +100,8 @@ async function fixture(t) {
       const calls = await readLog('opencode.jsonl');
       assert.equal(calls.length, 1, 'OpenCode is invoked exactly once');
       const [call] = calls;
-      assert.deepEqual(call.args, args, 'all arguments are forwarded verbatim');
+      assert.deepEqual(call.args, call.status === '1' ? ['--standalone', ...args] : args,
+        'arguments are forwarded verbatim, with a private server for instrumented launches');
       assert.equal(call.cwd, await realpath(project), 'the launcher does not change directory');
       assert.deepEqual(await readdir(tmp), [], 'no temporary state files survive exit');
       if (call.state !== null) {
@@ -154,8 +155,13 @@ test('nested OPENCODE_ZELLIJ_STATUS=0 opts out even inside Zellij', async (t) =>
 for (const args of [
   ['run', 'prompt with spaces'],
   ['--print-logs', 'run', 'prompt'],
-  ['--log-level', 'DEBUG', 'serve'],
-  ['--log-level=DEBUG', 'serve'],
+  ['--server', 'http://localhost:4096'],
+  ['--server=http://localhost:4096'],
+  ['api'],
+  ['mini'],
+  ['service'],
+  ['pair'],
+  ['reload'],
   ['run'],
   ['serve'],
   ['session'],
@@ -166,7 +172,7 @@ for (const args of [
   test(`does not instrument non-TUI invocation ${JSON.stringify(args)}`, async (t) => {
     const f = await fixture(t);
     // Bare subcommands must not become TUI projects just because these directories exist.
-    await Promise.all(['run', 'serve', 'session'].map((name) => mkdir(path.join(f.project, name))));
+    await Promise.all(['run', 'serve', 'session', 'api', 'mini', 'service', 'pair', 'reload'].map((name) => mkdir(path.join(f.project, name))));
     assertUninstrumented(await f.run(args));
   });
 }
@@ -174,18 +180,13 @@ for (const args of [
 for (const [name, args, directory] of [
   ['default project', [], '.'],
   ['local boolean and value options', [
-    '--print-logs', '--log-level', 'DEBUG', '--mdns', '--port', '1234',
-    '--hostname', 'localhost', '--mdns-domain', 'local.test', '-c', '--continue',
-    '--fork', '--auto', '--mini', '--no-replay', '-m', 'provider/model',
-    '--model', 'provider/other', '-s', 'session-id', '--session', 'another-session',
-    '--prompt', 'serve', '--agent', 'run', '--replay-limit', '10',
+    '--print-logs', '--standalone', '-c', '--continue', '--auto',
+    '-s', 'session-id', '--session', 'another-session', '--prompt', 'serve',
   ], '.'],
   ['equals-form options', [
-    '--log-level=DEBUG', '--port=1234', '--hostname=localhost', '--mdns-domain=local.test',
-    '--model=provider/model', '--session=session-id', '--prompt=two words',
-    '--agent=run', '--replay-limit=10',
+    '--session=session-id', '--prompt=two words',
   ], '.'],
-  ['project path containing spaces', ['--continue', 'project with spaces', '--model', 'provider/model'], 'project with spaces'],
+  ['project path containing spaces', ['--continue', 'project with spaces', '--session', 'session-id'], 'project with spaces'],
   ['explicit relative subcommand directory', ['./run'], 'run'],
   // OpenCode's populate-- parser keeps these separate from its project positional.
   ['arguments after -- do not change project', ['--', '-project with spaces'], '.'],

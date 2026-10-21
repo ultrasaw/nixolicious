@@ -66,11 +66,42 @@ fs.writeFileSync(path, JSON.stringify(state))
     ["grandchild", { id: "grandchild", parentID: "child", title: "Read source" }],
     ["other", { id: "other", title: "Fix another project" }],
   ])
-  const context = {
-    directory: dir,
-    client: { session: { get: async ({ path: { id } }) => ({ data: sessions.get(id) }) } },
+  const callbacks = {}
+  const register = async (name, callback) => {
+    callbacks[name] = callback
+    return { dispose: async () => { delete callbacks[name] } }
   }
-  hooks = await ZellijStatus(context)
+  let deliver
+  let acknowledge
+  const queued = []
+  const context = {
+    location: { directory: dir },
+    session: { get: async ({ sessionID }) => sessions.get(sessionID), hook: register },
+    shell: { hook: register },
+    event: { subscribe: ({ signal }) => ({
+      [Symbol.asyncIterator]() { return this },
+      next() {
+        acknowledge?.()
+        acknowledge = undefined
+        if (signal.aborted) return Promise.resolve({ done: true })
+        return new Promise((resolve) => {
+          deliver = (item) => {
+            acknowledge = item?.ack
+            resolve(item ? { value: item.event, done: false } : { done: true })
+            deliver = undefined
+          }
+          if (queued.length) deliver(queued.shift())
+          else signal.addEventListener('abort', () => deliver?.(), { once: true })
+        })
+      },
+    }) },
+  }
+  const cleanup = await ZellijStatus.setup(context)
+  hooks = {
+    dispose: cleanup,
+    'chat.message': (input) => callbacks.prompt?.(input),
+    'shell.env': (_input, output) => callbacks['create.before']?.(output),
+  }
   const state = async () => JSON.parse(await readFile(statePath, "utf8"))
   const change = async (fn) => {
     const current = await state()
@@ -78,7 +109,11 @@ fs.writeFileSync(path, JSON.stringify(state))
     await writeFile(statePath, JSON.stringify(current))
   }
   const label = async (tab = 11) => (await state()).panes.find((pane) => pane.tab_id === tab)?.tab_name
-  const emit = (type, properties) => hooks.event({ event: { type, properties } })
+  const emit = (type, data, location) => new Promise((ack) => {
+    const item = { event: { type, data, location }, ack }
+    if (deliver) deliver(item)
+    else queued.push(item)
+  })
   const status = (type, sessionID = "root") => emit("session.status", { sessionID, status: { type } })
   const chat = (sessionID = "root") => hooks["chat.message"]({ sessionID })
   return { hooks, state, change, label, emit, status, chat, sessions, context, journal }
@@ -96,9 +131,9 @@ test("first title word with working, retry, input, and done states", async (t) =
   assert.equal(await h.label(), `${bell} Investigating`)
   await h.emit("permission.replied", { sessionID: "root", requestID: "p1", reply: "once" })
   assert.equal(await h.label(), `${hammer} Investigating`)
-  await h.emit("question.asked", { sessionID: "root", id: "q1" })
+  await h.emit("form.created", { form: { sessionID: "root", id: "q1" } })
   assert.equal(await h.label(), `${bell} Investigating`)
-  await h.emit("question.replied", { sessionID: "root", requestID: "q1", answers: [["Yes"]] })
+  await h.emit("form.replied", { sessionID: "root", id: "q1", answer: { q0: "Yes" } })
   assert.equal(await h.label(), `${hammer} Investigating`)
   await h.status("idle")
   assert.equal(await h.label(), `${check} Investigating`)
@@ -109,14 +144,14 @@ test("first title word with working, retry, input, and done states", async (t) =
 test("subagent titles/idle cannot finish the root; all prompts must be resolved", async (t) => {
   const h = await setup(t)
   await h.chat()
-  await h.emit("session.updated", { info: h.sessions.get("child") })
+  await h.emit("session.created", { sessionID: "child", ...h.sessions.get("child") })
   await h.status("idle", "child")
   assert.equal(await h.label(), `${hammer} Investigating`)
   await h.emit("permission.asked", { sessionID: "child", id: "same-id" })
-  await h.emit("question.asked", { sessionID: "grandchild", id: "same-id" })
+  await h.emit("form.created", { form: { sessionID: "grandchild", id: "same-id" } })
   await h.emit("permission.replied", { sessionID: "child", requestID: "same-id", reply: "reject" })
   assert.equal(await h.label(), `${bell} Investigating`)
-  await h.emit("question.rejected", { sessionID: "grandchild", requestID: "same-id" })
+  await h.emit("form.cancelled", { sessionID: "grandchild", id: "same-id" })
   assert.equal(await h.label(), `${hammer} Investigating`)
 })
 
@@ -124,8 +159,8 @@ test("child cancellation clears its requests but preserves another child's promp
   const h = await setup(t)
   await h.chat()
   await h.emit("permission.asked", { sessionID: "child", id: "p1" })
-  await h.emit("question.asked", { sessionID: "grandchild", id: "q1" })
-  await h.emit("session.error", { sessionID: "child", error: { name: "MessageAbortedError" } })
+  await h.emit("form.created", { form: { sessionID: "grandchild", id: "q1" } })
+  await h.emit("session.execution.interrupted", { sessionID: "child", reason: "user" })
   assert.equal(await h.label(), `${bell} Investigating`)
   await h.status("idle", "grandchild")
   assert.equal(await h.label(), `${hammer} Investigating`)
@@ -136,10 +171,10 @@ test("child cancellation clears its requests but preserves another child's promp
 test("root interruption clears prompts and stays interrupted through idle and late replies", async (t) => {
   const h = await setup(t)
   await h.chat()
-  await h.emit("question.asked", { sessionID: "grandchild", id: "q1" })
-  await h.emit("session.error", { sessionID: "root", error: { name: "MessageAbortedError" } })
+  await h.emit("form.created", { form: { sessionID: "grandchild", id: "q1" } })
+  await h.emit("session.execution.interrupted", { sessionID: "root", reason: "user" })
   await h.status("idle")
-  await h.emit("question.rejected", { sessionID: "grandchild", requestID: "q1" })
+  await h.emit("form.cancelled", { sessionID: "grandchild", id: "q1" })
   assert.equal(await h.label(), "! Investigating")
   await h.chat()
   assert.equal(await h.label(), `${hammer} Investigating`)
@@ -149,7 +184,7 @@ test("resumed activity loads its title and unrelated idle/prompts do not change 
   const h = await setup(t)
   await h.status("busy")
   assert.equal(await h.label(), `${hammer} Investigating`)
-  await h.emit("question.asked", { sessionID: "other", id: "q2" })
+  await h.emit("form.created", { form: { sessionID: "other", id: "q2" } })
   await h.status("idle", "other")
   assert.equal(await h.label(), `${hammer} Investigating`)
   await h.status("busy", "other")
@@ -163,13 +198,13 @@ test("resumed activity loads its title and unrelated idle/prompts do not change 
 test("updated titles use one bounded Unicode word, with no fixed app prefix", async (t) => {
   const h = await setup(t)
   await h.chat()
-  await h.emit("session.updated", { info: { id: "root", title: "  Refactoring\tvery long conversation title" } })
+  await h.emit("session.renamed", { sessionID: "root", title: "  Refactoring\tvery long conversation title" })
   assert.equal(await h.label(), `${hammer} Refactoring`)
-  await h.emit("session.updated", { info: { id: "root", title: "A".repeat(50) + " details" } })
+  await h.emit("session.renamed", { sessionID: "root", title: "A".repeat(50) + " details" })
   assert.equal(await h.label(), `${hammer} ${"A".repeat(17)}...`)
-  await h.emit("session.updated", { info: { id: "root", title: "\u{1f431}".repeat(21) + " details" } })
+  await h.emit("session.renamed", { sessionID: "root", title: "\u{1f431}".repeat(21) + " details" })
   assert.equal(await h.label(), `${hammer} ${"\u{1f431}".repeat(17)}...`)
-  await h.emit("session.updated", { info: { id: "root", title: "" } })
+  await h.emit("session.renamed", { sessionID: "root", title: "" })
   assert.equal(await h.label(), hammer)
 })
 
@@ -189,7 +224,7 @@ test("targets terminal pane's tab, follows moves, and restores original names", 
   assert.deepEqual(JSON.parse(await readFile(h.journal, "utf8")), [{ id: 12, original: "hx", last: `${check} Investigating` }])
   await h.hooks.dispose()
   assert.equal(await h.label(12), "hx")
-  await h.status("busy")
+  await h.chat()
   assert.equal(await h.label(12), "hx")
 })
 
@@ -208,7 +243,7 @@ test("concurrent callbacks are serialized and a prompt wins over later busy upda
     h.status("busy"),
     h.emit("permission.asked", { sessionID: "root", id: "p1" }),
     h.status("busy"),
-    h.emit("session.updated", { info: { id: "root", title: "Testing concurrency" } }),
+    h.emit("session.renamed", { sessionID: "root", title: "Testing concurrency" }),
   ])
   assert.equal(await h.label(), `${bell} Testing`)
 })
@@ -225,14 +260,14 @@ test("CLI and malformed JSON failures do not break hooks or poison subsequent up
 
 test("disabled outside launcher and in other directory instances; tools get explicit opt-out", async (t) => {
   const h = await setup(t)
-  assert.deepEqual(await ZellijStatus({ ...h.context, directory: "/other" }), {})
+  assert.equal(await ZellijStatus.setup({ ...h.context, location: { directory: "/other" } }), undefined)
   const output = { env: {} }
   await h.hooks["shell.env"]({}, output)
   assert.equal(output.env.OPENCODE_ZELLIJ_STATUS, "0")
   process.env.OPENCODE_ZELLIJ_STATUS = "0"
-  assert.deepEqual(await ZellijStatus(h.context), {})
+  assert.equal(await ZellijStatus.setup(h.context), undefined)
   delete process.env.OPENCODE_ZELLIJ_STATUS
-  assert.deepEqual(await ZellijStatus(h.context), {})
+  assert.equal(await ZellijStatus.setup(h.context), undefined)
 })
 
 test("unknown sessions are ignored, and deleting the active session clears its title", async (t) => {
@@ -240,6 +275,20 @@ test("unknown sessions are ignored, and deleting the active session clears its t
   await h.chat()
   await h.status("busy", "missing")
   assert.equal(await h.label(), `${hammer} Investigating`)
-  await h.emit("session.deleted", { info: h.sessions.get("root") })
+  await h.emit("session.deleted", { sessionID: "root" })
   assert.equal(await h.label(), "\u00b7")
+})
+
+test("v2 execution lifecycle and other-location events", async (t) => {
+  const h = await setup(t)
+  await h.emit("session.execution.started", { sessionID: "root" })
+  assert.equal(await h.label(), `${hammer} Investigating`)
+  await h.emit("session.execution.failed", { sessionID: "root", error: { type: "unknown", message: "failed" } },
+    { directory: "/other" })
+  assert.equal(await h.label(), `${hammer} Investigating`)
+  await h.emit("session.execution.succeeded", { sessionID: "root" })
+  assert.equal(await h.label(), `${check} Investigating`)
+  await h.emit("session.execution.failed", { sessionID: "root", error: { type: "unknown", message: "failed" } })
+  await h.status("idle")
+  assert.equal(await h.label(), "! Investigating")
 })
