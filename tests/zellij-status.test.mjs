@@ -1,12 +1,14 @@
 import assert from "node:assert/strict"
 import { mkdir, mkdtemp, readFile, writeFile, rm } from "node:fs/promises"
 import { join } from "node:path"
+import { setTimeout as delay } from "node:timers/promises"
 import test from "node:test"
-import ZellijStatus from "../dotfiles/opencode/plugins/zellij-status.js"
+import { setupZellijStatus } from "../dotfiles/opencode/plugins/zellij-status/status.js"
 
 const hammer = "\u{1f528}"
 const bell = "\u{1f514}"
 const check = "\u2713"
+const hourglass = "\u23f3"
 
 async function setup(t, options = {}) {
   await mkdir("/tmp/opencode", { recursive: true })
@@ -18,16 +20,17 @@ async function setup(t, options = {}) {
     ZELLIJ_SESSION_NAME: "test-session",
     ZELLIJ_PANE_ID: "4",
     OPENCODE_ZELLIJ_STATUS: "1",
-    OPENCODE_ZELLIJ_DIRECTORY: dir,
     OPENCODE_ZELLIJ_STATE: journal,
+    OPENCODE: "",
+    OPENCODE_SESSION_ID: "",
     FAKE_ZELLIJ_STATE: statePath,
     ...options.env,
   }
   const previous = Object.fromEntries(Object.keys(env).map((key) => [key, process.env[key]]))
   Object.assign(process.env, env)
-  let hooks
+  let dispose
   t.after(async () => {
-    await hooks?.dispose?.()
+    await dispose?.()
     for (const [key, value] of Object.entries(previous)) {
       if (value === undefined) delete process.env[key]
       else process.env[key] = value
@@ -43,252 +46,433 @@ async function setup(t, options = {}) {
     commands: [],
     ...options.state,
   }))
+  if (options.journal) await writeFile(journal, JSON.stringify(options.journal))
   await writeFile(join(dir, "zellij"), `#!${process.execPath}
 const fs = require("node:fs")
 const path = process.env.FAKE_ZELLIJ_STATE
 const state = JSON.parse(fs.readFileSync(path, "utf8"))
 const args = process.argv.slice(2)
 if (args[0] !== "--session" || args[1] !== "test-session" || args[2] !== "action") process.exit(2)
-if (state.fail) process.exit(1)
 state.commands.push(args.slice(3))
+if (state.fail) process.exit(1)
 if (args[3] === "list-panes") {
   process.stdout.write(state.invalid ? "invalid json" : JSON.stringify(state.panes))
 } else if (args[3] === "rename-tab") {
   if (args[4] !== "--tab-id" || args[6] !== "--") process.exit(2)
+  if (state.failRename) process.exit(1)
+  // Ownership must already be journaled when a rename happens.
+  const journal = JSON.parse(fs.readFileSync(process.env.OPENCODE_ZELLIJ_STATE, "utf8"))
+  if (!journal.some(item => item.id === Number(args[5]) && (item.last === args[7] || item.original === args[7]))) process.exit(3)
   for (const pane of state.panes) if (pane.tab_id === Number(args[5])) pane.tab_name = args[7]
 } else process.exit(2)
-fs.writeFileSync(path, JSON.stringify(state))
+fs.writeFileSync(path + ".tmp", JSON.stringify(state))
+fs.renameSync(path + ".tmp", path)
 `, { mode: 0o755 })
 
+  const location = { directory: dir }
   const sessions = new Map([
-    ["root", { id: "root", title: "Investigating Blender alert: test or real?" }],
-    ["child", { id: "child", parentID: "root", title: "Explore files" }],
-    ["grandchild", { id: "grandchild", parentID: "child", title: "Read source" }],
-    ["other", { id: "other", title: "Fix another project" }],
+    ["root", { id: "root", title: "Investigating Blender alert: test or real?", location }],
+    ["child", { id: "child", parentID: "root", title: "Explore files", location }],
+    ["grandchild", { id: "grandchild", parentID: "child", title: "Read source", location }],
+    ["other", { id: "other", title: "Fix another project", location }],
   ])
-  const callbacks = {}
-  const register = async (name, callback) => {
-    callbacks[name] = callback
-    return { dispose: async () => { delete callbacks[name] } }
+  const known = new Map(sessions)
+  for (const id of options.unknown ?? []) known.delete(id)
+  const statuses = new Map(Object.entries(options.statuses ?? {}))
+  const permissions = new Map()
+  const forms = new Map()
+  const shells = new Map(options.shells?.map((info) => [info.id, info]) ?? [])
+  const reads = []
+  let route = options.route ?? { type: "home" }
+  let listener
+  let update
+  let pending = 0
+  const root = (id) => {
+    const visited = new Set()
+    while (known.get(id)?.parentID && !visited.has(id)) {
+      visited.add(id)
+      id = known.get(id).parentID
+    }
+    return id
   }
-  let deliver
-  let acknowledge
-  const queued = []
+  const notify = () => update?.()
+  const collection = (map, kind) => ({
+    list: (id) => Array.from(map.get(id)?.values() ?? []),
+    sync: async (id) => { reads.push([kind, id]) },
+    invalidate: (id) => { reads.push([`${kind}.invalidate`, id]) },
+  })
   const context = {
-    location: { directory: dir },
-    session: { get: async ({ sessionID }) => sessions.get(sessionID), hook: register },
-    shell: { hook: register },
-    event: { subscribe: ({ signal }) => ({
-      [Symbol.asyncIterator]() { return this },
-      next() {
-        acknowledge?.()
-        acknowledge = undefined
-        if (signal.aborted) return Promise.resolve({ done: true })
-        return new Promise((resolve) => {
-          deliver = (item) => {
-            acknowledge = item?.ack
-            resolve(item ? { value: item.event, done: false } : { done: true })
-            deliver = undefined
-          }
-          if (queued.length) deliver(queued.shift())
-          else signal.addEventListener('abort', () => deliver?.(), { once: true })
-        })
+    data: {
+      listen(callback) { listener = callback; return () => { listener = undefined } },
+      session: {
+        get: (id) => known.get(id),
+        list: () => Array.from(known.values()),
+        root,
+        family: (id) => Array.from(known.keys()).filter((key) => root(key) === root(id)),
+        status: (id) => statuses.get(id) ?? "idle",
+        sync: async (id) => {
+          reads.push(["session", id])
+          if (sessions.has(id)) known.set(id, sessions.get(id))
+          notify()
+        },
+        permission: collection(permissions, "permission"),
+        form: collection(forms, "form"),
       },
-    }) },
+      shell: {
+        list: (ref) => Array.from(shells.values()).filter((info) => info.location.directory === ref.directory),
+        sync: async (ref) => { reads.push(["shell", ref.directory]) },
+        invalidate: (ref) => { reads.push(["shell.invalidate", ref.directory]) },
+      },
+    },
+    client: { session: { list: async (input) => {
+      reads.push(["children", input.parentID ?? input.cursor])
+      pending++
+      try {
+        if (options.list) return await options.list(input, sessions)
+        return { data: Array.from(sessions.values()).filter((info) => info.parentID === input.parentID), cursor: {} }
+      } finally { pending-- }
+    } } },
+    ui: { router: { current: () => route } },
   }
-  const cleanup = await ZellijStatus.setup(context)
-  hooks = {
-    dispose: cleanup,
-    'chat.message': (input) => callbacks.prompt?.(input),
-    'shell.env': (_input, output) => callbacks['create.before']?.(output),
-  }
+  dispose = await setupZellijStatus(context, (callback) => {
+    update = callback
+    return () => { update = undefined }
+  })
   const state = async () => JSON.parse(await readFile(statePath, "utf8"))
+  const label = async (tab = 11) => (await state()).panes.find((pane) => pane.tab_id === tab)?.tab_name
+  // Wait for the debounced external writer to become quiescent before changing
+  // its fake on-disk state. This is test synchronization, not job polling.
+  async function flush() {
+    let previous
+    let stable = 0
+    for (let n = 0; n < 200; n++) {
+      await delay(20)
+      const current = JSON.stringify(await state())
+      stable = current === previous && pending === 0 ? stable + 1 : 0
+      previous = current
+      if (stable >= 8) return
+    }
+    assert.fail("status writer did not settle")
+  }
+  async function expect(value, tab = 11) {
+    await flush()
+    assert.equal(await label(tab), value)
+  }
   const change = async (fn) => {
+    await flush()
     const current = await state()
     fn(current)
     await writeFile(statePath, JSON.stringify(current))
   }
-  const label = async (tab = 11) => (await state()).panes.find((pane) => pane.tab_id === tab)?.tab_name
-  const emit = (type, data, location) => new Promise((ack) => {
-    const item = { event: { type, data, location }, ack }
-    if (deliver) deliver(item)
-    else queued.push(item)
-  })
-  const status = (type, sessionID = "root") => emit("session.status", { sessionID, status: { type } })
-  const chat = (sessionID = "root") => hooks["chat.message"]({ sessionID })
-  return { hooks, state, change, label, emit, status, chat, sessions, context, journal }
+  const emit = (type, props, ref = location) => {
+    const id = props?.sessionID
+    if (type === "session.execution.started") statuses.set(id, "running")
+    if (type.startsWith("session.execution.") && !type.endsWith(".started")) statuses.set(id, "idle")
+    if (type === "session.renamed") {
+      sessions.get(id).title = props.title
+      known.set(id, sessions.get(id))
+    }
+    if (type === "session.deleted") { sessions.delete(id); known.delete(id) }
+    if (type === "permission.asked") {
+      if (!permissions.has(id)) permissions.set(id, new Map())
+      permissions.get(id).set(props.id, props)
+    }
+    if (type === "permission.replied") permissions.get(id)?.delete(props.requestID)
+    if (type === "form.created") {
+      if (!forms.has(props.form.sessionID)) forms.set(props.form.sessionID, new Map())
+      forms.get(props.form.sessionID).set(props.form.id, props.form)
+    }
+    if (["form.replied", "form.cancelled"].includes(type)) forms.get(id)?.delete(props.id)
+    if (type === "shell.created") shells.set(props.info.id, { ...props.info, location: ref })
+    if (["shell.exited", "shell.deleted"].includes(type)) shells.delete(props.id)
+    listener?.({ details: { type, data: props, location: ref } })
+    notify()
+  }
+  const select = (id = "root") => { route = { type: "session", sessionID: id }; notify() }
+  const shell = (id, owner = "root", ref = location) => emit("shell.created", {
+    info: { id, status: "running", metadata: { sessionID: owner } },
+  }, ref)
+  return { context, dispose: () => dispose?.(), state, label, expect, flush, change, emit, select, shell,
+    sessions, known, statuses, reads, journal, location, notify, home: () => { route = { type: "home" }; notify() } }
 }
 
-test("first title word with working, retry, input, and done states", async (t) => {
+test("CLI selection, working, retry, permission, question, and done states", async (t) => {
   const h = await setup(t)
-  assert.equal(await h.label(), "\u00b7")
-  await h.chat()
-  assert.equal(await h.label(), `${hammer} Investigating`)
-  await h.status("retry")
-  assert.equal(await h.label(), `${hammer} Investigating`)
-  await h.emit("permission.asked", { sessionID: "root", id: "p1" })
-  await h.status("busy")
-  assert.equal(await h.label(), `${bell} Investigating`)
-  await h.emit("permission.replied", { sessionID: "root", requestID: "p1", reply: "once" })
-  assert.equal(await h.label(), `${hammer} Investigating`)
-  await h.emit("form.created", { form: { sessionID: "root", id: "q1" } })
-  assert.equal(await h.label(), `${bell} Investigating`)
-  await h.emit("form.replied", { sessionID: "root", id: "q1", answer: { q0: "Yes" } })
-  assert.equal(await h.label(), `${hammer} Investigating`)
-  await h.status("idle")
-  assert.equal(await h.label(), `${check} Investigating`)
-  await h.emit("session.idle", { sessionID: "root" })
-  assert.equal(await h.label(), `${check} Investigating`)
+  await h.expect("\u00b7")
+  h.select()
+  h.emit("session.execution.started", { sessionID: "root" })
+  await h.expect(`${hammer} Investigating`)
+  h.emit("session.status", { sessionID: "root", status: { type: "retry" } })
+  h.emit("permission.asked", { sessionID: "root", id: "p1" })
+  h.emit("session.status", { sessionID: "root", status: { type: "busy" } })
+  await h.expect(`${bell} Investigating`)
+  h.emit("permission.replied", { sessionID: "root", requestID: "p1" })
+  await h.expect(`${hammer} Investigating`)
+  h.emit("form.created", { form: { sessionID: "root", id: "q1" } })
+  await h.expect(`${bell} Investigating`)
+  h.emit("form.replied", { sessionID: "root", id: "q1" })
+  await h.expect(`${hammer} Investigating`)
+  h.emit("session.execution.succeeded", { sessionID: "root" })
+  await h.expect(`${check} Investigating`)
 })
 
-test("subagent titles/idle cannot finish the root; all prompts must be resolved", async (t) => {
+test("root completion cannot finish running children or grandchildren", async (t) => {
   const h = await setup(t)
-  await h.chat()
-  await h.emit("session.created", { sessionID: "child", ...h.sessions.get("child") })
-  await h.status("idle", "child")
-  assert.equal(await h.label(), `${hammer} Investigating`)
-  await h.emit("permission.asked", { sessionID: "child", id: "same-id" })
-  await h.emit("form.created", { form: { sessionID: "grandchild", id: "same-id" } })
-  await h.emit("permission.replied", { sessionID: "child", requestID: "same-id", reply: "reject" })
-  assert.equal(await h.label(), `${bell} Investigating`)
-  await h.emit("form.cancelled", { sessionID: "grandchild", id: "same-id" })
-  assert.equal(await h.label(), `${hammer} Investigating`)
+  h.select()
+  for (const sessionID of ["root", "child", "grandchild"]) h.emit("session.execution.started", { sessionID })
+  h.emit("session.execution.succeeded", { sessionID: "root" })
+  await h.expect(`${hammer} Investigating`)
+  h.emit("session.execution.succeeded", { sessionID: "child" })
+  await h.expect(`${hammer} Investigating`)
+  h.emit("session.execution.succeeded", { sessionID: "grandchild" })
+  await h.expect(`${check} Investigating`)
+  h.emit("session.execution.started", { sessionID: "child" })
+  await h.expect(`${hammer} Investigating`)
 })
 
-test("child cancellation clears its requests but preserves another child's prompt", async (t) => {
+test("child completion cannot finish a working root; all prompts must resolve", async (t) => {
   const h = await setup(t)
-  await h.chat()
-  await h.emit("permission.asked", { sessionID: "child", id: "p1" })
-  await h.emit("form.created", { form: { sessionID: "grandchild", id: "q1" } })
-  await h.emit("session.execution.interrupted", { sessionID: "child", reason: "user" })
-  assert.equal(await h.label(), `${bell} Investigating`)
-  await h.status("idle", "grandchild")
-  assert.equal(await h.label(), `${hammer} Investigating`)
-  await h.status("idle")
-  assert.equal(await h.label(), `${check} Investigating`)
+  h.select()
+  h.emit("session.execution.started", { sessionID: "root" })
+  h.emit("session.execution.succeeded", { sessionID: "child" })
+  await h.expect(`${hammer} Investigating`)
+  h.emit("permission.asked", { sessionID: "child", id: "same" })
+  h.emit("form.created", { form: { sessionID: "grandchild", id: "same" } })
+  h.emit("permission.replied", { sessionID: "child", requestID: "same" })
+  await h.expect(`${bell} Investigating`)
+  h.emit("form.cancelled", { sessionID: "grandchild", id: "same" })
+  await h.expect(`${hammer} Investigating`)
 })
 
-test("root interruption clears prompts and stays interrupted through idle and late replies", async (t) => {
+test("shell-only background work remains visible until every owned command stops", async (t) => {
   const h = await setup(t)
-  await h.chat()
-  await h.emit("form.created", { form: { sessionID: "grandchild", id: "q1" } })
-  await h.emit("session.execution.interrupted", { sessionID: "root", reason: "user" })
-  await h.status("idle")
-  await h.emit("form.cancelled", { sessionID: "grandchild", id: "q1" })
-  assert.equal(await h.label(), "! Investigating")
-  await h.chat()
-  assert.equal(await h.label(), `${hammer} Investigating`)
+  h.select()
+  h.emit("session.execution.started", { sessionID: "root" })
+  h.shell("s1")
+  h.shell("s2", "grandchild")
+  h.shell("unrelated", "other")
+  h.shell("unowned", "")
+  await h.expect(`${hammer} Investigating`)
+  h.emit("session.execution.succeeded", { sessionID: "root" })
+  await h.expect(`${hourglass} Investigating`)
+  h.emit("permission.asked", { sessionID: "child", id: "p1" })
+  await h.expect(`${bell} Investigating`)
+  h.emit("permission.replied", { sessionID: "child", requestID: "p1" })
+  h.emit("shell.exited", { id: "s1", status: "exited", exit: 0 })
+  await h.expect(`${hourglass} Investigating`)
+  h.emit("shell.deleted", { id: "s2" })
+  h.emit("shell.exited", { id: "unowned", status: "killed" })
+  await h.expect(`${check} Investigating`)
 })
 
-test("resumed activity loads its title and unrelated idle/prompts do not change it", async (t) => {
+test("shell timeout, kill, and nonzero exit stop shell activity without declaring the agent failed", async (t) => {
   const h = await setup(t)
-  await h.status("busy")
-  assert.equal(await h.label(), `${hammer} Investigating`)
-  await h.emit("form.created", { form: { sessionID: "other", id: "q2" } })
-  await h.status("idle", "other")
-  assert.equal(await h.label(), `${hammer} Investigating`)
-  await h.status("busy", "other")
-  assert.equal(await h.label(), `${hammer} Fix`)
-  await h.status("idle")
-  assert.equal(await h.label(), `${hammer} Fix`)
-  await h.chat()
-  assert.equal(await h.label(), `${hammer} Investigating`)
+  h.select()
+  for (const status of ["timeout", "killed", "exited"]) {
+    h.shell("s1")
+    await h.expect(`${hourglass} Investigating`)
+    h.emit("shell.exited", { id: "s1", status, exit: 1 })
+    await h.expect(`${check} Investigating`)
+  }
 })
 
-test("updated titles use one bounded Unicode word, with no fixed app prefix", async (t) => {
+test("selection follows the viewed family, not unrelated shared-server activity", async (t) => {
   const h = await setup(t)
-  await h.chat()
-  await h.emit("session.renamed", { sessionID: "root", title: "  Refactoring\tvery long conversation title" })
-  assert.equal(await h.label(), `${hammer} Refactoring`)
-  await h.emit("session.renamed", { sessionID: "root", title: "A".repeat(50) + " details" })
-  assert.equal(await h.label(), `${hammer} ${"A".repeat(17)}...`)
-  await h.emit("session.renamed", { sessionID: "root", title: "\u{1f431}".repeat(21) + " details" })
-  assert.equal(await h.label(), `${hammer} ${"\u{1f431}".repeat(17)}...`)
-  await h.emit("session.renamed", { sessionID: "root", title: "" })
-  assert.equal(await h.label(), hammer)
+  h.select()
+  h.emit("session.execution.started", { sessionID: "other" })
+  h.emit("permission.asked", { sessionID: "other", id: "p1" })
+  await h.expect(`${check} Investigating`)
+  h.select("other")
+  await h.expect(`${bell} Fix`)
+  h.select("grandchild")
+  await h.expect(`${check} Investigating`)
+  h.home()
+  await h.expect("\u00b7")
 })
 
-test("targets terminal pane's tab, follows moves, and restores original names", async (t) => {
-  const h = await setup(t)
-  await h.chat()
-  assert.equal(await h.label(99), "plugin")
-  assert.equal(await h.label(12), "hx")
-  await h.change((state) => {
-    state.panes.find((pane) => pane.id === 4 && !pane.is_plugin).tab_id = 12
-    state.panes.find((pane) => pane.id === 4 && !pane.is_plugin).tab_name = "hx"
-    state.panes.push({ id: 9, is_plugin: false, tab_id: 11, tab_name: `${hammer} Investigating` })
+test("initial selection hydrates pre-existing nested agents and worktree shells, with no polling", async (t) => {
+  const h = await setup(t, { unknown: ["child", "grandchild"], statuses: { grandchild: "running" } })
+  const ref = { directory: "/different-worktree" }
+  h.sessions.get("grandchild").location = ref
+  h.select()
+  await h.expect(`${hammer} Investigating`)
+  assert.ok(h.reads.some(([kind, id]) => kind === "children" && id === "child"))
+  h.emit("session.execution.succeeded", { sessionID: "grandchild" }, ref)
+  h.shell("s1", "grandchild", ref)
+  await h.expect(`${hourglass} Investigating`)
+  const count = h.reads.length
+  await delay(250)
+  assert.equal(h.reads.length, count, "waiting does not repeatedly query the server")
+  h.emit("shell.exited", { id: "s1", status: "exited" }, ref)
+  await h.expect(`${check} Investigating`)
+})
+
+test("family hydration follows pagination", async (t) => {
+  const h = await setup(t, {
+    unknown: ["child", "grandchild"], statuses: { grandchild: "running" },
+    list: async (input, sessions) => {
+      if (input.parentID === "root") return { data: [sessions.get("child")], cursor: { next: "page2" } }
+      if (input.cursor === "page2") return { data: [sessions.get("grandchild")], cursor: {} }
+      return { data: [], cursor: {} }
+    },
   })
-  await h.status("idle")
+  h.select()
+  await h.expect(`${hammer} Investigating`)
+  assert.ok(h.reads.some(([kind, value]) => kind === "children" && value === "page2"))
+})
+
+test("moving a session does not hide its shell still running in the old location", async (t) => {
+  const h = await setup(t)
+  h.select()
+  h.shell("s1", "child")
+  await h.expect(`${hourglass} Investigating`)
+  h.sessions.get("child").location = { directory: "/moved-child" }
+  h.emit("session.moved", { sessionID: "child" })
+  await h.expect(`${hourglass} Investigating`)
+  h.emit("server.connected", {})
+  await h.expect(`${hourglass} Investigating`)
+  h.emit("shell.exited", { id: "s1", status: "exited" })
+  await h.expect(`${check} Investigating`)
+})
+
+test("terminal events clear cancelled prompts and failure stays sticky through idle/replies", async (t) => {
+  const h = await setup(t)
+  h.select()
+  h.emit("form.created", { form: { sessionID: "root", id: "q1" } })
+  h.emit("session.execution.interrupted", { sessionID: "root", reason: "user" })
+  h.emit("session.status", { sessionID: "root", status: { type: "idle" } })
+  await h.expect("! Investigating")
+  h.emit("form.cancelled", { sessionID: "root", id: "q1" })
+  await h.expect("! Investigating")
+  h.emit("session.execution.started", { sessionID: "child" })
+  await h.expect(`${hammer} Investigating`)
+  h.emit("session.execution.failed", { sessionID: "child" })
+  await h.expect("! Investigating")
+  h.emit("session.execution.started", { sessionID: "root" })
+  h.emit("session.execution.succeeded", { sessionID: "root" })
+  await h.expect(`${check} Investigating`)
+})
+
+test("interruption of one child does not dismiss another child's prompt", async (t) => {
+  const h = await setup(t)
+  h.select()
+  h.emit("permission.asked", { sessionID: "child", id: "p1" })
+  h.emit("form.created", { form: { sessionID: "grandchild", id: "q1" } })
+  h.emit("session.execution.interrupted", { sessionID: "child" })
+  await h.expect(`${bell} Investigating`)
+  h.emit("session.execution.succeeded", { sessionID: "grandchild" })
+  await h.expect(`${check} Investigating`)
+})
+
+test("reconnect rehydrates missed activity instead of keeping stale event overrides", async (t) => {
+  const h = await setup(t)
+  h.select()
+  h.emit("session.execution.started", { sessionID: "child" })
+  await h.expect(`${hammer} Investigating`)
+  h.statuses.set("child", "idle")
+  h.emit("server.connected", {})
+  await h.expect(`${check} Investigating`)
+  assert.ok(h.reads.some(([kind]) => kind === "shell.invalidate"))
+})
+
+test("bounded Unicode titles are reactive without another execution event", async (t) => {
+  const h = await setup(t)
+  h.select()
+  for (const [title, label] of [["  Refactoring\tfiles", "Refactoring"], ["A".repeat(50), "A".repeat(17) + "..."],
+    ["\u{1f431}".repeat(21), "\u{1f431}".repeat(17) + "..."], ["", ""]]) {
+    h.emit("session.renamed", { sessionID: "root", title })
+    await h.expect(label ? `${check} ${label}` : check)
+  }
+})
+
+test("targets the terminal pane's stable tab ID, follows moves, and restores both tabs", async (t) => {
+  const h = await setup(t)
+  h.select()
+  await h.expect(`${check} Investigating`)
+  assert.equal(await h.label(99), "plugin")
+  await h.change((state) => {
+    const pane = state.panes.find((item) => item.id === 4 && !item.is_plugin)
+    Object.assign(pane, { tab_id: 12, tab_name: "hx" })
+    state.panes.push({ id: 9, is_plugin: false, tab_id: 11, tab_name: `${check} Investigating` })
+  })
+  h.emit("session.execution.started", { sessionID: "root" })
+  await h.expect(`${hammer} Investigating`, 12)
   assert.equal(await h.label(11), "original")
-  assert.equal(await h.label(12), `${check} Investigating`)
-  assert.deepEqual(JSON.parse(await readFile(h.journal, "utf8")), [{ id: 12, original: "hx", last: `${check} Investigating` }])
-  await h.hooks.dispose()
+  assert.deepEqual(JSON.parse(await readFile(h.journal, "utf8")), [{ id: 12, original: "hx", last: `${hammer} Investigating` }])
+  await h.dispose()
   assert.equal(await h.label(12), "hx")
-  await h.chat()
-  assert.equal(await h.label(12), "hx")
+  h.emit("session.execution.succeeded", { sessionID: "root" })
+  await h.expect("hx", 12)
 })
 
-test("manual names are preserved on disposal", async (t) => {
+test("manual names survive cleanup and become the new restoration target after another update", async (t) => {
   const h = await setup(t)
-  await h.chat()
-  await h.change((state) => { state.panes.find((pane) => pane.tab_id === 11).tab_name = "! urgent" })
-  await h.hooks.dispose()
-  assert.equal(await h.label(), "! urgent")
+  h.select()
+  await h.expect(`${check} Investigating`)
+  await h.change((state) => { state.panes.find((item) => item.tab_id === 11).tab_name = "manual" })
+  h.emit("session.execution.started", { sessionID: "root" })
+  await h.expect(`${hammer} Investigating`)
+  await h.dispose()
+  assert.equal(await h.label(), "manual")
 })
 
-test("concurrent callbacks are serialized and a prompt wins over later busy updates", async (t) => {
+test("a reload/crash journal preserves the original tab name", async (t) => {
+  const h = await setup(t, {
+    state: { panes: [{ id: 4, is_plugin: false, tab_id: 11, tab_name: "old status" }] },
+    journal: [{ id: 11, original: "original", last: "old status" }],
+  })
+  h.select()
+  await h.expect(`${check} Investigating`)
+  await h.dispose()
+  assert.equal(await h.label(), "original")
+})
+
+test("a failed rename does not turn the previous generated title into the original name", async (t) => {
   const h = await setup(t)
-  await h.chat()
-  await Promise.all([
-    h.status("busy"),
-    h.emit("permission.asked", { sessionID: "root", id: "p1" }),
-    h.status("busy"),
-    h.emit("session.renamed", { sessionID: "root", title: "Testing concurrency" }),
-  ])
-  assert.equal(await h.label(), `${bell} Testing`)
+  h.select()
+  await h.expect(`${check} Investigating`)
+  await h.change((state) => { state.failRename = true })
+  h.emit("session.execution.started", { sessionID: "root" })
+  await h.expect(`${check} Investigating`)
+  await h.change((state) => { state.failRename = false })
+  h.notify()
+  await h.expect(`${hammer} Investigating`)
+  await h.dispose()
+  assert.equal(await h.label(), "original")
 })
 
-test("CLI and malformed JSON failures do not break hooks or poison subsequent updates", async (t) => {
+test("Zellij failures do not break event processing; bursts are coalesced", async (t) => {
   const h = await setup(t, { state: { fail: true } })
-  await h.chat()
+  h.select()
+  await h.flush()
   await h.change((state) => { state.fail = false; state.invalid = true })
-  await h.status("busy")
+  h.notify()
+  await h.flush()
   await h.change((state) => { state.invalid = false })
-  await h.status("busy")
-  assert.equal(await h.label(), `${hammer} Investigating`)
+  for (let i = 0; i < 100; i++) h.emit("session.execution.started", { sessionID: "root" })
+  h.emit("permission.asked", { sessionID: "child", id: "p1" })
+  await h.expect(`${bell} Investigating`)
+  const renames = (await h.state()).commands.filter(([action]) => action === "rename-tab")
+  assert.ok(renames.length <= 2, `burst caused ${renames.length} renames`)
 })
 
-test("disabled outside launcher and in other directory instances; tools get explicit opt-out", async (t) => {
+test("the CLI plugin cannot run outside the launcher or in nested tool processes", async (t) => {
   const h = await setup(t)
-  assert.equal(await ZellijStatus.setup({ ...h.context, location: { directory: "/other" } }), undefined)
-  const output = { env: {} }
-  await h.hooks["shell.env"]({}, output)
-  assert.equal(output.env.OPENCODE_ZELLIJ_STATUS, "0")
-  process.env.OPENCODE_ZELLIJ_STATUS = "0"
-  assert.equal(await ZellijStatus.setup(h.context), undefined)
-  delete process.env.OPENCODE_ZELLIJ_STATUS
-  assert.equal(await ZellijStatus.setup(h.context), undefined)
+  for (const [key, value] of [["OPENCODE_ZELLIJ_STATUS", "0"], ["OPENCODE_ZELLIJ_STATUS", ""],
+    ["OPENCODE", "1"], ["OPENCODE_SESSION_ID", "parent"], ["ZELLIJ_PANE_ID", "invalid"]]) {
+    const previous = process.env[key]
+    process.env[key] = value
+    assert.equal(await setupZellijStatus(h.context, () => assert.fail("must not register")), undefined)
+    process.env[key] = previous
+  }
 })
 
-test("unknown sessions are ignored, and deleting the active session clears its title", async (t) => {
+test("deleting the selected root clears its title and ending a child removes its activity", async (t) => {
   const h = await setup(t)
-  await h.chat()
-  await h.status("busy", "missing")
-  assert.equal(await h.label(), `${hammer} Investigating`)
-  await h.emit("session.deleted", { sessionID: "root" })
-  assert.equal(await h.label(), "\u00b7")
-})
-
-test("v2 execution lifecycle and other-location events", async (t) => {
-  const h = await setup(t)
-  await h.emit("session.execution.started", { sessionID: "root" })
-  assert.equal(await h.label(), `${hammer} Investigating`)
-  await h.emit("session.execution.failed", { sessionID: "root", error: { type: "unknown", message: "failed" } },
-    { directory: "/other" })
-  assert.equal(await h.label(), `${hammer} Investigating`)
-  await h.emit("session.execution.succeeded", { sessionID: "root" })
-  assert.equal(await h.label(), `${check} Investigating`)
-  await h.emit("session.execution.failed", { sessionID: "root", error: { type: "unknown", message: "failed" } })
-  await h.status("idle")
-  assert.equal(await h.label(), "! Investigating")
+  h.select()
+  h.emit("session.execution.started", { sessionID: "child" })
+  h.emit("session.deleted", { sessionID: "child" })
+  await h.expect(`${check} Investigating`)
+  h.emit("session.deleted", { sessionID: "root" })
+  await h.expect("\u00b7")
 })

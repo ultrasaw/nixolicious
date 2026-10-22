@@ -64,7 +64,7 @@ async function fixture(t) {
       await writeFile(path.join(root, 'config.json'), JSON.stringify({ exitCode, journal, panes }));
       const env = { ...process.env };
       for (const key of Object.keys(env)) {
-        if (/^(OPENCODE_ZELLIJ_|ZELLIJ)/.test(key) || key === 'BASH_ENV' || key === 'ENV') {
+        if (/^(OPENCODE_ZELLIJ_|ZELLIJ)/.test(key) || ['OPENCODE', 'OPENCODE_SESSION_ID', 'BASH_ENV', 'ENV'].includes(key)) {
           delete env[key];
         }
       }
@@ -100,8 +100,7 @@ async function fixture(t) {
       const calls = await readLog('opencode.jsonl');
       assert.equal(calls.length, 1, 'OpenCode is invoked exactly once');
       const [call] = calls;
-      assert.deepEqual(call.args, call.status === '1' ? ['--standalone', ...args] : args,
-        'arguments are forwarded verbatim, with a private server for instrumented launches');
+      assert.deepEqual(call.args, args, 'arguments and server choice are forwarded verbatim');
       assert.equal(call.cwd, await realpath(project), 'the launcher does not change directory');
       assert.deepEqual(await readdir(tmp), [], 'no temporary state files survive exit');
       if (call.state !== null) {
@@ -152,11 +151,16 @@ test('nested OPENCODE_ZELLIJ_STATUS=0 opts out even inside Zellij', async (t) =>
   }), '0');
 });
 
+for (const env of [{ OPENCODE: '1' }, { OPENCODE_SESSION_ID: 'parent-session' }]) {
+  test(`tool subprocesses cannot acquire pane ownership: ${JSON.stringify(env)}`, async (t) => {
+    const f = await fixture(t);
+    assertUninstrumented(await f.run([], { env: { ...env, OPENCODE_ZELLIJ_STATUS: '1' } }), '0');
+  });
+}
+
 for (const args of [
   ['run', 'prompt with spaces'],
   ['--print-logs', 'run', 'prompt'],
-  ['--server', 'http://localhost:4096'],
-  ['--server=http://localhost:4096'],
   ['api'],
   ['mini'],
   ['service'],
@@ -186,6 +190,9 @@ for (const [name, args, directory] of [
   ['equals-form options', [
     '--session=session-id', '--prompt=two words',
   ], '.'],
+  ['explicit server', ['--server', 'http://localhost:4096'], '.'],
+  ['equals-form server', ['--server=http://localhost:4096'], '.'],
+  ['log level', ['--log-level', 'debug'], '.'],
   ['project path containing spaces', ['--continue', 'project with spaces', '--session', 'session-id'], 'project with spaces'],
   ['explicit relative subcommand directory', ['./run'], 'run'],
   // OpenCode's populate-- parser keeps these separate from its project positional.
@@ -198,7 +205,7 @@ for (const [name, args, directory] of [
     if (directory !== '.') await mkdir(path.join(f.project, directory));
     const { call, zellij } = await f.run(args);
     assert.equal(call.status, '1');
-    assert.equal(call.directory, await realpath(path.join(f.project, directory)));
+    assert.equal(call.directory, null, 'CLI ownership is not tied to the launch directory');
     assert.equal(call.stateExists, true);
     assert.equal(call.stateSize, 0, 'the launcher provides a fresh empty state file');
     assert.deepEqual(zellij, [], 'an empty state file needs no Zellij cleanup calls');

@@ -354,7 +354,8 @@ in
         (if length == 0 then {} elif length == 1 and (.[0] | type) == "object"
          then .[0] else error("cli.json must be one object") end) *
         { "$schema": "https://opencode.ai/v2/cli.json",
-          prompt: { paste: "full" }, session: { thinking: "show" } }
+          prompt: { paste: "full" }, session: { thinking: "show" },
+          tabs: { mode: "off" } }
       ' "$input_file" > "$tmp_file"; then
         rm -f "$tmp_file"
         echo "Refusing to overwrite invalid OpenCode CLI settings: $cli_file" >&2
