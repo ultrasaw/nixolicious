@@ -245,22 +245,7 @@ in
       export WORKTRUNK_BIN="${pkgs.unstable.worktrunk}/bin/wt"
       eval "$("$WORKTRUNK_BIN" config shell init zsh)"
 
-      # Merge the default kubeconfig with existing .yaml files. Newest YAML
-      # files are first, so the last refreshed cluster remains the default.
-      kubeconfig_files=(
-        "$HOME"/.kube/*.yaml(Nom)
-      )
-      typeset -U kubeconfig_files
-
-      if [[ -f "$HOME/.kube/config" ]]; then
-        kubeconfig_files+=("$HOME/.kube/config")
-      fi
-
-      if (( ''${#kubeconfig_files} )); then
-        export KUBECONFIG="''${(j/:/)kubeconfig_files}"
-      else
-        unset KUBECONFIG
-      fi
+      ${builtins.readFile ../dotfiles/kubeconfig.zsh}
     '';
   };
 
