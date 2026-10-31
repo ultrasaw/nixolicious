@@ -328,6 +328,10 @@ in {
 
     spawn-at-startup = [
       {
+        # The first password entry also unlocks the login keyring through PAM.
+        command = ["${config.programs.swaylock.package}/bin/swaylock" "-f" "-c" "000000"];
+      }
+      {
         command = ["awww-daemon"];
       }
       {

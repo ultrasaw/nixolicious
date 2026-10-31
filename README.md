@@ -31,7 +31,9 @@ sudo nix-store --delete --ignore-liveness
 
 ### GPG signing
 
-Once: in Seahorse, make the login keyring the default and match its password to your login password; sign once on the desktop and save the GPG passphrase in the password manager. Screen unlock then enables signing without another prompt.
+Boot opens swaylock automatically; entering your password unlocks the login keyring for Chrome and GPG until reboot.
+
+Once: in Seahorse, make the login keyring the default and match its password to your login password; sign once on the desktop and save the GPG passphrase in the password manager.
 
 Over SSH before the first desktop unlock, run inside a repo with `user.signingkey` configured (cached until reboot or GPG agent restart):
 

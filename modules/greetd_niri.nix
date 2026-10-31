@@ -8,6 +8,13 @@ let
   niriSessionScript = pkgs.writeShellScriptBin "niri-session-start" ''
     #!${pkgs.stdenv.shell}
 
+    # Initialize PAM's keyring before the first screen unlock. Share its
+    # control socket with Niri, swaylock, and D-Bus-activated applications.
+    export GNOME_KEYRING_CONTROL="''${XDG_RUNTIME_DIR:?}/keyring"
+    ${pkgs.gnome-keyring}/bin/gnome-keyring-daemon \
+      --start --components=pkcs11,secrets \
+      --control-directory "$GNOME_KEYRING_CONTROL" >/dev/null || exit 1
+
     # start Niri in the background
     ${niriPackage}/bin/niri &
     NIRI_PID=$!
