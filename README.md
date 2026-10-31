@@ -29,6 +29,16 @@ sudo nix-collect-garbage --delete-old
 sudo nix-store --delete --ignore-liveness
 ```
 
+### GPG signing
+
+Once: in Seahorse, make the login keyring the default and match its password to your login password; sign once on the desktop and save the GPG passphrase in the password manager. Screen unlock then enables signing without another prompt.
+
+Over SSH before the first desktop unlock, run inside a repo with `user.signingkey` configured (cached until reboot or GPG agent restart):
+
+```bash
+GPG_TTY="$(tty)" gpg --pinentry-mode loopback --local-user "$(git config user.signingkey)" --yes --output /dev/null --sign /dev/null
+```
+
 ## extras
 Hyprland and Gnome also available; edit the following:
 - `flake.nix` - `nixosConfiguration.<HOST>` section in order to include the necessary modules;

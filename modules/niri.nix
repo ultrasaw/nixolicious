@@ -90,8 +90,8 @@
   # };
   
   security = {
-    # allow wayland lockers to unlock the screen
-    pam.services.swaylock.text = "auth include login";
+    # Unlock the encrypted login keyring with the screen-unlock password.
+    pam.services.swaylock.enableGnomeKeyring = true;
   };
 
   # "open kitty here"

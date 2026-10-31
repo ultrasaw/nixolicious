@@ -337,16 +337,6 @@ in {
         command = ["${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"];
       }
       {
-        command = [
-          "sh"
-          "-c"
-          ''
-            eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh -f);
-            export SSH_AUTH_SOCK;
-          ''
-        ];
-      }
-      {
         command = ["${pkgs.xwayland-satellite}/bin/xwayland-satellite"];
       }
     ];
