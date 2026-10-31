@@ -25,6 +25,41 @@
   # SSH is reachable through the private tailnet, not the LAN or public NIC.
   networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 22 ];
 
+  # Private phone preview: reconnect only the dev HTTP forward, never production. (c) opencode
+  systemd.services.tot-dev-preview = {
+    description = "Private tot-dev application forward";
+    wantedBy = [ "multi-user.target" ];
+    wants = [ "network-online.target" ];
+    after = [ "network-online.target" ];
+    environment.KUBECONFIG = "/home/gio/.cache/kubeconfig/config";
+    serviceConfig = {
+      User = "gio";
+      Group = "users";
+      ExecStart = "${pkgs.unstable.kubectl}/bin/kubectl --context tot-prod-k3s --namespace tot-dev port-forward --address=127.0.0.1 service/tot-server 18080:8080";
+      Restart = "always";
+      RestartSec = 5;
+      UMask = "0077";
+      NoNewPrivileges = true;
+    };
+    startLimitIntervalSec = 0;
+  };
+
+  # Configure only this private listener; preserve OpenCode on 443. No Funnel. (c) opencode
+  systemd.services.tot-dev-preview-serve = {
+    description = "Private Tailscale HTTPS endpoint for tot-dev";
+    wantedBy = [ "multi-user.target" ];
+    wants = [ "tailscaled.service" "tot-dev-preview.service" ];
+    after = [ "tailscaled.service" "tot-dev-preview.service" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "${pkgs.unstable.tailscale}/bin/tailscale serve --bg --https=8443 http://127.0.0.1:18080";
+      Restart = "on-failure";
+      RestartSec = 5;
+    };
+    startLimitIntervalSec = 0;
+  };
+
   systemd.services.opencode-web = {
     description = "OpenCode web interface";
     wantedBy = [ "multi-user.target" ];
