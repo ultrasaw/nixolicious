@@ -66,7 +66,7 @@
           ./modules/python.nix
           ./modules/go.nix
           ./modules/rust.nix
-          ./modules/turso.nix
+          ./modules/resend.nix
           ./modules/nvidia.nix
           ./modules/steam.nix
           ./modules/node.nix

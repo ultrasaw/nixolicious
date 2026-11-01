@@ -29,6 +29,17 @@ sudo nix-collect-garbage --delete-old
 sudo nix-store --delete --ignore-liveness
 ```
 
+### Resend CLI
+
+`modules/resend.nix` checks npm for the latest Resend CLI on every system
+activation (including unchanged switches and boots). It installs as `gio` into
+`~/.local/share/resend-cli`, outside the Nix store, so Nix rollbacks do not roll
+back this CLI. Build-only commands do not update it.
+
+Run `resend-update` to retry an offline/failed update manually. Updates are
+tested before becoming active, and previous releases are retained. Authenticate
+separately with `resend login` or `RESEND_API_KEY`; no credentials belong in Nix.
+
 ### GPG signing
 
 Boot opens swaylock automatically; entering your password unlocks the login keyring for Chrome and GPG until reboot.
