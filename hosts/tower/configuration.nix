@@ -42,9 +42,10 @@
 
   # Ignore both ACPI devices that expose the chassis power button. The
   # separate sleep button remains available, as does explicit suspend.
+  # Match the parent device, since ID_PATH may use acpi- or platform-.
   services.udev.extraRules = ''
-    ACTION=="add", SUBSYSTEM=="input", KERNEL=="event*", ENV{ID_PATH}=="acpi-PNP0C0C:00", TAG-="power-switch", ENV{LIBINPUT_IGNORE_DEVICE}="1"
-    ACTION=="add", SUBSYSTEM=="input", KERNEL=="event*", ENV{ID_PATH}=="acpi-LNXPWRBN:00", TAG-="power-switch", ENV{LIBINPUT_IGNORE_DEVICE}="1"
+    ACTION=="add", SUBSYSTEM=="input", KERNEL=="event*", KERNELS=="PNP0C0C:00", TAG-="power-switch", ENV{LIBINPUT_IGNORE_DEVICE}="1"
+    ACTION=="add", SUBSYSTEM=="input", KERNEL=="event*", KERNELS=="LNXPWRBN:00", TAG-="power-switch", ENV{LIBINPUT_IGNORE_DEVICE}="1"
   '';
 
   # Time and locale settings
