@@ -29,6 +29,11 @@
     };
   };
 
+  # This alternative ACPI driver signals PID 1 directly, bypassing logind.
+  # It can load alongside the regular button driver on affected kernels.
+  # https://github.com/NixOS/nixpkgs/issues/577729
+  boot.blacklistedKernelModules = [ "tiny_power_button" ];
+
   services.logind.settings.Login = {
     HandlePowerKey = "ignore";
     HandlePowerKeyLongPress = "ignore";
