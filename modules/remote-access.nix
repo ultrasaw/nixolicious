@@ -22,8 +22,16 @@
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAM2uodEiiEPwV05p+oAyyLYnaMi85VxASuTNvxBot9U neoserver@nixos"
   ];
 
-  # SSH is reachable through the private tailnet, not the LAN or public NIC.
+  programs.mosh = {
+    enable = true;
+    openFirewall = false;
+  };
+
+  # SSH and Mosh are reachable through the private tailnet only.
   networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 22 ];
+  networking.firewall.interfaces.tailscale0.allowedUDPPortRanges = [
+    { from = 60000; to = 61000; }
+  ];
 
   # Private phone preview: reconnect only the dev HTTP forward, never production. (c) opencode
   systemd.services.tot-dev-preview = {
