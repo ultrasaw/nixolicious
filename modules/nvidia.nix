@@ -47,14 +47,12 @@ in {
   ];
   
   environment.variables = {
-    CUDA_PATH = "${pkgs.cudaPackages.cudatoolkit}";
-    CUDA_ROOT = "${pkgs.cudaPackages.cudatoolkit}";
     GBM_BACKEND = "nvidia-drm";
     WLR_NO_HARDWARE_CURSORS = "1";
     LIBVA_DRIVER_NAME = "nvidia";
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-    # Ensure CUDA libraries are in the path
-    LD_LIBRARY_PATH = "/run/opengl-driver/lib:${pkgs.cudaPackages.cudatoolkit}/lib";
+    # Applications provide their CUDA libraries; only expose the driver globally.
+    LD_LIBRARY_PATH = "/run/opengl-driver/lib";
   };
   
   nixpkgs.config = {
@@ -91,16 +89,14 @@ in {
         nvidia-vaapi-driver
         libva-vdpau-driver
         libvdpau-va-gl
-        # Add CUDA packages to system graphics packages
-        cudaPackages.cudatoolkit
-        cudaPackages.cuda_cudart
+        # CUDA toolkits are not graphics drivers and do not belong here.
       ];
     };
   };
   
-  # Optional: Add CUDA packages to system packages for global access
+  # Keep compiler/runtime tools without pulling in the full CUDA toolkit
+  # (including the large cuBLAS static libraries). Ollama bundles its own libs.
   environment.systemPackages = with pkgs; [
-    cudaPackages.cudatoolkit
     cudaPackages.cuda_nvcc
     cudaPackages.cuda_cudart
   ];
