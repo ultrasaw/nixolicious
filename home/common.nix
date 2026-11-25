@@ -303,7 +303,7 @@ in
 
   programs.opencode = {
     enable = true;
-    package = pkgs.unstable.opencode;
+    package = pkgs.opencode;
     settings = {
       "$schema" = "https://opencode.ai/config.json";
       experimental.todo = true;

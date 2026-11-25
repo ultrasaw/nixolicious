@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    opencode.url = "github:anomalyco/opencode/dev";
     hyprland.url = "github:hyprwm/Hyprland";
     nix-colors.url = "github:misterio77/nix-colors";
     # stylix.url = "github:danth/stylix";
@@ -50,6 +51,20 @@
       # define the overlay function
       unstable-overlay = final: prev: {
         unstable = unstablePkgs;
+        opencode =
+          let
+            upstream = inputs.opencode.packages.${system}.opencode;
+          in
+          # This dev revision ships a stale x86_64-linux dependency hash.
+          # Scope the workaround so later updates use upstream's hash again.
+          if inputs.opencode.rev == "e0bf30832b6d85d81b2dd826c0598e7adeaeb9dd" then
+            upstream.override {
+              node_modules = upstream.node_modules.override {
+                hash = "sha256-RXrwbOwbYAHuofiv5pgvXCmXlbNhOCrvLmDOT8FjiNs=";
+              };
+            }
+          else
+            upstream;
       };
 
     in {
